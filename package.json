@@ -1,0 +1,28 @@
+{
+  "name": "choo",
+  "version": "1.0.0",
+  "description": "A framework for creating solid web applications",
+  "main": "index.js",
+  "scripts": {
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "test": "standard && npm run deps && NODE_ENV=test node test",
+    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover test.js"
+  },
+  "repository": "yoshuawuyts/choo",
+  "keywords": [
+    "client",
+    "frontend",
+    "framework",
+    "minimal",
+    "composable",
+    "tiny"
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "dependency-check": "^2.5.1",
+    "istanbul": "^0.4.3",
+    "standard": "^6.0.8",
+    "tape": "^4.5.1"
+  }
+}
