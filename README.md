@@ -24,14 +24,14 @@ const app = choo()
 app.model('title', {
   state: { title: 'my-demo-app' },
   reducers: {
-    update: (action, state) => ({ title: action.payload })
+    'update': (action, state) => ({ title: action.payload })
   },
   effects: {
-    update: (action, state) => (document.title = action.title)
+    'update': (action, state, send) => (document.title = action.title)
   }
 })
 
-const mainView = choo.view((state, send) => `
+const mainView = (params, state, send) => choo.view`
   <main class="app">
     <h1>${state.title}</h1>
     <label>Set the title</label>
@@ -40,14 +40,14 @@ const mainView = choo.view((state, send) => `
       placeholder=${state.title}
       oninput=${(e) => send('title:update', { payload: e.target.value })}>
   </main>
-`)
+`
 
 app.router((route) => [
   route('/', mainView)
 ])
 
 const node = app.start()
-document.appendChild(node)
+document.body.appendChild(node)
 ```
 
 ## Concepts
