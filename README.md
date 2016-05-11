@@ -22,7 +22,9 @@ const choo = require('choo')
 
 const app = choo()
 app.model('title', {
-  state: { title: 'my-demo-app' },
+  state: {
+    title: 'my-demo-app'
+  },
   reducers: {
     'update': (action, state) => ({ title: action.payload })
   },
@@ -51,19 +53,66 @@ document.body.appendChild(tree)
 ```
 
 ## Concepts
-- __state:__
-- __reducers:__
-- __effects:__
-- __subscriptions:__
+- __state:__ a single object that contains all application state, should only
+  ever be modified by `reducers`
+- __reducers:__ syncronous functions that modify `state`
+- __effects:__ asyncronous functions that perform IO. Effects should call
+  `send()` when done
+- __subscriptions:__ streams of data that can either be written to or read from
 
 ## API
-### choo
+### app = choo()
+Create a new `choo` app
+
+### app.model(name?, obj)
+Create a new model. Models modify data and perform IO. Obj takes the following
+arguments:
+- __state:__ object. Key value store of initial values
+- __reducers:__ object. Syncronous functions that modify state. Each function
+  has a signature of `(action, state)` 
+- __effects:__ object. Asyncronous functions that perform IO. Each function has
+  a signature of `(action, state, send)` where `send` is a reference to
+  `app.send()`
+
+If a `name` string is passed as a first argument, `reducers` and `signatures`
+will be prefixed by the name. So if name is "user" and a reducer called
+"update" is registered, it would be accessed as `'user:update'` in `send()`.
+
+### choo.view\`html\`
+Tagged template string HTML builder. See
+[`yo-yo`](https://github.com/maxogden/yo-yo) for full documentation. Views
+should be passed to `app.router()`
+
+### app.router(params, state, send)
+Creates a new router. See
+[`sheet-router`](https://github.com/yoshuawuyts/sheet-router) for full
+documentation. Registered views have a signature of `(params, state, send)`,
+where `params` is URI partials.
+
+### tree = app.start()
+Start the application. Returns a DOM element that can be mounted using
+`document.body.appendChild()`.
 
 ## Packages used
 - __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo)
 - __models:__ [`send-action`](https://github.com/sethvincent/send-action),
   [`xtend`](https://github.com/raynos/xtend)
 - __routes:__ [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
+
+## Optimizing
+To bring down file size, consider running the following `browserify`
+transforms:
+- [unassertify](https://github.com/twada/unassertify) - remove `assert()`
+  statements which reduces file size. Use as a `--global` transform
+- [varify](https://github.com/thlorenz/varify) - replace `const` with `var`
+  statements. Use as a `--global` transform
+- [uglifyify](https://github.com/hughsk/uglifyify) - minify your code using
+  UglifyJS2. Use as a `--global` transform
+
+## Packages that work well together
+- [xhr](https://github.com/Raynos/xhr) - small XHR wrapper
+- [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
+  humans
 
 ## Installation
 ```sh
