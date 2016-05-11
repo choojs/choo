@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# browserify index.js --full-paths \
+#   -g unassertify \
+#   -t uglifyify \
+#   | discify --open
+
+browserify index.js --full-paths \
+  -g unassertify \
+  -g uglifyify \
+  | gzip-size \
+  | pretty-bytes
