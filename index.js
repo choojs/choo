@@ -23,8 +23,8 @@ function choo () {
   return start
 
   // start the application
-  // str|DOMNode -> DOMNode
-  function start (query) {
+  // null -> DOMNode
+  function start () {
     const events = bootstrap(_models)
     const send = sendAction({
       onaction: events.middleware,
@@ -32,14 +32,16 @@ function choo () {
       state: events.state
     })
 
-    const node = _router(send.state().location, send.state(), send)
-    console.log(node)
-    document.body.appendChild(node)
+    const tree = _router(send.state().location, send.state(), send)
+    tree.setAttribute('id', 'choo-root')
+    return tree
 
     // update on every change
     function onchange (action, state) {
-      const el = document.querySelector('#main')
-      yo.update(el, router(state.location, send, state))
+      const oldTree = document.querySelector('#choo-root')
+      const newTree = _router(state.location, state, send)
+      newTree.setAttribute('id', 'choo-root')
+      yo.update(oldTree, newTree)
     }
   }
 
@@ -109,13 +111,25 @@ function bootstrap (events) {
   }
 
   function modifyState (action, state, send) {
+    var _reducers = false
+    var _effects = false
+    var newState = null
+
     if (reducers[action.type]) {
-      return reducers[action.type](action, state, send)
-    } else if (effects[action.type]) {
+      newState = xtend(state, reducers[action.type](action, state))
+      _reducers = true
+    }
+
+    if (effects[action.type]) {
       effects[action.type](action, state, send)
-      return state
-    } else {
+      newState = newState || state
+      _effects = true
+    }
+
+    if (!_reducers && !_effects) {
       throw new Error('Could not find action ' + action.type)
     }
+
+    return newState
   }
 }

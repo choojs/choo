@@ -27,7 +27,7 @@ app.model('title', {
     'update': (action, state) => ({ title: action.payload })
   },
   effects: {
-    'update': (action, state, send) => (document.title = action.title)
+    'update': (action, state, send) => (document.title = action.payload)
   }
 })
 
@@ -46,8 +46,8 @@ app.router((route) => [
   route('/', mainView)
 ])
 
-const node = app.start()
-document.body.appendChild(node)
+const tree = app.start()
+document.body.appendChild(tree)
 ```
 
 ## Concepts
