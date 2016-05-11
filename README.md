@@ -24,10 +24,10 @@ const app = choo()
 app.model('title', {
   state: { title: 'my-demo-app' },
   reducers: {
-    'update': (action, state) => ({ title: action.payload })
+    update: (action, state) => ({ title: action.payload })
   },
   effects: {
-    'update': (action, state) => document.title = action.title
+    update: (action, state) => (document.title = action.title)
   }
 })
 
@@ -58,6 +58,12 @@ document.appendChild(node)
 
 ## API
 ### choo
+
+## Packages used
+- __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo)
+- __models:__ [`send-action`](https://github.com/sethvincent/send-action),
+  [`xtend`](https://github.com/raynos/xtend)
+- __routes:__ [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
 
 ## Installation
 ```sh
