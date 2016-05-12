@@ -21,7 +21,7 @@
   "dependencies": {
     "global": "^4.3.0",
     "send-action": "^1.1.0",
-    "sheet-router": "^2.0.4",
+    "sheet-router": "^2.0.5",
     "xtend": "^4.0.1",
     "yo-yo": "^1.2.0"
   },

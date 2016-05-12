@@ -6,9 +6,11 @@ module.exports = function (params, state, send) {
   const mailbox = params.mailbox
 
   return choo.view`
-    <aside>
+    <aside class="fl mt4 w-20 db">
       <ul>
-        <li><h2>Mailboxes</h2></li>
+        <li>
+          <h2 class="f4 b lh0">Mailbox</h2>
+        </li>
         ${mailboxes.map(function (name) {
           return createLi(name, state[name + ':messages'], mailbox)
         })}
@@ -19,7 +21,7 @@ module.exports = function (params, state, send) {
 
 function createLi (mailbox, messages) {
   return choo.view`
-    <li>
+    <li class="mt4 f6">
       <a href="/${mailbox}">
         ${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}
         <span>${messages}</span>

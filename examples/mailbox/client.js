@@ -16,8 +16,9 @@ app.model('sent', require('./models/sent'))
 
 app.router((route) => [
   route('/', mainView(nav, mailbox)),
-  route('/:mailbox', mainView(nav, mailbox), [
-    route('/:message_id', mainView(nav, mailbox))
+  route('/:mailbox', [
+    route('/', mainView(nav, mailbox)),
+    route('/:message', mainView(nav, mailbox))
   ])
 ])
 
