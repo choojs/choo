@@ -3,11 +3,11 @@ module.exports = {
     messages: [
       {
         id: 4,
-        subject: 'Should I use Ember',
+        subject: 'Should I use Choo',
         from: 'user@example.com',
-        to: 'tomster@emberjs.com',
+        to: 'choochoo@choojs.com',
         date: new Date(),
-        body: 'Ember looks pretty good, should I use it?'
+        body: 'Choo looks pretty good, should I use it?'
       }
     ]
   },

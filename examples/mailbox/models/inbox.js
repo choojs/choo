@@ -3,18 +3,18 @@ module.exports = {
     messages: [
       {
         id: 1,
-        subject: 'Welcome to Ember',
-        from: 'tomster@emberjs.com',
+        subject: 'Welcome to Choo',
+        from: 'choochoo@choojs.com',
         to: 'user@example.com',
         date: new Date(),
-        body: 'Welcome to Ember. We hope you enjoy your stay'
+        body: 'Welcome to Choo. We hope you enjoy your stay'
       }, {
         id: 2,
-        subject: 'Great Ember Resources',
-        from: 'tomster@emberjs.com',
+        subject: 'Great Choo Resources',
+        from: 'choochoo@choojs.com',
         to: 'user@example.com',
         date: new Date(),
-        body: 'Have you seen embercasts.com? How about emberaddons.com?'
+        body: 'Have you seen choocasts.com? How about chooaddons.com?'
       }
     ]
   },
