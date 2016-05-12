@@ -3,9 +3,10 @@ const choo = require('../../../')
 
 module.exports = function (nav) {
   return function (params, state, send) {
+    console.log(state)
     return choo.view`
       <main class="app">
-        <span>URL: ${pathname(state.location) || '/'}</span>
+        <span>URL: ${'/' + pathname(state.location)}</span>
         ${nav(params, state, send)}
         <section>
           <table>

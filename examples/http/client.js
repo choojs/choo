@@ -5,7 +5,7 @@ sf('css-wipe/dest/bundle')
 sf('tachyons')
 
 const mainView = require('./views/main')
-const navElement = require('./elements/nav')
+const nav = require('./elements/nav')
 
 const app = choo()
 
@@ -14,7 +14,10 @@ app.model('spam', require('./models/spam'))
 app.model('sent', require('./models/sent'))
 
 app.router((route) => [
-  route('/', mainView(navElement))
+  route('/', mainView(nav)),
+  route('/:mailbox', mainView(nav), [
+    route('/:message_id', mainView(nav))
+  ])
 ])
 
 const tree = app.start()

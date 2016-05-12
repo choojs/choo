@@ -1,9 +1,8 @@
-// const history = require('sheet-router/history')
+const history = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
-// const href = require('sheet-router/href')
+const href = require('sheet-router/href')
 const sendAction = require('send-action')
-const mutate = require('xtend/mutable')
 const xtend = require('xtend')
 const yo = require('yo-yo')
 
@@ -12,7 +11,9 @@ module.exports = choo
 
 // A framework for creating sturdy web applications
 // null -> fn
-function choo () {
+function choo (opts) {
+  opts = opts || {}
+  const name = opts.name || 'choo'
   var _router = null
   var _models = [ appInit() ]
 
@@ -27,20 +28,33 @@ function choo () {
   function start () {
     const events = bootstrap(_models)
     const send = sendAction({
-      onaction: events.middleware,
+      onaction: events.modifyState,
       onchange: onchange,
       state: events.state
     })
 
+    if (opts.href !== false) {
+      href(function (href) {
+        send('location', { location: href })
+      })
+    }
+
+    if (opts.history !== false) {
+      history(function (href) {
+        send('location', { location: href })
+      })
+    }
+
+    const rootId = name + '-root'
     const tree = _router(send.state().location, send.state(), send)
-    tree.setAttribute('id', 'choo-root')
+    tree.setAttribute('id', rootId)
     return tree
 
     // update on every change
     function onchange (action, state) {
-      const oldTree = document.querySelector('#choo-root')
+      const oldTree = document.querySelector('#' + rootId)
       const newTree = _router(state.location, state, send)
-      newTree.setAttribute('id', 'choo-root')
+      newTree.setAttribute('id', rootId)
       yo.update(oldTree, newTree)
     }
   }
@@ -60,6 +74,8 @@ function choo () {
   }
 }
 
+// initial application state model
+// null -> obj
 function appInit () {
   return {
     state: {
@@ -78,35 +94,18 @@ function appInit () {
 }
 
 function bootstrap (events) {
-  const initialState = { }
+  const initialState = {}
   const reducers = {}
   const effects = {}
 
-  events.forEach(function (event) {
-    const name = event.name
-    if (event.state) mutate(initialState, event.state)
-    if (event.reducers) {
-      Object.keys(event.reducers).forEach(function (key) {
-        if (name) {
-          reducers[name + ':' + key] = event.reducers[key]
-        } else {
-          reducers[key] = event.reducers[key]
-        }
-      })
-    }
-    if (event.effects) {
-      Object.keys(event.effects).forEach(function (key) {
-        if (name) {
-          effects[name + ':' + key] = event.effects[key]
-        } else {
-          effects[key] = event.effects[key]
-        }
-      })
-    }
+  events.forEach(function (model) {
+    if (model.state) apply(model.name, model.state, initialState)
+    if (model.reducers) apply(model.name, model.reducers, reducers)
+    if (model.effects) apply(model.name, model.effects, effects)
   })
 
   return {
-    middleware: modifyState,
+    modifyState: modifyState,
     state: initialState
   }
 
@@ -132,4 +131,13 @@ function bootstrap (events) {
 
     return newState
   }
+}
+
+// compose an object conditionally
+// (str, obj, obj) -> null
+function apply (name, source, target) {
+  Object.keys(source).forEach(function (key) {
+    if (name) target[name + ':' + key] = source[key]
+    else target[key] = source[key]
+  })
 }
