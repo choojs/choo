@@ -1,6 +1,6 @@
 {
   "name": "choo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A framework for creating solid web applications",
   "main": "index.js",
   "scripts": {
