@@ -1,23 +1,13 @@
 const pathname = require('pathname-match')
 const choo = require('../../../')
 
-module.exports = function (nav) {
+module.exports = function (nav, mailbox) {
   return function (params, state, send) {
-    console.log(state)
     return choo.view`
       <main class="app">
-        <span>URL: ${'/' + pathname(state.location)}</span>
+        <span>URL: ${pathname(state.location) || '/'}</span>
         ${nav(params, state, send)}
-        <section>
-          <table>
-            <tr>
-              <th>Data</th>
-              <th>Subject</th>
-              <th>From</th>
-              <th>To</th>
-            </tr>
-          </table>
-        </section>
+        ${mailbox(params, state, send)}
       </main>
     `
   }

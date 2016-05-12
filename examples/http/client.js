@@ -5,6 +5,7 @@ sf('css-wipe/dest/bundle')
 sf('tachyons')
 
 const mainView = require('./views/main')
+const mailbox = require('./elements/mailbox')
 const nav = require('./elements/nav')
 
 const app = choo()
@@ -14,9 +15,9 @@ app.model('spam', require('./models/spam'))
 app.model('sent', require('./models/sent'))
 
 app.router((route) => [
-  route('/', mainView(nav)),
-  route('/:mailbox', mainView(nav), [
-    route('/:message_id', mainView(nav))
+  route('/', mainView(nav, mailbox)),
+  route('/:mailbox', mainView(nav, mailbox), [
+    route('/:message_id', mainView(nav, mailbox))
   ])
 ])
 

@@ -4,7 +4,7 @@
   "private": "true",
   "main": "client.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "NODE_ENV=development node server.js"
   },
   "browserify": {
     "transform": [
@@ -13,8 +13,7 @@
   },
   "author": "Yoshua Wuyts <i@yoshuawuyts.com>",
   "license": "ISC",
-  "devDependencies": {
-    "css-wipe": "^4.2.1",
-    "pathname-match": "^1.1.3"
+  "dependencies": {
+    "css-wipe": "^4.2.1"
   }
 }

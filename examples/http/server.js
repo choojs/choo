@@ -13,6 +13,8 @@ function createRouter () {
 
   const html = bankai.html({ css: false })
   router.on('/', (req, res) => html(req, res).pipe(res))
+  router.on('/:inbox', (req, res) => html(req, res).pipe(res))
+  router.on('/:inbox/:message_id', (req, res) => html(req, res).pipe(res))
 
   const js = bankai.js(browserify, require.resolve('./client.js'))
   router.on('/bundle.js', (req, res) => js(req, res).pipe(res))
