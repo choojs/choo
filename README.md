@@ -52,6 +52,8 @@ const tree = app.start()
 document.body.appendChild(tree)
 ```
 
+## Perform HTTP requests
+
 ## Concepts
 - __state:__ a single object that contains all application state, should only
   ever be modified by `reducers`
@@ -69,7 +71,7 @@ Create a new model. Models modify data and perform IO. Obj takes the following
 arguments:
 - __state:__ object. Key value store of initial values
 - __reducers:__ object. Syncronous functions that modify state. Each function
-  has a signature of `(action, state)` 
+  has a signature of `(action, state)`
 - __effects:__ object. Asyncronous functions that perform IO. Each function has
   a signature of `(action, state, send)` where `send` is a reference to
   `app.send()`

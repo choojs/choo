@@ -26,9 +26,15 @@
     "yo-yo": "^1.2.0"
   },
   "devDependencies": {
+    "bankai": "^2.0.2",
+    "browserify": "^13.0.1",
     "dependency-check": "^2.5.1",
+    "insert-css": "^0.2.0",
     "istanbul": "^0.4.3",
+    "server-router": "^2.1.0",
+    "sheetify": "^5.0.0",
     "standard": "^6.0.8",
+    "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1"
   }
 }
