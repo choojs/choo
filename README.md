@@ -2,6 +2,9 @@
 [![npm version][2]][3] [![build status][4]][5] [![test coverage][6]][7]
 [![downloads][8]][9] [![js-standard-style][10]][11]
 
+:steam_locomotive::train::train::train::train::train: - _The little framework
+that could._
+
 A framework for creating sturdy web applications. Built on years of industry
 experience it distills the essence of functional architectures into a
 productive package.
