@@ -5,7 +5,7 @@
 #   -t uglifyify \
 #   | discify --open
 
-browserify index.js --full-paths \
+browserify http.js --full-paths \
   -g unassertify \
   -g uglifyify \
   | gzip-size \

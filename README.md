@@ -3,7 +3,7 @@
 [![downloads][8]][9] [![js-standard-style][10]][11]
 
 A framework for creating sturdy web applications. Built on years of industry
-experience and distills the essence of functional architectures into a
+experience it distills the essence of functional architectures into a
 productive package.
 
 ## Features
@@ -52,15 +52,43 @@ const tree = app.start()
 document.body.appendChild(tree)
 ```
 
-## Perform HTTP requests
-
 ## Concepts
 - __state:__ a single object that contains all application state, should only
   ever be modified by `reducers`
 - __reducers:__ syncronous functions that modify `state`
-- __effects:__ asyncronous functions that perform IO. Effects should call
-  `send()` when done
+- __effects:__ asyncronous functions that perform IO. Effects can call
+  `send()` when done to handle results
 - __subscriptions:__ streams of data that can either be written to or read from
+
+## Side effects
+### HTTP
+`choo` ships with a built-in [`http` module](https://github.com/Raynos/xhr)
+that weighs only `2.4kb`:
+```js
+const http = require('choo/http')
+
+// GET JSON
+http.get('/my-endpoint', { json: true }, function (err, res, body) {
+  if (err) throw err
+  if (res.statusCode !== 200 || !body) throw new Error('something went wrong')
+})
+
+// POST JSON
+const body = { foo: 'bar' }
+http.post('/my-endpoint', { json: body }, function (err, res, body) {
+  if (err) throw err
+  if (res.statusCode !== 200 || !body) throw new Error('something went wrong')
+})
+
+// DELETE
+http.del('/my-endpoint', function (err, res) {
+  if (err) throw err
+  if (res.statusCode !== 200) throw new Error('something went wrong')
+})
+```
+Note that `http` only runs in the browser to prevent accidental requests when
+rendering in Node. For more details view the [`raynos/xhr`
+documentation](https://github.com/Raynos/xhr).
 
 ## API
 ### app = choo()
@@ -100,6 +128,7 @@ Start the application. Returns a DOM element that can be mounted using
 - __models:__ [`send-action`](https://github.com/sethvincent/send-action),
   [`xtend`](https://github.com/raynos/xtend)
 - __routes:__ [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
+- __http:__ [`xhr`](https://github.com/Raynos/xhr)
 
 ## Optimizing
 To bring down file size, consider running the following `browserify`
@@ -112,9 +141,10 @@ transforms:
   UglifyJS2. Use as a `--global` transform
 
 ## Packages that work well together
-- [xhr](https://github.com/Raynos/xhr) - small XHR wrapper
 - [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
   humans
+- [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
+  browserify
 
 ## Installation
 ```sh
