@@ -1,11 +1,10 @@
-const dateformat = require('dateformat')
 const choo = require('../../../')
 
-module.exports = function (params, state, send) {
-  const mailbox = params.mailbox
-  const message = params.message
+module.exports = function () {
+  return function (params, state, send) {
+    const mailbox = params.mailbox
+    const message = params.message
 
-  if (mailbox) {
     if (message) {
       const email = state[mailbox + ':messages'].filter(function (msg) {
         return String(msg.id) === message
@@ -13,11 +12,15 @@ module.exports = function (params, state, send) {
 
       return choo.view`
         <section class="fl mt4 w-80 db">
-          ${createHeader()}
-          ${state[mailbox + ':messages'].map(function (msg) {
-            return createMessage(msg, mailbox)
-          })}
-          ${email ? createEmail(email) : 'error: no email found'}
+          <div>
+            ${createHeader()}
+            ${state[mailbox + ':messages'].map(function (msg) {
+              return createMessage(msg, mailbox)
+            })}
+          </div>
+          <div>
+            ${email ? createEmail(email) : 'error: no email found'}
+          </div
         </section>
       `
     } else {
@@ -30,12 +33,6 @@ module.exports = function (params, state, send) {
         </section>
       `
     }
-  } else {
-    return choo.view`
-      <section>
-        <p>Select a mailbox</p>
-      </section>
-    `
   }
 }
 

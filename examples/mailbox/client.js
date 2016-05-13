@@ -4,9 +4,9 @@ const sf = require('sheetify')
 sf('css-wipe/dest/bundle')
 sf('tachyons')
 
-const mainView = require('./views/main')
-const mailbox = require('./elements/mailbox')
-const nav = require('./elements/nav')
+const mailboxView = require('./views/mailbox')
+const emailView = require('./views/email')
+const emptyView = require('./views/empty')
 
 const app = choo()
 
@@ -15,10 +15,10 @@ app.model('spam', require('./models/spam'))
 app.model('sent', require('./models/sent'))
 
 app.router((route) => [
-  route('/', mainView(nav, mailbox)),
+  route('/', emptyView()),
   route('/:mailbox', [
-    route('/', mainView(nav, mailbox)),
-    route('/:message', mainView(nav, mailbox))
+    route('/', mailboxView()),
+    route('/:message', emailView())
   ])
 ])
 
