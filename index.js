@@ -120,7 +120,7 @@ function bootstrap (events) {
     }
 
     if (effects[action.type]) {
-      effects[action.type](action, state, send)
+      effects[action.type](action, newState || state, send)
       newState = newState || state
       _effects = true
     }
