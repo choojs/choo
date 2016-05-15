@@ -56,29 +56,26 @@ document.body.appendChild(tree)
 ```
 
 ## Concepts
-- __state:__ a single object that contains all application state, should only
-  ever be modified by `reducers`
+- __state:__ a single object that contains __all__ application state
 - __reducers:__ synchronous functions that modify `state`
-- __effects:__ asynchronous functions that perform IO. Effects can call
-  `send()` when done to handle results
-- __subscriptions:__ streams of data that can either be written to or read from
+- __effects:__ asynchronous functions that emit an `action` when done
+- __subscriptions:__ read-only data sources that emit `action`s for new data
 ```txt
- ┌───────────────────────────────┐
- │                               │      ┌────────┐
- │    ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │      │  User  │
- │      ┌─────────────────┐      │      └────────┘
- ├────┼─│  Subscriptions  │ │    │           │
- │      └─────────────────┘      │           ▼
- │    │ ┌─────────────────┐ │    │      ┌────────┐            ┌────────┐
- └──────│     Effects     │◀─────┼──────┤  DOM   │◀───────────│ Views  │
-      │ └─────────────────┘ │  Actions  └────────┘   DOM tree └────────┘
-        ┌─────────────────┐      │                                 ▲
-      │ │    Reducers     │◀┼────┘                                 │
-        └─────────────────┘                                        │
-      │          │          │           ┌────────┐                 │
-                 └─────────────────────▶│ Router │─────────────────┘
-      └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘  State    └────────┘    State
-               Model
+  ┌───────────────────────────┐      ┌────────┐
+  │  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐  │      │  User  │
+  │    ┌─────────────────┐    │      └────────┘
+  ├──┼─│  Subscriptions  │ │  │           │
+  │    └─────────────────┘    │           ▼
+  │  │ ┌─────────────────┐ │  │      ┌────────┐            ┌────────┐
+  └────│     Effects     │◀───┼──────│  DOM   │◀───────────│ Views  │
+     │ └─────────────────┘ │ Actions └────────┘   DOM tree └────────┘
+       ┌─────────────────┐    │                                 ▲
+     │ │    Reducers     │◀┼──┘                                 │
+       └─────────────────┘                                      │
+     │          │          │         ┌────────┐                 │
+                └───────────────────▶│ Router │─────────────────┘
+     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘  State  └────────┘    State
+              Model
 ```
 
 ## Effects
