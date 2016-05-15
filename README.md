@@ -21,7 +21,7 @@ productive package.
 - __very cute:__ choo choo!
 
 ## Demos
-- [Set title reducers example](https://github.com/yoshuawuyts/choo/tree/master/examples/http)
+- [Input example](https://github.com/yoshuawuyts/choo/tree/master/examples/http)
   (@examples directory)
 - [HTTP effects example](https://github.com/yoshuawuyts/choo/tree/master/examples/http)
   (@examples directory)
