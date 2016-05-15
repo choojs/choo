@@ -12,6 +12,7 @@ productive package.
 ## Features
 - __minimal size:__ weighing under `8kb`, `choo` is a tiny little framework
 - __single state:__ immutable single state helps reason about changes
+- __small api:__ with only 5 methods, there's not a lot to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
 - __transparent side effects:__ using "effects" and "subscriptions" brings
   clarity to IO
