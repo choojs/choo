@@ -102,6 +102,9 @@ function bootstrap (events) {
     if (model.state) apply(model.name, model.state, initialState)
     if (model.reducers) apply(model.name, model.reducers, reducers)
     if (model.effects) apply(model.name, model.effects, effects)
+    if (model.subscriptions) {
+      apply(model.name, model.subscriptions, initialState)
+    }
   })
 
   return {
