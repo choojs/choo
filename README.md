@@ -62,6 +62,20 @@ document.body.appendChild(tree)
 - __effects:__ asyncronous functions that perform IO. Effects can call
   `send()` when done to handle results
 - __subscriptions:__ streams of data that can either be written to or read from
+```txt
+                    ┌────────────────┐
+                 ┌─▶│ Subscriptions  │──┐
+                 │  └────────────────┘  │
+                 │  ┌────────────────┐  │
+                 ├─▶│    Effects     │──┤
+                 │  └────────────────┘  │
+┌──────────┐     │     ┌──────────┐     │     ┌───────┐   ┌──────┐
+│ Reducers │◀────┴─────│  Models  │◀────┴─────│  DOM  │◀──│ User │
+└──────────┘   Action  └──────────┘   Action  └───────┘   └──────┘
+      │          ┌────────┐   ┌───────┐           ▲
+      └─────────▶│ Router │──▶│ Views │───────────┘
+         State   └────────┘   └───────┘  DOM tree
+```
 
 ## Side effects
 ### HTTP
