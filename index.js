@@ -15,7 +15,7 @@ function choo (opts) {
   opts = opts || {}
   const name = opts.name || 'choo'
   var _router = null
-  var _models = [ appInit() ]
+  var _models = [ appInit(opts) ]
 
   start.router = router
   start.model = model
@@ -26,29 +26,57 @@ function choo (opts) {
   // start the application
   // null -> DOMNode
   function start () {
-    const events = bootstrap(_models)
-    const send = sendAction({
-      onaction: events.handleAction,
-      onchange: onchange,
-      state: events.state
+    const initialState = {}
+    const reducers = {}
+    const effects = {}
+
+    _models.forEach(function (model) {
+      if (model.state) apply(model.name, model.state, initialState)
+      if (model.reducers) apply(model.name, model.reducers, reducers)
+      if (model.effects) apply(model.name, model.effects, effects)
     })
 
-    if (opts.href !== false) {
-      href(function (href) {
-        send('location', { location: href })
-      })
-    }
+    const send = sendAction({
+      onaction: handleAction,
+      onchange: onchange,
+      state: initialState
+    })
 
-    if (opts.history !== false) {
-      history(function (href) {
-        send('location', { location: href })
-      })
-    }
+    _models.forEach(function (model) {
+      if (model.subscriptions) {
+        model.subscriptions.forEach(function (sub) {
+          sub(send)
+        })
+      }
+    })
 
     const rootId = name + '-root'
     const tree = _router(send.state().location, send.state(), send)
     tree.setAttribute('id', rootId)
     return tree
+
+    function handleAction (action, state, send) {
+      var _reducers = false
+      var _effects = false
+      var newState = null
+
+      if (reducers[action.type]) {
+        newState = xtend(state, reducers[action.type](action, state))
+        _reducers = true
+      }
+
+      if (effects[action.type]) {
+        effects[action.type](action, newState || state, send)
+        newState = newState || state
+        _effects = true
+      }
+
+      if (!_reducers && !_effects) {
+        throw new Error('Could not find action ' + action.type)
+      }
+
+      return newState
+    }
 
     // update on every change
     function onchange (action, state) {
@@ -76,64 +104,40 @@ function choo (opts) {
 }
 
 // initial application state model
-// null -> obj
-function appInit () {
-  return {
+// obj -> obj
+function appInit (opts) {
+  const model = {
     state: {
       location: document.location.href
     },
     reducers: {
       location: setLocation
-    }
+    },
+    subscriptions: []
   }
+
+  if (opts.href !== false) {
+    model.subscriptions.push(function (send) {
+      href(function (href) {
+        send('location', { location: href })
+      })
+    })
+  }
+
+  if (opts.history !== false) {
+    model.subscriptions.push(function (send) {
+      history(function (href) {
+        send('location', { location: href })
+      })
+    })
+  }
+
+  return model
 
   // handle href links
   function setLocation (action, state) {
     const location = action.location.replace(/#.*/, '')
     return xtend(state, { location: location })
-  }
-}
-
-function bootstrap (events) {
-  const initialState = {}
-  const reducers = {}
-  const effects = {}
-
-  events.forEach(function (model) {
-    if (model.state) apply(model.name, model.state, initialState)
-    if (model.reducers) apply(model.name, model.reducers, reducers)
-    if (model.effects) apply(model.name, model.effects, effects)
-    if (model.subscriptions) {
-      apply(model.name, model.subscriptions, initialState)
-    }
-  })
-
-  return {
-    handleAction: handleAction,
-    state: initialState
-  }
-
-  function handleAction (action, state, send) {
-    var _reducers = false
-    var _effects = false
-    var newState = null
-
-    if (reducers[action.type]) {
-      newState = xtend(state, reducers[action.type](action, state))
-      _reducers = true
-    }
-
-    if (effects[action.type]) {
-      effects[action.type](action, newState || state, send)
-      newState = newState || state
-      _effects = true
-    }
-
-    if (!_reducers && !_effects) {
-      throw new Error('Could not find action ' + action.type)
-    }
-
-    return newState
   }
 }
 
