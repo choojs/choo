@@ -56,25 +56,36 @@ document.body.appendChild(tree)
 ```
 
 ## Concepts
-- __state:__ a single object that contains __all__ application state
-- __reducers:__ synchronous functions that modify `state`
+- __user:__ 🙆
+- __DOM:__ the [Document Object Model][dom] is what is currently displayed in
+  your browser
+- __actions:__ a named event with optional properties attached. Used to call
+  `effects` and `reducers` that have been registered in `models`
+- __model:__ optionally namespaced object containing `subscriptions`, `effects`
+  and `reducers`
+- __subscriptions:__ read-only data sources that emit `actions`
 - __effects:__ asynchronous functions that emit an `action` when done
-- __subscriptions:__ read-only data sources that emit `action`s for new data
+- __reducers:__ synchronous functions that modify `state`
+- __state:__ a single object that contains __all__ the values used in your
+  application
+- __router:__ determines which `view` to render
+- __views:__ take `state` and returns a new `DOM tree` that is rendered in the
+  browser
 ```txt
-  ┌───────────────────────────┐      ┌────────┐
-  │  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐  │      │  User  │
-  │    ┌─────────────────┐    │      └────────┘
-  ├──┼─│  Subscriptions  │ │  │           │
-  │    └─────────────────┘    │           ▼
-  │  │ ┌─────────────────┐ │  │      ┌────────┐            ┌────────┐
-  └────│     Effects     │◀───┼──────│  DOM   │◀───────────│ Views  │
-     │ └─────────────────┘ │ Actions └────────┘   DOM tree └────────┘
-       ┌─────────────────┐    │                                 ▲
-     │ │    Reducers     │◀┼──┘                                 │
-       └─────────────────┘                                      │
-     │          │          │         ┌────────┐                 │
-                └───────────────────▶│ Router │─────────────────┘
-     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘  State  └────────┘    State
+  ┌─────────────────────────────┐     ┌────────┐
+  │  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │     │  User  │
+  │    ┌─────────────────┐      │     └────────┘
+  ├──┼─│  Subscriptions  │ │    │          │
+  │    └─────────────────┘      │          ▼
+  │  │ ┌─────────────────┐ │    │     ┌────────┐
+  └────│     Effects     │◀─────┼─────│  DOM   │◀──────────────┐
+     │ └─────────────────┘ │ Actions  └────────┘    DOM tree   │
+       ┌─────────────────┐      │                              │
+     │ │    Reducers     │◀┼────┘                              │
+       └─────────────────┘                                     │
+     │          │          │          ┌────────┐          ┌────────┐
+                └────────────────────▶│ Router │─────────▶│ Views  │
+     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘  State   └────────┘  State   └────────┘
               Model
 ```
 
@@ -209,3 +220,4 @@ $ npm install choo
 [9]: https://npmjs.org/package/choo
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
+[dom]: https://en.wikipedia.org/wiki/Document_Object_Model
