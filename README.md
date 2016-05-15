@@ -19,6 +19,14 @@ productive package.
 - __idempotent:__ renders seemlessly in both Node and browsers
 - __very cute:__ choo choo!
 
+## Demos
+- [Set title reducers example](https://github.com/yoshuawuyts/choo/tree/master/examples/http)
+  (@examples directory)
+- [HTTP effects example](https://github.com/yoshuawuyts/choo/tree/master/examples/http)
+  (@examples directory)
+- [Mailbox routing example](https://github.com/yoshuawuyts/choo/tree/master/examples/mailbox)
+  (@examples directory)
+
 ## Usage
 ```js
 const choo = require('choo')
