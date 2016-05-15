@@ -28,7 +28,7 @@ function choo (opts) {
   function start () {
     const events = bootstrap(_models)
     const send = sendAction({
-      onaction: events.modifyState,
+      onaction: events.handleAction,
       onchange: onchange,
       state: events.state
     })
@@ -63,6 +63,7 @@ function choo (opts) {
   // [obj|fn] -> null
   function router (cb) {
     _router = sheetRouter(cb)
+    return _router
   }
 
   // create a new model
@@ -108,11 +109,11 @@ function bootstrap (events) {
   })
 
   return {
-    modifyState: modifyState,
+    handleAction: handleAction,
     state: initialState
   }
 
-  function modifyState (action, state, send) {
+  function handleAction (action, state, send) {
     var _reducers = false
     var _effects = false
     var newState = null
