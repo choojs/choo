@@ -93,7 +93,7 @@ document.body.appendChild(tree)
              State                   DOM│tree
                ▼                        │
           ┌────────┐               ┌────────┐
-          │ Router │───────State ─▶│ Views  │
+          │ Router │─────State ───▶│ Views  │
           └────────┘               └────────┘
 ```
 
@@ -208,6 +208,13 @@ transforms:
   humans
 - [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
   browserify
+
+## FAQ
+### How does choo compare to X?
+- __react:__ [tbi]
+- __mithril:__ [tbi]
+- __preact:__ [tbi]
+- __angular2:__ [tbi]
 
 ## Installation
 ```sh
