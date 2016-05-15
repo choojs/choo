@@ -95,6 +95,7 @@ Side effects are done through `effects` declared in `app.model()`. Unlike
 callback passed hich is used to emit `actions` to handle results.
 
 A typical `effect` flow looks like:
+
 1. An action is received
 2. An effect is triggered
 3. The effect performs an async call
