@@ -63,25 +63,36 @@ document.body.appendChild(tree)
   `send()` when done to handle results
 - __subscriptions:__ streams of data that can either be written to or read from
 ```txt
-    ┌─────────────────────────────────┐
-    │                                 │
-    │    ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐      │      ┌────────┐
-    │      ┌─────────────────┐        │      │  User  │
-    ├────┼─│  Subscriptions  │ │      │      └────────┘
-    │      └─────────────────┘        │           │
-    │    │                     │      │           ▼
-    │      ┌─────────────────┐        │      ┌────────┐            ┌────────┐
-    └────┼─│     Effects     │ │◀─────┴──────│  DOM   │◀───────────│ Views  │
-           └─────────────────┘      Action   └────────┘   DOM tree └────────┘
-         │                     │                                        ▲
-           ┌─────────────────┐               ┌────────┐                 │
-         │ │    Reducers     │─┼────────────▶│ Router │─────────────────┘
-           └─────────────────┘      State    └────────┘     State
-         └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+    ┌───────────────────────────────┐
+    │                               │      ┌────────┐
+    │    ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │      │  User  │
+    │      ┌─────────────────┐      │      └────────┘
+    ├────┼─│  Subscriptions  │ │    │           │
+    │      └─────────────────┘      │           ▼
+    │    │ ┌─────────────────┐ │    │      ┌────────┐            ┌────────┐
+    └──────│     Effects     │◀─────┼──────┤  DOM   │◀───────────│ Views  │
+         │ └─────────────────┘ │  Actions  └────────┘   DOM tree └────────┘
+           ┌─────────────────┐      │                                 ▲
+         │ │    Reducers     │◀┼────┘                                 │
+           └─────────────────┘                                        │
+         │          │          │           ┌────────┐                 │
+                    └─────────────────────▶│ Router │─────────────────┘
+         └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘  State    └────────┘    State
                   Model
 ```
 
-## Side effects
+## Effects
+Side effects are done through `effects` declared in `app.model()`. Unlike
+`reducers` they cannot modify the state by returning objects, but get a
+callback passed hich is used to emit `actions` to handle results.
+
+A typical `effect` flow looks like:
+1. An action is received
+2. An effect is triggered
+3. The effect performs an async call
+4. When the async call is done, either a success or error action is emitted
+5. A reducer catches the action and updates the state
+
 ### HTTP
 `choo` ships with a built-in [`http` module](https://github.com/Raynos/xhr)
 that weighs only `2.4kb`:
@@ -110,6 +121,20 @@ http.del('/my-endpoint', function (err, res) {
 Note that `http` only runs in the browser to prevent accidental requests when
 rendering in Node. For more details view the [`raynos/xhr`
 documentation](https://github.com/Raynos/xhr).
+
+## Subscriptions (wip)
+Subscriptions are a way of receiving data from a source. For example when
+listening for events from a server using `SSE` or `Websockets` for a
+chat app, or when catching keyboard input for a videogame.
+
+### Server Sent Events (SSE)
+[tbi] - help and suggestions welcome!
+
+### Keyboard
+[tbi] - help and suggestions welcome!
+
+### Websockets
+[tbi] - help and suggestions welcome!
 
 ## API
 ### app = choo()
