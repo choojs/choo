@@ -58,8 +58,8 @@ document.body.appendChild(tree)
 ## Concepts
 - __state:__ a single object that contains all application state, should only
   ever be modified by `reducers`
-- __reducers:__ syncronous functions that modify `state`
-- __effects:__ asyncronous functions that perform IO. Effects can call
+- __reducers:__ synchronous functions that modify `state`
+- __effects:__ asynchronous functions that perform IO. Effects can call
   `send()` when done to handle results
 - __subscriptions:__ streams of data that can either be written to or read from
 ```txt
