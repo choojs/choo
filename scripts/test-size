@@ -8,5 +8,6 @@
 browserify index.js --full-paths \
   -g unassertify \
   -g uglifyify \
+  | uglifyjs \
   | gzip-size \
   | pretty-bytes
