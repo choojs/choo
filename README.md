@@ -80,6 +80,7 @@ document.body.appendChild(tree)
 - __router:__ determines which `view` to render
 - __views:__ take `state` and returns a new `DOM tree` that is rendered in the
   browser
+
 ```txt
  ┌───────────────────────────┐     ┌────────┐
  │    ┌─────────────────┐    │     │  User  │
