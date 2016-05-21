@@ -14,14 +14,30 @@ module.exports = choo
 function choo (opts) {
   opts = opts || {}
   const name = opts.name || 'choo'
+  const _models = []
   var _router = null
-  var _models = [ appInit(opts) ]
 
+  start.toString = toString
   start.router = router
   start.model = model
   start.start = start
 
   return start
+
+  // render the application to a string
+  function toString (route, state) {
+    const initialState = {}
+
+    _models.forEach(function (model) {
+      if (model.state) apply(model.name, model.state, initialState)
+    })
+
+    const tree = _router(route, xtend(initialState, state), function () {
+      throw new Error('send() cannot be called on the server')
+    })
+
+    return tree.toString()
+  }
 
   // start the application
   // null -> DOMNode
@@ -30,6 +46,7 @@ function choo (opts) {
     const reducers = {}
     const effects = {}
 
+    _models.push(appInit(opts))
     _models.forEach(function (model) {
       if (model.state) apply(model.name, model.state, initialState)
       if (model.reducers) apply(model.name, model.reducers, reducers)
