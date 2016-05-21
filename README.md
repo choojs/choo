@@ -19,6 +19,7 @@ productive package.
   - [server sent events](#server-sent-events-sse)
   - [keyboard](#keyboard)
   - [websockets](#websockets)
+- [Rendering in Node](#rendering-in-node)
 - [API](#api)
 - [FAQ](#faq)
 - [Installation](#installation)
@@ -27,7 +28,7 @@ productive package.
 ## Features
 - __minimal size:__ weighing under `8kb`, `choo` is a tiny little framework
 - __single state:__ immutable single state helps reason about changes
-- __small api:__ with only 5 methods, there's not a lot to learn
+- __small api:__ with only 6 methods, there's not a lot to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
 - __transparent side effects:__ using "effects" and "subscriptions" brings
   clarity to IO
@@ -223,6 +224,52 @@ app.model({
 })
 ```
 
+## Rendering in Node
+Sometimes it's necessary to render code inside of Node; for serving first
+requests, testing or other purposes. Applications that are capable of being
+rendered in both Node and the browser are called _[isomorphic
+applications][isomorphic]_.
+
+Rendering in Node is slightly different than in the browser. First off, to
+maintain performance all calls to `subscriptions`, `effects`, and `reducers`
+are disabled. That means you need to know what the state of your application is
+going to be _before_ you render it - no cheating!
+
+Secondly, the `send()` method inside `router` and `view` has been disabled. If
+you call it your program will crash (give it a try, just to see!)
+
+Disabling all these things means that your program will render [`O(n)`][big-o]
+(computer science speak for "constant time"), which is super neat. Off to
+[10.000 QPS][qps] we go!
+
+To render in Node call the `.toString()` method instead of `.start()`. The
+first argument is the path that should be rendered, the second is the state:
+```js
+const http = require('http')
+const client = require('./client')  // path to client entry point
+http.createServer(function (req, res) {
+  const html = client.toString('/', { message: 'hello server!' })
+  res.setHeader('Content-Type', 'text/html; charset=utf-8')
+  res.end(html)
+})
+```
+
+In order to make our `choo` app call `app.start()` in the browser and be
+`require()`-able in Node, we check if [`module.parent`][module-parent] exists:
+```js
+const choo = require('choo')
+const app = choo()
+
+app.router((route) => [
+  route('/', (params, state, send) => choo.view`
+    <h1>${state.message}</h1>
+  `)
+])
+
+if (module.parent) module.exports = app
+else document.body.appendChild(app.start())
+```
+
 ## API
 ### app = choo()
 Create a new `choo` app
@@ -252,6 +299,12 @@ Creates a new router. See
 documentation. Registered views have a signature of `(params, state, send)`,
 where `params` is URI partials.
 
+### html = app.toString(route, state)
+Render the application to a string. Useful for rendering on the server. First
+argument is a path that's passed to the router. Second argument is the state
+object. When calling `.toString()` instead of `.start()`, all calls to `send()`
+are disabled, and `subscriptions`, `effects` and `reducers` aren't loaded.
+
 ### tree = app.start()
 Start the application. Returns a DOM element that can be mounted using
 `document.body.appendChild()`.
@@ -263,21 +316,28 @@ Start the application. Returns a DOM element that can be mounted using
 - __preact:__ [tbi]
 - __angular2:__ [tbi]
 
-## Which packages was choo built on?
+### Which packages was choo built on?
 - __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo)
 - __models:__ [`send-action`](https://github.com/sethvincent/send-action),
   [`xtend`](https://github.com/raynos/xtend)
 - __routes:__ [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
 - __http:__ [`xhr`](https://github.com/Raynos/xhr)
 
-## What packages do you recommend to pair with choo?
+### Does choo use a virtual-dom?
+`choo` uses [morphdom][morphdom], which diffs real DOM nodes instead of virtual
+nodes. It turns out that [browsers are actually ridiculously good at dealing
+with DOM nodes][morphdom-bench], and it has the added benefit of working with
+_any_ library that produces valid DOM nodes. So to put a long answer short:
+we're using something even better.
+
+### What packages do you recommend to pair with choo?
 - [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
   humans
 - [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
   browserify
 - [pull-stream](https://github.com/pull-stream/pull-stream) - minimal streams
 
-## How can I optimize choo?
+### How can I optimize choo?
 To bring down file size, consider running the following `browserify`
 transforms:
 - [unassertify](https://github.com/twada/unassertify) - remove `assert()`
@@ -307,7 +367,14 @@ $ npm install choo
 [9]: https://npmjs.org/package/choo
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
+
 [dom]: https://en.wikipedia.org/wiki/Document_Object_Model
 [keyboard-support]: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Browser_compatibility
 [sse]: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
 [ws]: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
+[isomorphic]: https://en.wikipedia.org/wiki/Isomorphism
+[big-o]: https://rob-bell.net/2009/06/a-beginners-guide-to-big-o-notation/
+[qps]: https://en.wikipedia.org/wiki/Queries_per_second
+[morphdom]: https://github.com/patrick-steele-idem/morphdom
+[morphdom-bench]: https://github.com/patrick-steele-idem/morphdom#benchmarks
+[module-parent]: https://nodejs.org/dist/latest-v6.x/docs/api/modules.html#modules_module_parent
