@@ -9,6 +9,21 @@ A framework for creating sturdy web applications. Built on years of industry
 experience it distills the essence of functional architectures into a
 productive package.
 
+- [features](#features)
+- [demos](#demos)
+- [usage](#usage)
+- [concepts](#concepts)
+- [effects](#effects)
+  - [HTTP](#http)
+- [subscriptions](#subscriptions)
+  - [server sent events](#server-sent-events-sse)
+  - [keyboard](#keyboard)
+  - [websockets](#websockets)
+- [API](#api)
+- [FAQ](#faq)
+- [installation](#installation)
+- [license](#license)
+
 ## Features
 - __minimal size:__ weighing under `8kb`, `choo` is a tiny little framework
 - __single state:__ immutable single state helps reason about changes
@@ -101,7 +116,7 @@ document.body.appendChild(tree)
 ## Effects
 Side effects are done through `effects` declared in `app.model()`. Unlike
 `reducers` they cannot modify the state by returning objects, but get a
-callback passed hich is used to emit `actions` to handle results.
+callback passed which is used to emit `actions` to handle results.
 
 A typical `effect` flow looks like:
 
@@ -140,19 +155,71 @@ Note that `http` only runs in the browser to prevent accidental requests when
 rendering in Node. For more details view the [`raynos/xhr`
 documentation](https://github.com/Raynos/xhr).
 
-## Subscriptions (wip)
+## Subscriptions
 Subscriptions are a way of receiving data from a source. For example when
 listening for events from a server using `SSE` or `Websockets` for a
 chat app, or when catching keyboard input for a videogame.
 
 ### Server Sent Events (SSE)
-[tbi] - help and suggestions welcome!
+[Server Sent Events (SSE)][sse] allow servers to push data to the browser.
+They're the unidirectional cousin of `websockets` and compliment `HTTP`
+brilliantly. To enable `SSE`, create a new `EventSource`, point it at a local
+uri (generally `/sse`) and setup a `subscription`:
+```js
+const stream = new document.EventSource('/sse')
+
+app.model({
+  subscriptions: [
+    function (send) {
+      stream.onerror = (e) => send('error', { payload: JSON.stringify(e) })
+      stream.onmessage = (e) => send('print', { payload: e.data })
+    }
+  ],
+  effects: {
+    'sse:close': () => stream.close()
+    error: (state, event_ => console.error(`error: ${event.payload}`)),
+    print: (state, event) => console.log(`pressed key num: ${event.payload}`)
+  }
+})
+```
 
 ### Keyboard
-[tbi] - help and suggestions welcome!
+Most browsers have [basic support for keyboard events][keyboard-support]. To
+capture keyboard events, setup a `subscription`:
+```js
+app.model({
+  subscriptions: [
+    function (send) {
+      keyboard.onkeypress = (e) => send('print', { payload: e.keyCode })
+    }
+  ],
+  effects: {
+    print: (state, event) => console.log(`pressed key num: ${event.payload}`)
+  }
+})
+```
 
-### Websockets
-[tbi] - help and suggestions welcome!
+### WebSockets
+[WebSockets][ws] allow for bidirectional communication between servers and
+browsers:
+```js
+const socket = new document.WebSocket('ws://localhost:8081')
+
+app.model({
+  subscriptions: [
+    function (send) {
+      socket.onerror = (e) => send('error', { payload: JSON.stringify(e) })
+      socket.onmessage = (e) => send('print', { payload: e.data })
+    }
+  ],
+  effects: {
+    'ws:close': () => socket.close(),
+    'ws:send': (state, event) => socket.send(JSON.stringify(event.payload)),
+    error: (state, event_ => console.error(`error: ${event.payload}`)),
+    print: (state, event) => console.log(`pressed key num: ${event.payload}`)
+  }
+})
+```
 
 ## API
 ### app = choo()
@@ -187,14 +254,28 @@ where `params` is URI partials.
 Start the application. Returns a DOM element that can be mounted using
 `document.body.appendChild()`.
 
-## Packages used
+## FAQ
+### How does choo compare to X?
+- __react:__ [tbi]
+- __mithril:__ [tbi]
+- __preact:__ [tbi]
+- __angular2:__ [tbi]
+
+## Which packages was choo built on?
 - __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo)
 - __models:__ [`send-action`](https://github.com/sethvincent/send-action),
   [`xtend`](https://github.com/raynos/xtend)
 - __routes:__ [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
 - __http:__ [`xhr`](https://github.com/Raynos/xhr)
 
-## Optimizing
+## What packages do you recommend to pair with choo?
+- [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
+  humans
+- [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
+  browserify
+- [pull-stream](https://github.com/pull-stream/pull-stream) - minimal streams
+
+## How can I optimize choo?
 To bring down file size, consider running the following `browserify`
 transforms:
 - [unassertify](https://github.com/twada/unassertify) - remove `assert()`
@@ -203,19 +284,6 @@ transforms:
   statements. Use as a `--global` transform
 - [uglifyify](https://github.com/hughsk/uglifyify) - minify your code using
   UglifyJS2. Use as a `--global` transform
-
-## Packages that work well together
-- [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
-  humans
-- [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
-  browserify
-
-## FAQ
-### How does choo compare to X?
-- __react:__ [tbi]
-- __mithril:__ [tbi]
-- __preact:__ [tbi]
-- __angular2:__ [tbi]
 
 ## Installation
 ```sh
@@ -238,3 +306,6 @@ $ npm install choo
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
 [dom]: https://en.wikipedia.org/wiki/Document_Object_Model
+[keyboard-support]: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Browser_compatibility
+[sse]: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
+[ws]: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
