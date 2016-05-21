@@ -236,7 +236,7 @@ are disabled. That means you need to know what the state of your application is
 going to be _before_ you render it - no cheating!
 
 Secondly, the `send()` method inside `router` and `view` has been disabled. If
-you call it your program will crash (give it a try, just to see!)
+you call it your program will crash.
 
 Disabling all these things means that your program will render [`O(n)`][big-o]
 (computer science speak for "constant time"), which is super neat. Off to
