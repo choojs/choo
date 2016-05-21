@@ -12,8 +12,7 @@ app.model('sent', require('./models/sent'))
 
 app.router((route) => [
   route('/', require('./views/empty')),
-  route('/:mailbox', [
-    route('/', require('./views/mailbox')),
+  route('/:mailbox', require('./views/mailbox'), [
     route('/:message', require('./views/email'))
   ])
 ])

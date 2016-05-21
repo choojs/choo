@@ -3,6 +3,7 @@ const choo = require('../../../')
 
 module.exports = function (params, state, send) {
   const mailbox = params.mailbox
+  const messages = state[mailbox + ':messages']
   return choo.view`
     <div>
       <div class="db cf w-100">
@@ -11,7 +12,7 @@ module.exports = function (params, state, send) {
         <div class="fl mb3 w-25 mt0 b">From</th>
         <div class="fl mb3 w-25 mt0 b">To</th>
       </div>
-      ${state[mailbox + ':messages'].map(function (msg) {
+      ${messages.map(function (msg) {
         return createMessage(msg, mailbox)
       })}
     </div>
