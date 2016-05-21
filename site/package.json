@@ -1,0 +1,20 @@
+{
+  "name": "http",
+  "version": "1.0.0",
+  "private": "true",
+  "main": "client.js",
+  "scripts": {
+    "start": "NODE_ENV=development node server.js"
+  },
+  "browserify": {
+    "transform": [
+      "sheetify/transform"
+    ]
+  },
+  "author": "Yoshua Wuyts <i@yoshuawuyts.com>",
+  "license": "ISC",
+  "dependencies": {
+    "css-wipe": "^4.2.1",
+    "dateformat": "^1.0.12"
+  }
+}
