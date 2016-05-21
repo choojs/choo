@@ -317,7 +317,7 @@ give you my opinions directly instead. Ready?  Here goes:
   and enforce a _lot_ of abstractions. It also encourages the use of `JSX` and
   `babel` which break _JavaScript, The Language™_. And all that without even
   making clear how code should flow, which is bad in a team setting. I don't
-  like complicated things and in my view React is one of them. `react` is not
+  like complicated things and in my view `react` is one of them. `react` is not
   for me.
 - __mithril:__ never used it, never will. I didn't like the API, but if you
   like it maybe it's worth a shot - the API seems small enough. I wouldn't know
