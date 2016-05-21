@@ -347,6 +347,9 @@ transforms:
 - [uglifyify](https://github.com/hughsk/uglifyify) - minify your code using
   UglifyJS2. Use as a `--global` transform
 
+### Is it production ready?
+Sure.
+
 ## Installation
 ```sh
 $ npm install choo
