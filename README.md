@@ -9,20 +9,20 @@ A framework for creating sturdy web applications. Built on years of industry
 experience it distills the essence of functional architectures into a
 productive package.
 
-- [features](#features)
-- [demos](#demos)
-- [usage](#usage)
-- [concepts](#concepts)
-- [effects](#effects)
+- [Features](#features)
+- [Demos](#demos)
+- [Usage](#usage)
+- [Concepts](#concepts)
+- [Effects](#effects)
   - [HTTP](#http)
-- [subscriptions](#subscriptions)
+- [Subscriptions](#subscriptions)
   - [server sent events](#server-sent-events-sse)
   - [keyboard](#keyboard)
   - [websockets](#websockets)
 - [API](#api)
 - [FAQ](#faq)
-- [installation](#installation)
-- [license](#license)
+- [Installation](#installation)
+- [License](#license)
 
 ## Features
 - __minimal size:__ weighing under `8kb`, `choo` is a tiny little framework
@@ -116,7 +116,9 @@ document.body.appendChild(tree)
 ## Effects
 Side effects are done through `effects` declared in `app.model()`. Unlike
 `reducers` they cannot modify the state by returning objects, but get a
-callback passed which is used to emit `actions` to handle results.
+callback passed which is used to emit `actions` to handle results. Use effects
+every time you don't need to modify the state object directly, but wish to
+respond to an action.
 
 A typical `effect` flow looks like:
 
