@@ -26,7 +26,7 @@ productive package.
 - [License](#license)
 
 ## Features
-- __minimal size:__ weighing under `8kb`, `choo` is a tiny little framework
+- __minimal size:__ weighing `7kb`, `choo` is a tiny little framework
 - __single state:__ immutable single state helps reason about changes
 - __small api:__ with only 6 methods, there's not a lot to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
@@ -227,8 +227,7 @@ app.model({
 ## Rendering in Node
 Sometimes it's necessary to render code inside of Node; for serving first
 requests, testing or other purposes. Applications that are capable of being
-rendered in both Node and the browser are called _[isomorphic
-applications][isomorphic]_.
+rendered in both Node and the browser are called _[isomorphic][isomorphic]_.
 
 Rendering in Node is slightly different than in the browser. First off, to
 maintain performance all calls to `subscriptions`, `effects`, and `reducers`
@@ -236,11 +235,9 @@ are disabled. That means you need to know what the state of your application is
 going to be _before_ you render it - no cheating!
 
 Secondly, the `send()` method inside `router` and `view` has been disabled. If
-you call it your program will crash.
-
-Disabling all these things means that your program will render [`O(n)`][big-o]
-(computer science speak for "constant time"), which is super neat. Off to
-[10.000 QPS][qps] we go!
+you call it your program will crash. Disabling all these things means that your
+program will render [`O(n)`][big-o], which is super neat. Off to [10.000
+QPS][qps] we go!
 
 To render in Node call the `.toString()` method instead of `.start()`. The
 first argument is the path that should be rendered, the second is the state:
@@ -311,10 +308,39 @@ Start the application. Returns a DOM element that can be mounted using
 
 ## FAQ
 ### How does choo compare to X?
-- __react:__ [tbi]
-- __mithril:__ [tbi]
-- __preact:__ [tbi]
-- __angular2:__ [tbi]
+Ah, so this is where I get to rant. `choo` (_chugga-chugga-chugga-choo-choo!_)
+was built because other options didn't quite cut it for me, so instead of
+presenting some faux-objective chart with skewed benchmarks and checklists I'll
+give you my opinions directly instead. Ready?  Here goes:
+- __react:__ `react` is kind of big (`155kb` was it?), has a lot of new, odd
+  words and does weird things with versioning. They also like classes a lot,
+  and enforce a _lot_ of abstractions. It also encourages the use of `JSX` and
+  `babel` which break _JavaScript, The Language™_. And all that without even
+  making clear how code should flow, which is bad in a team setting. I don't
+  like complicated things and in my view React is one of them. `react` is not
+  for me.
+- __mithril:__ never used it, never will. I didn't like the API, but if you
+  like it maybe it's worth a shot - the API seems small enough. I wouldn't know
+  how pleasant it is past face value.
+- __preact:__ a pretty cool idea; seems to fix most of what is wrong with
+  `react` - except what is broken by design (the API). It also doesn't fix the
+  large dependencies `react` seems to use (e.g. `react-router` and friends). If
+  `react` is your jam, and you will not budge, sitting at `3kb` this is
+  probably a welcome gift.
+- __angular:__ definitely not for me. I like small things with a clear mental
+  model; `angular` doesn't tick any box in my book of nice things.
+- __angular2:__ I'm not sure what's exactly changed, but I know the addition of
+  `TypeScript` and `RxJS` definitely hasn't made things simpler. Last I checked
+  it was `~200kb` in size before including some monstrous extra deps. I guess
+  `angular` and I will just never get along.
+- __mercury:__ ah, `mercury` is an interesting one. It seemed like a brilliant
+  idea until I started using it - the abstractions felt heavy, and it took team
+  members a long time to pick up. In the end I think using `mercury` helped
+  greatly in getting `choo` where it is now.
+- __deku:__ `deku` is fun. I even contributed a bit in the early days. It could
+  probably best be described as "a functional version of `react`". The
+  dependence on `JSX` isn't great, but give it a shot if you think it looks
+  neat.
 
 ### Which packages was choo built on?
 - __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo)
