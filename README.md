@@ -13,6 +13,7 @@ productive package.
 - [Demos](#demos)
 - [Usage](#usage)
 - [Concepts](#concepts)
+  - [Models](#models)
   - [Effects](#effects)
     - [HTTP](#http)
   - [Subscriptions](#subscriptions)
@@ -23,6 +24,7 @@ productive package.
 - [API](#api)
 - [FAQ](#faq)
 - [Installation](#installation)
+- [See Also](#see-also)
 - [License](#license)
 
 ## Features
@@ -51,15 +53,16 @@ productive package.
 const choo = require('choo')
 
 const app = choo()
-app.model('title', {
+app.model({
+  namespace: 'input',
   state: {
-    title: 'my-demo-app'
+    title: 'my demo app'
   },
   reducers: {
-    'update': (action, state) => ({ title: action.payload })
+    update: (action, state) => ({ title: action.payload })
   },
   effects: {
-    'update': (action, state, send) => (document.title = action.payload)
+    update: (action, state, send) => (document.title = action.payload)
   }
 })
 
@@ -69,8 +72,8 @@ const mainView = (params, state, send) => choo.view`
     <label>Set the title</label>
     <input
       type="text"
-      placeholder=${state.title}
-      oninput=${(e) => send('title:update', { payload: e.target.value })}>
+      placeholder=${state.input.title}
+      oninput=${(e) => send('input:update', { payload: e.target.value })}>
   </main>
 `
 
@@ -83,13 +86,14 @@ document.body.appendChild(tree)
 ```
 
 ## Concepts
+`choo` is a complete framework. It has an answer to pretty most points
 - __user:__ 🙆
 - __DOM:__ the [Document Object Model][dom] is what is currently displayed in
   your browser
 - __actions:__ a named event with optional properties attached. Used to call
   `effects` and `reducers` that have been registered in `models`
-- __model:__ optionally namespaced object containing `subscriptions`, `effects`
-  and `reducers`
+- __model:__ optionally namespaced object containing `subscriptions`,
+  `effects`, `reducers` and initial `state`
 - __subscriptions:__ read-only data sources that emit `actions`
 - __effects:__ asynchronous functions that emit an `action` when done
 - __reducers:__ synchronous functions that modify `state`
@@ -116,6 +120,40 @@ document.body.appendChild(tree)
           └────────┘               └────────┘
 ```
 
+## Models
+`models` are objects that contain initial `state`, `subscriptions`, `effects`
+and `reducers`. They're generally grouped around a theme (or domain, if you
+like). To provide some sturdiness to your `models`, they can either be
+namespaced or not. Namespacing means that only actions and state inside the
+model can be called.
+
+So say we have a `todos` namespace, an `add` reducer and a `todos` model.
+Outside the model they're called by `send('todos:add')` and
+`state.todos.todos`. Inside the namespaced model they're called by
+`send('add')` and `state.todos`. An example namespaced model:
+```js
+const app = choo()
+app.model({
+  namespace: 'todos',
+  model: { todos: [] },
+  reducers: {
+    add: (state, action) => ({ todos: state.todos.concat(action.payload) })
+  }
+})
+```
+
+In most cases using namespaces is beneficial, as having clear boundries makes
+it easier to follow logic. But sometimes you need to call `actions` that
+operate over multiple domains (such as a "logout" `action`), or have a
+`subscription` that might trigger multiple `reducers` (such as a `websocket`
+that calls a different `action` based on the incoming data).
+
+In these cases you probably want to have a `model` that doesn't use namespaces,
+and has access to the full application state. Try and keep the logic in these
+`models` to a minimum, and declare as few `reducers` as possible. That way the
+bulk of your logic will safely shielded, with only a few points touching every
+part of your application.
+
 ## Effects
 Side effects are done through `effects` declared in `app.model()`. Unlike
 `reducers` they cannot modify the state by returning objects, but get a
@@ -136,25 +174,49 @@ A typical `effect` flow looks like:
 that weighs only `2.4kb`:
 ```js
 const http = require('choo/http')
+const choo = require('choo')
+const app = choo()
 
-// GET JSON
-http.get('/my-endpoint', { json: true }, function (err, res, body) {
-  if (err) throw err
-  if (res.statusCode !== 200 || !body) throw new Error('something went wrong')
+app.model({
+  effects: {
+    'app:error': (state, event_ => console.error(`error: ${event.payload}`)),
+    'app:print': (state, event) => console.log(`http: ${event.payload}`),
+    'http:get_json': getJson,
+    'http:post_json': postJson,
+    'http:delete': httpDelete
+  }
 })
 
-// POST JSON
-const body = { foo: 'bar' }
-http.post('/my-endpoint', { json: body }, function (err, res, body) {
-  if (err) throw err
-  if (res.statusCode !== 200 || !body) throw new Error('something went wrong')
-})
+function getJson (state, action, send) {
+  http.get('/my-endpoint', { json: true }, function (err, res, body) {
+    if (err) return send('app:error', { payload: err.message })
+    if (res.statusCode !== 200 || !body) {
+      return send('app:error', { payload:'something went wrong' })
+    }
+    send('app:print', { payload: body })
+  })
+}
 
-// DELETE
-http.del('/my-endpoint', function (err, res) {
-  if (err) throw err
-  if (res.statusCode !== 200) throw new Error('something went wrong')
-})
+function postJson (state, action, send) {
+  const body = { foo: 'bar' }
+  http.post('/my-endpoint', { json: body }, function (err, res, body) {
+    if (err) return send('app:error', { payload: err.message })
+    if (res.statusCode !== 200 || !body) {
+      return send('app:error', { payload:'something went wrong' })
+    }
+    send('app:print', { payload: body })
+  })
+}
+
+function httpDelete (state, action, send) {
+  const body = { foo: 'bar' }
+  http.post('/my-endpoint', { json: body }, function (err, res, body) {
+    if (err) return send('app:error', { payload: err.message })
+    if (res.statusCode !== 200) {
+      return send('app:error', { payload:'something went wrong' })
+    }
+  })
+}
 ```
 Note that `http` only runs in the browser to prevent accidental requests when
 rendering in Node. For more details view the [`raynos/xhr`
@@ -164,6 +226,20 @@ documentation](https://github.com/Raynos/xhr).
 Subscriptions are a way of receiving data from a source. For example when
 listening for events from a server using `SSE` or `Websockets` for a
 chat app, or when catching keyboard input for a videogame.
+
+An example subscription that logs `"dog?"` every second:
+```js
+const app = choo()
+choo.model({
+  subscriptions: [
+    (send) => setTimeout(() => send('app:print', { payload: 'dog?' }), 1000)
+  ],
+  effects: {
+    'app:print': (state, action) => console.log(action.payload)
+  }
+})
+```
+
 
 ### Server Sent Events (SSE)
 [Server Sent Events (SSE)][sse] allow servers to push data to the browser.
@@ -176,17 +252,20 @@ const stream = new document.EventSource('/sse')
 app.model({
   subscriptions: [
     function (send) {
-      stream.onerror = (e) => send('error', { payload: JSON.stringify(e) })
-      stream.onmessage = (e) => send('print', { payload: e.data })
+      stream.onerror = (e) => send('app:error', { payload: JSON.stringify(e) })
+      stream.onmessage = (e) => send('app:print', { payload: e.data })
     }
   ],
   effects: {
     'sse:close': () => stream.close()
-    error: (state, event_ => console.error(`error: ${event.payload}`)),
-    print: (state, event) => console.log(`pressed key num: ${event.payload}`)
+    'app:error': (state, event_ => console.error(`error: ${event.payload}`)),
+    'app:print': (state, event) => console.log(`sse: ${event.payload}`)
   }
 })
 ```
+This code does not handle reconnects, server timeouts, exponential backoff and
+queueing data. You might want to use a package from `npm` or [write your
+own][sse-reconnect] if you're building something for production.
 
 ### Keyboard
 Most browsers have [basic support for keyboard events][keyboard-support]. To
@@ -195,11 +274,11 @@ capture keyboard events, setup a `subscription`:
 app.model({
   subscriptions: [
     function (send) {
-      keyboard.onkeypress = (e) => send('print', { payload: e.keyCode })
+      keyboard.onkeypress = (e) => send('app:print', { payload: e.keyCode })
     }
   ],
   effects: {
-    print: (state, event) => console.log(`pressed key num: ${event.payload}`)
+    'app:print': (state, event) => console.log(`pressed key: ${event.payload}`)
   }
 })
 ```
@@ -213,18 +292,21 @@ const socket = new document.WebSocket('ws://localhost:8081')
 app.model({
   subscriptions: [
     function (send) {
-      socket.onerror = (e) => send('error', { payload: JSON.stringify(e) })
-      socket.onmessage = (e) => send('print', { payload: e.data })
+      socket.onerror = (e) => send('app:error', { payload: JSON.stringify(e) })
+      socket.onmessage = (e) => send('app:print', { payload: e.data })
     }
   ],
   effects: {
     'ws:close': () => socket.close(),
     'ws:send': (state, event) => socket.send(JSON.stringify(event.payload)),
-    error: (state, event_ => console.error(`error: ${event.payload}`)),
-    print: (state, event) => console.log(`pressed key num: ${event.payload}`)
+    'app:error': (state, event_ => console.error(`error: ${event.payload}`)),
+    'app:print': (state, event) => console.log(`ws: ${event.payload}`)
   }
 })
 ```
+This code does not handle reconnects, server timeouts, exponential backoff and
+queueing data. You might want to use a package from `npm` or [write your
+own][ws-reconnect] if you're building something for production.
 
 ## Rendering in Node
 Sometimes it's necessary to render code inside of Node; for serving first
@@ -273,19 +355,18 @@ else document.body.appendChild(app.start())
 ### app = choo()
 Create a new `choo` app
 
-### app.model(name?, obj)
-Create a new model. Models modify data and perform IO. Obj takes the following
+### app.model(obj)
+Create a new model. Models modify data and perform IO. Takes the following
 arguments:
+- __namespace:__ optional namespace that prefixes the keys in `state`,
+  `reducers` and `effects`. Also limits `actions` called by `send()` to
+  in-namespace only.
 - __state:__ object. Key value store of initial values
 - __reducers:__ object. Syncronous functions that modify state. Each function
   has a signature of `(action, state)`
 - __effects:__ object. Asyncronous functions that perform IO. Each function has
   a signature of `(action, state, send)` where `send` is a reference to
   `app.send()`
-
-If a `name` string is passed as a first argument, `reducers` and `signatures`
-will be prefixed by the name. So if name is "user" and a reducer called
-"update" is registered, it would be accessed as `'user:update'` in `send()`.
 
 ### choo.view\`html\`
 Tagged template string HTML builder. See
@@ -316,6 +397,25 @@ Start the application. Returns a tree of DOM nodes that can be mounted using
   accordingly.
 
 ## FAQ
+### Why did you build this?
+`choo` is nothing but a formalization of how I've been building my applications
+for the past year. I originally used `virtual-dom` with `virtual-app` and
+`wayfarer` where now it's `yo-yo` with `send-action` and `sheet-router`. The
+main benefit of using `choo` over these technologies separately is that it
+becomes easier for teams to pick up and gather around. The code base for `choo`
+itself is super petite (`~150` LOC) and mostly acts to enforce structure around
+some excellent npm packages. This is my take on modular frameworks; I hope
+you'll find it pleasant.
+
+### Why is it called choo?
+Because I thought it sounded cute. All these programs talk about being
+"performant", "rigid", "robust" - I like programming to be light, fun and
+non-scary. `choo` embraces that.
+
+Also imagine telling some business people you chose to rewrite something
+critical to the company using the `choo` framework.
+:steam_locomotive::train::train::train:
+
 ### How does choo compare to X?
 Ah, so this is where I get to rant. `choo` (_chugga-chugga-chugga-choo-choo!_)
 was built because other options didn't quite cut it for me, so instead of
@@ -382,6 +482,10 @@ transforms:
 - [uglifyify](https://github.com/hughsk/uglifyify) - minify your code using
   UglifyJS2. Use as a `--global` transform
 
+## Hey, doesn't this look a lot like Elm?
+Yup, it's greatly inspired by the `elm` architecture. But contrary to `elm`,
+`choo` doesn't introduce a completely new language to build web applications.
+
 ### Is it production ready?
 Sure.
 
@@ -389,6 +493,11 @@ Sure.
 ```sh
 $ npm install choo
 ```
+
+## See Also
+- [budo](https://github.com/mattdesl/budo) - quick prototyping tool for
+  `browserify`
+- [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
@@ -416,3 +525,5 @@ $ npm install choo
 [morphdom]: https://github.com/patrick-steele-idem/morphdom
 [morphdom-bench]: https://github.com/patrick-steele-idem/morphdom#benchmarks
 [module-parent]: https://nodejs.org/dist/latest-v6.x/docs/api/modules.html#modules_module_parent
+[sse-reconnect]: http://stackoverflow.com/questions/24564030/is-an-eventsource-sse-supposed-to-try-to-reconnect-indefinitely
+[ws-reconnect]: http://stackoverflow.com/questions/13797262/how-to-reconnect-to-websocket-after-close-connection

@@ -124,12 +124,8 @@ function choo (opts) {
 // obj -> obj
 function appInit (opts) {
   const model = {
-    state: {
-      location: document.location.href
-    },
-    reducers: {
-      location: setLocation
-    },
+    state: { location: document.location.href },
+    reducers: { location: setLocation },
     subscriptions: []
   }
 
