@@ -4,7 +4,7 @@ module.exports = function (params, state, send) {
   const mailbox = params.mailbox
   const message = params.message
 
-  const email = state[mailbox + ':messages'].filter(function (msg) {
+  const email = state[mailbox].messages.filter(function (msg) {
     return String(msg.id) === message
   })[0]
 

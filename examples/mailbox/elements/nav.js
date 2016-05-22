@@ -3,16 +3,15 @@ const choo = require('../../../')
 const mailboxes = [ 'inbox', 'spam', 'sent' ]
 
 module.exports = function (params, state, send) {
-  const mailbox = params.mailbox
-
   return choo.view`
     <aside class="fl mt4 w-20 db">
       <ul>
         <li>
           <h2 class="f4 b lh0">Mailbox</h2>
         </li>
-        ${mailboxes.map(function (name) {
-          return createLi(name, state[name + ':messages'], mailbox)
+        ${mailboxes.map(function (mailbox) {
+          const messages = mailbox.messages
+          return createLi(mailbox, messages, mailbox)
         })}
       </ul>
     </aside>

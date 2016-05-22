@@ -1,4 +1,5 @@
 module.exports = {
+  namespace: 'sent',
   state: {
     messages: [
       {

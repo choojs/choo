@@ -3,7 +3,7 @@ const choo = require('../../../')
 
 module.exports = function (params, state, send) {
   const mailbox = params.mailbox
-  const messages = state[mailbox + ':messages']
+  const messages = state[mailbox].messages
   return choo.view`
     <div>
       <div class="db cf w-100">

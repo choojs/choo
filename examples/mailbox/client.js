@@ -6,9 +6,9 @@ sf('tachyons')
 
 const app = choo()
 
-app.model('inbox', require('./models/inbox'))
-app.model('spam', require('./models/spam'))
-app.model('sent', require('./models/sent'))
+app.model(require('./models/inbox'))
+app.model(require('./models/spam'))
+app.model(require('./models/sent'))
 
 app.router((route) => [
   route('/', require('./views/empty')),

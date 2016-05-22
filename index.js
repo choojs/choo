@@ -84,7 +84,7 @@ function choo () {
       }
 
       const nsReducers = ns ? reducers[ns] : reducers
-      if (nsReducers[action.type]) {
+      if (nsReducers && nsReducers[action.type]) {
         if (ns) {
           state[ns] = reducers[ns][action.type](action, state[ns])
           newState = state
@@ -95,7 +95,7 @@ function choo () {
       }
 
       const nsEffects = ns ? effects[ns] : effects
-      if (nsEffects) {
+      if (nsEffects && nsEffects[action.type]) {
         nsEffects[action.type](action, newState || state)
         _effects = true
       }
@@ -143,7 +143,7 @@ function appInit (opts) {
   if (opts.href !== false) {
     model.subscriptions.push(function (send) {
       href(function (href) {
-        send('location', { location: href })
+        send('app:location', { location: href })
       })
     })
   }
@@ -151,7 +151,7 @@ function appInit (opts) {
   if (opts.history !== false) {
     model.subscriptions.push(function (send) {
       history(function (href) {
-        send('location', { location: href })
+        send('app:location', { location: href })
       })
     })
   }
@@ -160,8 +160,7 @@ function appInit (opts) {
 
   // handle href links
   function setLocation (action, state) {
-    const location = action.location.replace(/#.*/, '')
-    return xtend(state, { location: location })
+    return { location: action.location.replace(/#.*/, '') }
   }
 }
 
