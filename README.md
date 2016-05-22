@@ -51,15 +51,15 @@ productive package.
 const choo = require('choo')
 
 const app = choo()
-app.model('title', {
+app.model({
   state: {
     title: 'my-demo-app'
   },
   reducers: {
-    'update': (action, state) => ({ title: action.payload })
+    'title': (action, state) => ({ title: action.payload })
   },
   effects: {
-    'update': (action, state, send) => (document.title = action.payload)
+    'title': (action, state, send) => (document.title = action.payload)
   }
 })
 
@@ -70,7 +70,7 @@ const mainView = (params, state, send) => choo.view`
     <input
       type="text"
       placeholder=${state.title}
-      oninput=${(e) => send('title:update', { payload: e.target.value })}>
+      oninput=${(e) => send('title', { payload: e.target.value })}>
   </main>
 `
 
