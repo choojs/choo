@@ -34,7 +34,7 @@
     "istanbul": "^0.4.3",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.0",
-    "standard": "^6.0.8",
+    "standard": "^7.1.0",
     "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1"
   }
