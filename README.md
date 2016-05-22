@@ -30,7 +30,7 @@ productive package.
 - __single state:__ immutable single state helps reason about changes
 - __small api:__ with only 6 methods, there's not a lot to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
-- __transparent side effects:__ using "effects" and "subscriptions" brings
+- __transparent side effects:__ using `effects` and `subscriptions` brings
   clarity to IO
 - __omakase:__ composed out of a balanced selection of open source packages
 - __idempotent:__ renders seemlessly in both Node and browsers
