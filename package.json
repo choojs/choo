@@ -4,9 +4,9 @@
   "description": "A framework for creating solid web applications",
   "main": "index.js",
   "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "test": "standard && npm run deps && NODE_ENV=test node test",
-    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover test.js"
+    "deps": "dependency-check . && dependency-check . --extra --no-dev -i xhr",
+    "test": "standard && npm run deps && NODE_ENV=test node tests/*",
+    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/*"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
