@@ -13,12 +13,12 @@ productive package.
 - [Demos](#demos)
 - [Usage](#usage)
 - [Concepts](#concepts)
-- [Effects](#effects)
-  - [HTTP](#http)
-- [Subscriptions](#subscriptions)
-  - [server sent events](#server-sent-events-sse)
-  - [keyboard](#keyboard)
-  - [websockets](#websockets)
+  - [Effects](#effects)
+    - [HTTP](#http)
+  - [Subscriptions](#subscriptions)
+    - [server sent events](#server-sent-events-sse)
+    - [keyboard](#keyboard)
+    - [websockets](#websockets)
 - [Rendering in Node](#rendering-in-node)
 - [API](#api)
 - [FAQ](#faq)
@@ -299,14 +299,21 @@ documentation. Registered views have a signature of `(params, state, send)`,
 where `params` is URI partials.
 
 ### html = app.toString(route, state)
-Render the application to a string. Useful for rendering on the server. First
-argument is a path that's passed to the router. Second argument is the state
-object. When calling `.toString()` instead of `.start()`, all calls to `send()`
-are disabled, and `subscriptions`, `effects` and `reducers` aren't loaded.
+Render the application to a string of HTML. Useful for rendering on the server.
+First argument is a path that's passed to the router. Second argument is the
+state object. When calling `.toString()` instead of `.start()`, all calls to
+`send()` are disabled, and `subscriptions`, `effects` and `reducers` aren't
+loaded. See [rendering in Node](#rendering-in-node) for an in-depth guide.
 
-### tree = app.start()
-Start the application. Returns a DOM element that can be mounted using
-`document.body.appendChild()`.
+### tree = app.start(opts)
+Start the application. Returns a tree of DOM nodes that can be mounted using
+`document.body.appendChild()`. Opts can contain the following values:
+- __opts.history:__ default: `true`. Enable a `subscription` to the browser
+  history API. e.g. updates the internal `state.location` state whenever the
+  browser "forward" and "backward" buttons are pressed.
+- __opts.href:__ default: `true`. Handle all relative `<a
+  href="<location>"></a>` clicks and update internal `state.location`
+  accordingly.
 
 ## FAQ
 ### How does choo compare to X?
