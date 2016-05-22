@@ -1,3 +1,4 @@
+const dateformat = require('dateformat')
 const choo = require('../../../')
 
 module.exports = function () {
