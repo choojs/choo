@@ -11,9 +11,7 @@ module.exports = choo
 
 // A framework for creating sturdy web applications
 // null -> fn
-function choo (opts) {
-  opts = opts || {}
-  const name = opts.name || 'choo'
+function choo () {
   const _models = []
   var _router = null
 
@@ -40,17 +38,19 @@ function choo (opts) {
   }
 
   // start the application
-  // null -> DOMNode
-  function start () {
+  // obj -> DOMNode
+  function start (opts) {
+    opts = opts || {}
+    const name = opts.name || 'choo'
     const initialState = {}
     const reducers = {}
     const effects = {}
 
     _models.push(appInit(opts))
     _models.forEach(function (model) {
-      if (model.state) apply(model.name, model.state, initialState)
-      if (model.reducers) apply(model.name, model.reducers, reducers)
-      if (model.effects) apply(model.name, model.effects, effects)
+      if (model.state) apply(model.namespace, model.state, initialState)
+      if (model.reducers) apply(model.namespace, model.reducers, reducers)
+      if (model.effects) apply(model.namespace, model.effects, effects)
     })
 
     const send = sendAction({
@@ -68,7 +68,7 @@ function choo (opts) {
     })
 
     const rootId = name + '-root'
-    const tree = _router(send.state().location, send.state(), send)
+    const tree = _router(send.state().app.location, send.state(), send)
     tree.setAttribute('id', rootId)
     return tree
 
@@ -77,14 +77,26 @@ function choo (opts) {
       var _effects = false
       var newState = null
 
-      if (reducers[action.type]) {
-        newState = xtend(state, reducers[action.type](action, state))
+      if (/:/.test(action.type)) {
+        const arr = action.type.split(':')
+        var ns = arr[0]
+        action.type = arr[1]
+      }
+
+      const nsReducers = ns ? reducers[ns] : reducers
+      if (nsReducers[action.type]) {
+        if (ns) {
+          state[ns] = reducers[ns][action.type](action, state[ns])
+          newState = state
+        } else {
+          newState = xtend(state, reducers[action.type](action, state))
+        }
         _reducers = true
       }
 
-      if (effects[action.type]) {
-        effects[action.type](action, newState || state, send)
-        newState = newState || state
+      const nsEffects = ns ? effects[ns] : effects
+      if (nsEffects) {
+        nsEffects[action.type](action, newState || state)
         _effects = true
       }
 
@@ -92,13 +104,13 @@ function choo (opts) {
         throw new Error('Could not find action ' + action.type)
       }
 
-      return newState
+      return newState || state
     }
 
     // update on every change
     function onchange (action, state) {
       const oldTree = document.querySelector('#' + rootId)
-      const newTree = _router(state.location, state, send)
+      const newTree = _router(state.app.location, state, send)
       newTree.setAttribute('id', rootId)
       yo.update(oldTree, newTree)
     }
@@ -113,9 +125,7 @@ function choo (opts) {
 
   // create a new model
   // (str?, obj) -> null
-  function model (name, model) {
-    if (!model) model = name
-    if (typeof name === 'string') model.name = name
+  function model (model) {
     _models.push(model)
   }
 }
@@ -124,6 +134,7 @@ function choo (opts) {
 // obj -> obj
 function appInit (opts) {
   const model = {
+    namespace: 'app',
     state: { location: document.location.href },
     reducers: { location: setLocation },
     subscriptions: []
@@ -158,7 +169,10 @@ function appInit (opts) {
 // (str, obj, obj) -> null
 function apply (name, source, target) {
   Object.keys(source).forEach(function (key) {
-    if (name) target[name + ':' + key] = source[key]
-    else target[key] = source[key]
+    if (name) {
+      if (!target[name]) target[name] = {}
+      target[name][key] = source[key]
+      target[name][key].namespace = name
+    } else target[key] = source[key]
   })
 }

@@ -66,16 +66,18 @@ app.model({
   }
 })
 
-const mainView = (params, state, send) => choo.view`
-  <main class="app">
-    <h1>${state.title}</h1>
-    <label>Set the title</label>
-    <input
-      type="text"
-      placeholder=${state.input.title}
-      oninput=${(e) => send('input:update', { payload: e.target.value })}>
-  </main>
-`
+const mainView = (params, state, send) => {
+  return choo.view`
+    <main class="app">
+      <h1>${state.input.title}</h1>
+      <label>Set the title</label>
+      <input
+        type="text"
+        placeholder=${state.input.title}
+        oninput=${(e) => send('input:update', { payload: e.target.value })}>
+    </main>
+  `
+}
 
 app.router((route) => [
   route('/', mainView)
@@ -239,7 +241,6 @@ choo.model({
   }
 })
 ```
-
 
 ### Server Sent Events (SSE)
 [Server Sent Events (SSE)][sse] allow servers to push data to the browser.
