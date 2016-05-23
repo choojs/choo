@@ -125,13 +125,14 @@ document.body.appendChild(tree)
 `models` are objects that contain initial `state`, `subscriptions`, `effects`
 and `reducers`. They're generally grouped around a theme (or domain, if you
 like). To provide some sturdiness to your `models`, they can either be
-namespaced or not. Namespacing means that only actions and state inside the
-model can be called.
+namespaced or not. Namespacing means that only state within the model can be
+accessed. Models can still trigger actions on other models, though it's
+recommeded to keep that to a minimum.
 
 So say we have a `todos` namespace, an `add` reducer and a `todos` model.
 Outside the model they're called by `send('todos:add')` and
 `state.todos.todos`. Inside the namespaced model they're called by
-`send('add')` and `state.todos`. An example namespaced model:
+`send('todos:add')` and `state.todos`. An example namespaced model:
 ```js
 const app = choo()
 app.model({
