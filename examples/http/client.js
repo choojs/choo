@@ -5,7 +5,7 @@ const mainView = require('./views/main')
 const app = choo()
 
 app.model(require('./models/error'))
-app.model('api', require('./models/api'))
+app.model(require('./models/api'))
 
 app.router((route) => [
   route('/', mainView)

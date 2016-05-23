@@ -8,6 +8,7 @@
 const ERROR_TIMEOUT = 1000
 
 module.exports = {
+  namespace: 'app',
   state: {
     error: [],
     errorTimeDone: null,
@@ -33,9 +34,9 @@ module.exports = {
   },
   effects: {
     error: function (action, state, send) {
-      const timeout = state.errorTimeDone - Date.now()
+      const timeout = state.app.errorTimeDone - Date.now()
       setTimeout(function () {
-        send('error:delete')
+        send('app:error:delete')
       }, timeout)
     }
   }
