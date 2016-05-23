@@ -14,12 +14,18 @@ productive package.
 - [Usage](#usage)
 - [Concepts](#concepts)
   - [Models](#models)
+  - [Actions](#actions)
   - [Effects](#effects)
     - [HTTP](#http)
   - [Subscriptions](#subscriptions)
     - [server sent events](#server-sent-events-sse)
     - [keyboard](#keyboard)
     - [websockets](#websockets)
+  - [Router](#router)
+  - [Views](#views)
+    - [forms](#forms)
+    - [links](#links)
+    - [styles](#styles)
 - [Rendering in Node](#rendering-in-node)
   - [Rehydration](#rehydration)
 - [API](#api)
@@ -89,22 +95,23 @@ document.body.appendChild(tree)
 ```
 
 ## Concepts
-- __user:__ 🙆
-- __DOM:__ the [Document Object Model][dom] is what is currently displayed in
-  your browser
-- __actions:__ a named event with optional properties attached. Used to call
-  `effects` and `reducers` that have been registered in `models`
-- __model:__ optionally namespaced object containing `subscriptions`,
-  `effects`, `reducers` and initial `state`
-- __subscriptions:__ read-only data sources that emit `actions`
-- __effects:__ asynchronous functions that emit an `action` when done
-- __reducers:__ synchronous functions that modify `state`
-- __state:__ a single object that contains __all__ the values used in your
-  application
-- __router:__ determines which `view` to render
-- __views:__ take `state` and returns a new `DOM tree` that is rendered in the
-  browser
+`choo` cleanly structures internal data flow, so that all pieces of logic can
+be combined into a nice, cohesive machine. Internally all logic lives within
+`models` that contain several properties. `subscriptions` are read-only streams
+of data. `effects` react to changes, perform an `action` and can then post the
+results. `reducers` take data, modify it, and update the internal `state`.
 
+Communication of data is done using objects called `actions`. Each `action` has
+any number of properties for data, and a unique `type` that can trigger
+properties on the models.
+
+When a `reducer` modifies `state`, the `router` is called, which in turn calls
+`views`. `views` take `state` and return [DOM][dom] nodes which are then
+efficiently rendered on the screen.
+
+In turn when the `views` are rendered, the `user` can interact with elements by
+clicking on them, triggering `actions` which then flow back into the
+application logic. This is the _unidirectional_ architecture of `choo`.
 ```txt
  ┌───────────────────────────┐     ┌────────┐
  │    ┌─────────────────┐    │     │  User  │
@@ -121,6 +128,21 @@ document.body.appendChild(tree)
           │ Router │─────State ───▶│ Views  │
           └────────┘               └────────┘
 ```
+- __user:__ 🙆
+- __DOM:__ the [Document Object Model][dom] is what is currently displayed in
+  your browser
+- __actions:__ a named event with optional properties attached. Used to call
+  `effects` and `reducers` that have been registered in `models`
+- __model:__ optionally namespaced object containing `subscriptions`,
+  `effects`, `reducers` and initial `state`
+- __subscriptions:__ read-only data sources that emit `actions`
+- __effects:__ asynchronous functions that emit an `action` when done
+- __reducers:__ synchronous functions that modify `state`
+- __state:__ a single object that contains __all__ the values used in your
+  application
+- __router:__ determines which `view` to render
+- __views:__ take `state` and returns a new `DOM tree` that is rendered in the
+  browser
 
 ## Models
 `models` are objects that contain initial `state`, `subscriptions`, `effects`
@@ -309,6 +331,21 @@ app.model({
 This code does not handle reconnects, server timeouts, exponential backoff and
 queueing data. You might want to use a package from `npm` or [write your
 own][ws-reconnect] if you're building something for production.
+
+## Router
+[docs wip]
+
+## Views
+[docs wip]
+
+### forms
+[docs wip]
+
+### links
+[docs wip]
+
+### styles
+[docs wip]
 
 ## Rendering in Node
 Sometimes it's necessary to render code inside of Node; for serving hyper fast
@@ -583,3 +620,4 @@ $ npm install choo
 [bl]: https://github.com/rvagg/bl
 [varnish]: https://varnish-cache.org
 [nginx]: http://nginx.org/
+[dom]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
