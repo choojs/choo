@@ -11,7 +11,7 @@ module.exports = function (params, state, send) {
         </li>
         ${mailboxes.map(function (mailbox) {
           const messages = mailbox.messages
-          return createLi(mailbox, messages, mailbox)
+          return createLi(mailbox, messages)
         })}
       </ul>
     </aside>
