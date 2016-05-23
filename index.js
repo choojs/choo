@@ -168,7 +168,7 @@ function appInit (opts) {
 
   // enable catching <href a=""></href> links
   // enable HTML5 history API
-  if (opts.history !== false) pushLocationSub(href)
+  if (opts.href !== false) pushLocationSub(href)
   if (opts.history !== false) pushLocationSub(history)
 
   return model
