@@ -1,4 +1,5 @@
 module.exports = {
+  namespace: 'inbox',
   state: {
     messages: [
       {

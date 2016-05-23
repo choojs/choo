@@ -6,7 +6,7 @@ const http = require('http')
 const PORT = 8080
 
 const server = http.createServer(createRouter())
-server.listen(PORT, () => console.log(`listening on port ${PORT}`))
+server.listen(PORT, () => process.stdout.write(`listening on port ${PORT}\n`))
 
 var index = 0
 const errors = [

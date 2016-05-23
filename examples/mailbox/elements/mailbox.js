@@ -5,9 +5,10 @@ module.exports = function () {
   return function (params, state, send) {
     const mailbox = params.mailbox
     const message = params.message
+    const messages = state[mailbox].messages
 
     if (message) {
-      const email = state[mailbox + ':messages'].filter(function (msg) {
+      const email = state[mailbox].messages.filter(function (msg) {
         return String(msg.id) === message
       })[0]
 
@@ -15,7 +16,7 @@ module.exports = function () {
         <section class="fl mt4 w-80 db">
           <div>
             ${createHeader()}
-            ${state[mailbox + ':messages'].map(function (msg) {
+            ${messages.map(function (msg) {
               return createMessage(msg, mailbox)
             })}
           </div>
@@ -28,7 +29,7 @@ module.exports = function () {
       return choo.view`
         <section class="fl mt4 w-80 db">
           ${createHeader()}
-          ${state[mailbox + ':messages'].map(function (msg) {
+          ${messages.map(function (msg) {
             return createMessage(msg, mailbox)
           })}
         </section>
