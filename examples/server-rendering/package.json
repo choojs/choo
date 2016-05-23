@@ -7,7 +7,9 @@
   },
   "dependencies": {
     "bankai": "^2.0.2",
+    "bl": "^1.1.2",
     "browserify": "^13.0.1",
+    "hyperstream": "^1.2.2",
     "server-router": "^2.1.0"
   }
 }

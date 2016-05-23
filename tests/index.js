@@ -30,7 +30,7 @@ tape('should render on the server', function (t) {
     t.equal(html, expected, 'strings are equal')
   })
 
-  t.test('should extend existing models', function (t) {
+  t.test('should extend flat existing models', function (t) {
     t.plan(1)
 
     const app = choo()
@@ -42,6 +42,33 @@ tape('should render on the server', function (t) {
     ])
 
     const state = { foo: 'bar!', beep: 'beep' }
+    const html = app.toString('/', state)
+    const expected = '<h1>bar! baz beep</h1>'
+    t.equal(html, expected, 'strings are equal')
+  })
+
+  t.test('should extend namespaced existing models', function (t) {
+    t.plan(1)
+
+    const app = choo()
+    app.model({
+      namespace: 'hello',
+      state: { bin: 'baz', beep: 'boop' }
+    })
+    app.router((route) => [
+      route('/', function (params, state) {
+        return choo.view`
+          <h1>${state.hello.foo} ${state.hello.bin} ${state.hello.beep}</h1>
+        `
+      })
+    ])
+
+    const state = {
+      hello: {
+        foo: 'bar!',
+        beep: 'beep'
+      }
+    }
     const html = app.toString('/', state)
     const expected = '<h1>bar! baz beep</h1>'
     t.equal(html, expected, 'strings are equal')

@@ -4,6 +4,14 @@ const mainView = require('./views/main')
 
 const app = choo()
 
+app.model({
+  namespace: 'message',
+  state: {
+    server: 'rehydration has kicked in, server data was tossed',
+    client: 'hello client!'
+  }
+})
+
 app.router((route) => [
   route('/', mainView)
 ])
@@ -11,6 +19,5 @@ app.router((route) => [
 if (module.parent) {
   module.exports = app
 } else {
-  const tree = app.start()
-  document.body.appendChild(tree)
+  app.start('#app-root')
 }
