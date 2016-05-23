@@ -14,7 +14,7 @@ module.exports = {
   }
 }
 
-function request (uri, send) {
+function request (uri, send, state) {
   http(uri, { json: true }, function (err, res, body) {
     if (err) return send('app:error', { payload: 'HTTP error' })
     if (res.statusCode !== 200) {
@@ -24,7 +24,6 @@ function request (uri, send) {
       return send('app:error', { payload: message })
     }
     if (!body) {
-      console.log('req made!')
       return send('app:error', { payload: 'fatal: no body received' })
     }
     send('api:set', { payload: body.message || body.title })

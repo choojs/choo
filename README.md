@@ -88,7 +88,6 @@ document.body.appendChild(tree)
 ```
 
 ## Concepts
-`choo` is a complete framework. It has an answer to pretty most points
 - __user:__ 🙆
 - __DOM:__ the [Document Object Model][dom] is what is currently displayed in
   your browser
@@ -416,6 +415,13 @@ non-scary. `choo` embraces that.
 Also imagine telling some business people you chose to rewrite something
 critical to the company using the `choo` framework.
 :steam_locomotive::train::train::train:
+
+### Why is it a framework, and not a library?
+I love small libraries that do one thing well, but when working in a team,
+having an undocumented combination of packages often isn't great. `choo()` is a
+small set of packages that work well together, wrapped in an an architectural
+pattern. This means you get all the benefits of small packages, but get to be
+productive right from the start.
 
 ### How does choo compare to X?
 Ah, so this is where I get to rant. `choo` (_chugga-chugga-chugga-choo-choo!_)

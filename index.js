@@ -105,17 +105,16 @@ function choo () {
       const _reducers = ns ? reducers[ns] : reducers
       if (_reducers && _reducers[action.type]) {
         if (ns) {
-          const newState = reducers[ns][action.type](action, state[ns])
+          const newState = _reducers[action.type](action, state[ns])
           state[ns] = xtend(state[ns], newState)
-        } else {
-          state = xtend(state, reducers[action.type](action, state))
-        }
+        } else state = xtend(state, reducers[action.type](action, state))
         reducersCalled = true
       }
 
       const _effects = ns ? effects[ns] : effects
       if (_effects && _effects[action.type]) {
-        _effects[action.type](action, state, send)
+        if (ns) _effects[action.type](action, state[ns], send)
+        else _effects[action.type](action, state, send)
         effectsCalled = true
       }
 
@@ -175,7 +174,7 @@ function appInit (opts) {
   return model
 
   // create a new subscription that modifies
-  // 'app:location' and push it to the subs
+  // 'app:location' and push it to be loaded
   // fn -> null
   function pushLocationSub (cb) {
     model.subscriptions.push(function (send) {
