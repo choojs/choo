@@ -25,14 +25,23 @@ function choo () {
 
   // render the application to a string
   // (str, obj) -> str
-  function toString (route, state) {
+  function toString (route, serverState) {
     const initialState = {}
+    const nsState = {}
 
     _models.forEach(function (model) {
-      if (model.state) apply(model.name, model.state, initialState)
+      const ns = model.namespace
+      if (ns) {
+        if (!nsState[ns]) nsState[ns] = {}
+        apply(ns, model.state, nsState)
+        nsState[ns] = xtend(nsState[ns], serverState[ns])
+      } else {
+        apply(model.namespace, model.state, initialState)
+      }
     })
 
-    const tree = _router(route, xtend(initialState, state), function () {
+    const state = xtend(initialState, xtend(serverState, nsState))
+    const tree = _router(route, state, function () {
       throw new Error('send() cannot be called on the server')
     })
 
@@ -40,8 +49,9 @@ function choo () {
   }
 
   // start the application
-  // obj -> DOMNode
-  function start (opts) {
+  // (str?, obj?) -> DOMNode
+  function start (rootId, opts) {
+    if (!opts) opts = rootId
     opts = opts || {}
     const name = opts.name || 'choo'
     const initialState = {}
@@ -75,15 +85,32 @@ function choo () {
       }
     })
 
-    // the rootId is determined to find the application root
+    // If an id is provided, the application will rehydrate
+    // on the node. If no id is provided it will return
+    // a tree that's ready to be appended to the DOM.
+    //
+    // The rootId is determined to find the application root
     // on update. Since the DOM nodes change between updates,
     // we must call document.querySelector() to find the root.
     // Use different names when loading multiple choo applications
     // on the same page
-    const rootId = name + '-root'
-    const tree = _router(send.state().app.location, send.state(), send)
-    tree.setAttribute('id', rootId)
-    return tree
+    if (rootId) {
+      document.addEventListener('DOMContentLoaded', function (event) {
+        rootId = rootId.replace(/^#/, '')
+
+        const oldTree = document.querySelector('#' + rootId)
+        assert.ok(oldTree, 'could not find node #' + rootId)
+
+        const newTree = _router(send.state().app.location, send.state(), send)
+
+        yo.update(oldTree, newTree)
+      })
+    } else {
+      rootId = name + '-root'
+      const tree = _router(send.state().app.location, send.state(), send)
+      tree.setAttribute('id', rootId)
+      return tree
+    }
 
     // handle an action by either reducers, effects
     // or both - return the new state when done
