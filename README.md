@@ -615,9 +615,9 @@ Generally for production builds you'll want to run:
 ```sh
 $ NODE_ENV=production browserify \
   -t envify \
-  -t unassertify \
-  -t es2020 \
-  -t uglifyify \
+  -g unassertify \
+  -g es2020 \
+  -g uglifyify \
   | uglifyjs
 ```
 
