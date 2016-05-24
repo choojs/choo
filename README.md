@@ -601,8 +601,8 @@ things like reduce file size, prune dependencies and clean up boilerplate code.
 Consider running some of the following:
 - [unassertify](https://github.com/twada/unassertify) - remove `assert()`
   statements which reduces file size. Use as a `--global` transform
-- [varify](https://github.com/thlorenz/varify) - replace `const` with `var`
-  statements. Use as a `--global` transform
+- [es2020](https://github.com/yoshuawuyts/es2020) - backport `const`,
+  `fat-arrows` and `template strings` to older browsers
 - [uglifyify](https://github.com/hughsk/uglifyify) - minify your code using
   UglifyJS2. Use as a `--global` transform
 - [bulkify](https://www.npmjs.com/package/bulkify) - transform inline
