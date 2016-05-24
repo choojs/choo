@@ -333,7 +333,30 @@ queueing data. You might want to use a package from `npm` or [write your
 own][ws-reconnect] if you're building something for production.
 
 ## Router
-[docs wip]
+The `router` manages which `views` are rendered at any given time. It also
+supports rendering a default `view` if no routes match.
+
+```js
+const app = choo()
+app.router('/404', (route) => [
+  route('/', require('./views/empty')),
+  route('/404', require('./views/error')),
+  route('/:mailbox', require('./views/mailbox'), [
+    route('/:message', require('./views/email'))
+  ])
+])
+```
+
+Routes on the `router` are passed in as a nested array. This means that the
+entry point of the application also becomes a site map, making it easier to
+figure out how views relate to each other.
+
+Under the hood `choo` uses [sheet-router][sheet-router]. Internally the
+currently rendered route is kept in `state.app.location`. If you want to modify
+the location programmatically the `reducer` for the location can be called
+using `send('app:location', { location: href })`. This will not work from
+within namespaced `models`, and usage should preferably be kept to a minimum.
+Changing views all over the place tends to lead to messiness.
 
 ## Views
 [docs wip]
@@ -342,7 +365,18 @@ own][ws-reconnect] if you're building something for production.
 [docs wip]
 
 ### links
-[docs wip]
+In HTML links are represented with the `<a href="/some-location">` tag. By
+default `choo` enables a `subscription` for all `a` tags on a page. When a link
+is clicked, the click event is caught, and the value of `href` is passed into
+the router causing a state change. If you want to disable this behavior, set
+`app.start({ href: false })`.
+```js
+const nav = choo.view`
+  <a href="/">home</a>
+  <a href="/first-link">first link</a>
+  <a href="/second-link">second link</a>
+`
+```
 
 ### styles
 [docs wip]
@@ -624,3 +658,4 @@ $ npm install choo
 [varnish]: https://varnish-cache.org
 [nginx]: http://nginx.org/
 [dom]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
+[sheet-router]: https://github.com/yoshuawuyts/sheet-router
