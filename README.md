@@ -4,18 +4,40 @@
   :steam_locomotive::train::train::train::train::train:
 </div>
 <div align="center">
-  <strong>Never worry about architecture again</strong>
+  <strong>Fun functional programming</strong>
 </div>
 <div align="center">
-  A `7kb` framework for creating sturdy web applications
+  A <code>7kb</code> framework for creating sturdy web applications
 </div>
 
 <br />
 
 <div align="center">
-  [![stability][0]][1]
-  [![npm version][2]][3] [![build status][4]][5] [![test coverage][6]][7]
-  [![downloads][8]][9] [![js-standard-style][10]][11]
+  <!-- Stability -->
+  <a href="https://nodejs.org/api/documentation.html#documentation_stability_index">
+    <img src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square"
+      alt="API stability" />
+  </a>
+  <!-- NPM version -->
+  <a href="https://npmjs.org/package/choo">
+    <img src="https://img.shields.io/npm/v/choo.svg?style=flat-square"
+      alt="NPM version" />
+  </a>
+  <!-- Build Status -->
+  <a href="https://travis-ci.org/yoshuawuyts/choo">
+    <img src="https://img.shields.io/travis/yoshuawuyts/choo/master.svg?style=flat-square"
+      alt="Build Status" />
+  </a>
+  <!-- Test Coverage -->
+  <a href="https://codecov.io/github/yoshuawuyts/choo">
+    <img src="https://img.shields.io/codecov/c/github/yoshuawuyts/choo/master.svg?style=flat-square"
+      alt="Test Coverage" />
+  </a>
+  <!-- Standard -->
+  <a href="https://codecov.io/github/yoshuawuyts/choo">
+    <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square"
+      alt="Standard" />
+  </a>
 </div>
 
 <br />
@@ -660,19 +682,6 @@ $ npm install choo
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
-
-[0]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
-[1]: https://nodejs.org/api/documentation.html#documentation_stability_index
-[2]: https://img.shields.io/npm/v/choo.svg?style=flat-square
-[3]: https://npmjs.org/package/choo
-[4]: https://img.shields.io/travis/yoshuawuyts/choo/master.svg?style=flat-square
-[5]: https://travis-ci.org/yoshuawuyts/choo
-[6]: https://img.shields.io/codecov/c/github/yoshuawuyts/choo/master.svg?style=flat-square
-[7]: https://codecov.io/github/yoshuawuyts/choo
-[8]: http://img.shields.io/npm/dm/choo.svg?style=flat-square
-[9]: https://npmjs.org/package/choo
-[10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
-[11]: https://github.com/feross/standard
 
 [dom]: https://en.wikipedia.org/wiki/Document_Object_Model
 [keyboard-support]: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Browser_compatibility
