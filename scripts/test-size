@@ -1,13 +1,10 @@
 #!/bin/sh
 
-# browserify index.js --full-paths \
-#   -g unassertify \
-#   -t uglifyify \
-#   | discify --open
-
 browserify index.js \
   -g unassertify \
+  -g es2020 \
   -g uglifyify \
+  -p bundle-collapser/plugin \
   | uglifyjs \
   | gzip-size \
   | pretty-bytes

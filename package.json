@@ -29,7 +29,9 @@
   "devDependencies": {
     "bankai": "^2.0.2",
     "browserify": "^13.0.1",
+    "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.5.1",
+    "es2020": "^1.0.1",
     "insert-css": "^0.2.0",
     "istanbul": "^0.4.3",
     "server-router": "^2.1.0",
