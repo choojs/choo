@@ -1,14 +1,34 @@
-# choo [![stability][0]][1]
-[![npm version][2]][3] [![build status][4]][5] [![test coverage][6]][7]
-[![downloads][8]][9] [![js-standard-style][10]][11]
+<h1 align="center">choo</h1>
 
-:steam_locomotive::train::train::train::train::train: - _The little framework
-that could._
+<div align="center">
+  :steam_locomotive::train::train::train::train::train:
+</div>
+<div align="center">
+  <strong>Never worry about architecture again</strong>
+</div>
+<div align="center">
+  A `7kb` framework for creating sturdy web applications
+</div>
 
-A framework for creating sturdy web applications. Built on years of industry
-experience it distills the essence of functional architectures into a
-productive package.
+<br />
 
+<div align="center">
+  [![stability][0]][1]
+  [![npm version][2]][3] [![build status][4]][5] [![test coverage][6]][7]
+  [![downloads][8]][9] [![js-standard-style][10]][11]
+</div>
+
+<br />
+
+<div align="center">
+  <sub>The little framework that could. Built with ❤︎ by
+  <a href="https://twitter.com/yoshuawuyts">Yoshua Wuyts</a> and
+  <a href="https://github.com/yoshuawuyts/choo/graphs/contributors">
+    contributors
+  </a>
+</div>
+
+## Table of Content
 - [Features](#features)
 - [Demos](#demos)
 - [Usage](#usage)
