@@ -608,6 +608,18 @@ Consider running some of the following:
 - [bulkify](https://www.npmjs.com/package/bulkify) - transform inline
   [bulk-require](https://www.npmjs.com/package/bulk-require) calls into
   statically resolvable require maps
+- [envify](https://github.com/hughsk/envify) - replace `process.env` values
+  with plain strings
+
+Generally for production builds you'll want to run:
+```sh
+$ NODE_ENV=production browserify \
+  -t envify \
+  -t unassertify \
+  -t es2020 \
+  -t uglifyify \
+  | uglifyjs
+```
 
 ## Hey, doesn't this look a lot like Elm?
 Yup, it's greatly inspired by the `elm` architecture. But contrary to `elm`,
