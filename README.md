@@ -246,7 +246,7 @@ const app = choo()
 
 app.model({
   effects: {
-    'app:error': (state, event_ => console.error(`error: ${event.payload}`)),
+    'app:error': (state, event) => console.error(`error: ${event.payload}`)),
     'app:print': (state, event) => console.log(`http: ${event.payload}`),
     'http:get_json': getJson,
     'http:post_json': postJson,
