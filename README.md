@@ -404,7 +404,62 @@ Changing views all over the place tends to lead to messiness.
 [docs wip]
 
 ### forms
-[docs wip]
+Forms and lists are probably the most used concepts on any page. Together with
+links they comprise most of what can be done on web pages.
+
+Most forms contain multiple input fields, and a `submit` button that takes the
+data from the fields and submits it to the server. To collect all data from a
+form it's recommended to use the
+[get-form-data](https://github.com/insin/get-form-data) package:
+```js
+const getFormData = require('get-form-data')
+const document = require('global/document')
+const choo = require('choo')
+const app = choo()
+
+function view (params, state, send) {
+  return choo.view`
+    <form id="#login-form">
+      <fieldset>
+        <label>username</label>
+        <input type="text" name="username" autofocus>
+      </fieldset>
+      <fieldset>
+        <label>password</label>
+        <input type="password" name="password">
+      </fieldset>
+      <input type="submit" value="Submit" onClick=${onClick}>
+    </form>
+  `
+
+  function onClick () {
+    const data = getFormData(document.querySelector('#login-form'))
+    send('post', { payload: data })
+  }
+}
+
+app.model({
+  effects: {
+    post: (state, action, send) => (/* perform POST request */)
+  }
+})
+
+app.router((route) => [
+  route('/', view)
+])
+
+app.start()
+```
+
+If you want a form element to be selected when it's loaded, add the
+[`autofocus`][html-input] property.
+```js
+const view = choo.view`
+  <form>
+    <input type="text" autofocus>
+  </form>
+`
+```
 
 ### links
 In HTML links are represented with the `<a href="/some-location">` tag. By
@@ -700,3 +755,4 @@ $ npm install choo
 [nginx]: http://nginx.org/
 [dom]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
 [sheet-router]: https://github.com/yoshuawuyts/sheet-router
+[html-input]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
