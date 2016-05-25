@@ -406,15 +406,10 @@ Changing views all over the place tends to lead to messiness.
 ### forms
 Forms and lists are probably the most used concepts on any page. Together with
 links they comprise most of what can be done on web pages.
-
-Most forms contain multiple input fields, and a `submit` button that takes the
-data from the fields and submits it to the server. To collect all data from a
-form it's recommended to use the
-[get-form-data](https://github.com/insin/get-form-data) package:
 ```js
-const getFormData = require('get-form-data')
 const document = require('global/document')
 const choo = require('choo')
+const http = require('choo/http')
 const app = choo()
 
 function view (params, state, send) {
@@ -432,16 +427,19 @@ function view (params, state, send) {
     </form>
   `
 
-  function onSubmit (e) {
-    const data = getFormData(e.target)
-    send('post', { payload: data })
-    e.preventDefault()
+  function onSubmit (event) {
+    send('login', { data: new FormData(event.target) })
+    event.preventDefault()
   }
 }
 
 app.model({
   effects: {
-    post: (state, action, send) => (/* perform POST request */)
+    login: (state, action, send) => {
+      http.post('/login', { body: action.data }, (err, res, body) => {
+        send('authorize', { payload: body })
+      })
+    }
   }
 })
 
