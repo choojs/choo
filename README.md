@@ -419,7 +419,7 @@ const app = choo()
 
 function view (params, state, send) {
   return choo.view`
-    <form id="#login-form">
+    <form onsubmit=${onSubmit}>
       <fieldset>
         <label>username</label>
         <input type="text" name="username" autofocus>
@@ -428,13 +428,14 @@ function view (params, state, send) {
         <label>password</label>
         <input type="password" name="password">
       </fieldset>
-      <input type="submit" value="Submit" onClick=${onClick}>
+      <input type="submit" value="Submit">
     </form>
   `
 
-  function onClick () {
-    const data = getFormData(document.querySelector('#login-form'))
+  function onSubmit (e) {
+    const data = getFormData(e.target)
     send('post', { payload: data })
+    e.preventDefault()
   }
 }
 
