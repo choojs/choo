@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i xhr",
-    "test": "standard && npm run deps && NODE_ENV=test node tests/*",
-    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/*"
+    "test": "standard && npm run deps && NODE_ENV=test tape tests/index.js && ./scripts/test",
+    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/index.js"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
@@ -36,8 +36,10 @@
     "istanbul": "^0.4.3",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.0",
+    "smokestack": "^3.4.1",
     "standard": "^7.1.0",
     "tachyons": "^4.0.0-beta.19",
+    "tap-closer": "^1.0.0",
     "tape": "^4.5.1"
   }
 }
