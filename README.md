@@ -338,13 +338,14 @@ Most browsers have [basic support for keyboard events][keyboard-support]. To
 capture keyboard events, setup a `subscription`:
 ```js
 app.model({
+  namespace: 'input',
   subscriptions: [
     function (send) {
-      keyboard.onkeypress = (e) => send('app:print', { payload: e.keyCode })
+      onkeypress = (e) => send('input:print', { payload: e.keyCode })
     }
   ],
   effects: {
-    'app:print': (state, event) => console.log(`pressed key: ${event.payload}`)
+    print: (state) => console.log(`pressed key: ${state.payload}`)
   }
 })
 ```
