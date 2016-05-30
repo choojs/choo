@@ -58,18 +58,18 @@
   - [Models](#models)
   - [Actions](#actions)
   - [Effects](#effects)
-    - [HTTP](#http)
   - [Subscriptions](#subscriptions)
-    - [server sent events](#server-sent-events-sse)
-    - [keyboard](#keyboard)
-    - [websockets](#websockets)
   - [Router](#router)
   - [Views](#views)
-    - [forms](#forms)
-    - [links](#links)
-    - [styles](#styles)
-- [Rendering in Node](#rendering-in-node)
-  - [Rehydration](#rehydration)
+- [Common actions](#common-actions)
+  - [HTTP](#http)
+  - [Server sent events](#server-sent-events-sse)
+  - [Keyboard](#keyboard)
+  - [Websockets](#websockets)
+  - [Forms](#forms)
+  - [Links](#links)
+  - [Styles](#styles)
+  - [Rendering in Node](#rendering-in-node)
 - [API](#api)
 - [FAQ](#faq)
 - [Installation](#installation)
@@ -236,6 +236,54 @@ A typical `effect` flow looks like:
 4. When the async call is done, either a success or error action is emitted
 5. A reducer catches the action and updates the state
 
+## Subscriptions
+Subscriptions are a way of receiving data from a source. For example when
+listening for events from a server using `SSE` or `Websockets` for a
+chat app, or when catching keyboard input for a videogame.
+
+An example subscription that logs `"dog?"` every second:
+```js
+const app = choo()
+choo.model({
+  subscriptions: [
+    (send) => setTimeout(() => send('app:print', { payload: 'dog?' }), 1000)
+  ],
+  effects: {
+    'app:print': (state, action) => console.log(action.payload)
+  }
+})
+```
+
+## Router
+The `router` manages which `views` are rendered at any given time. It also
+supports rendering a default `view` if no routes match.
+
+```js
+const app = choo()
+app.router('/404', (route) => [
+  route('/', require('./views/empty')),
+  route('/404', require('./views/error')),
+  route('/:mailbox', require('./views/mailbox'), [
+    route('/:message', require('./views/email'))
+  ])
+])
+```
+
+Routes on the `router` are passed in as a nested array. This means that the
+entry point of the application also becomes a site map, making it easier to
+figure out how views relate to each other.
+
+Under the hood `choo` uses [sheet-router][sheet-router]. Internally the
+currently rendered route is kept in `state.app.location`. If you want to modify
+the location programmatically the `reducer` for the location can be called
+using `send('app:location', { location: href })`. This will not work from
+within namespaced `models`, and usage should preferably be kept to a minimum.
+Changing views all over the place tends to lead to messiness.
+
+## Views
+[docs wip]
+
+## Common Actions
 ### HTTP
 `choo` ships with a built-in [`http` module](https://github.com/Raynos/xhr)
 that weighs only `2.4kb`:
@@ -288,24 +336,6 @@ function httpDelete (state, action, send) {
 Note that `http` only runs in the browser to prevent accidental requests when
 rendering in Node. For more details view the [`raynos/xhr`
 documentation](https://github.com/Raynos/xhr).
-
-## Subscriptions
-Subscriptions are a way of receiving data from a source. For example when
-listening for events from a server using `SSE` or `Websockets` for a
-chat app, or when catching keyboard input for a videogame.
-
-An example subscription that logs `"dog?"` every second:
-```js
-const app = choo()
-choo.model({
-  subscriptions: [
-    (send) => setTimeout(() => send('app:print', { payload: 'dog?' }), 1000)
-  ],
-  effects: {
-    'app:print': (state, action) => console.log(action.payload)
-  }
-})
-```
 
 ### Server Sent Events (SSE)
 [Server Sent Events (SSE)][sse] allow servers to push data to the browser.
@@ -374,36 +404,7 @@ This code does not handle reconnects, server timeouts, exponential backoff and
 queueing data. You might want to use a package from `npm` or [write your
 own][ws-reconnect] if you're building something for production.
 
-## Router
-The `router` manages which `views` are rendered at any given time. It also
-supports rendering a default `view` if no routes match.
-
-```js
-const app = choo()
-app.router('/404', (route) => [
-  route('/', require('./views/empty')),
-  route('/404', require('./views/error')),
-  route('/:mailbox', require('./views/mailbox'), [
-    route('/:message', require('./views/email'))
-  ])
-])
-```
-
-Routes on the `router` are passed in as a nested array. This means that the
-entry point of the application also becomes a site map, making it easier to
-figure out how views relate to each other.
-
-Under the hood `choo` uses [sheet-router][sheet-router]. Internally the
-currently rendered route is kept in `state.app.location`. If you want to modify
-the location programmatically the `reducer` for the location can be called
-using `send('app:location', { location: href })`. This will not work from
-within namespaced `models`, and usage should preferably be kept to a minimum.
-Changing views all over the place tends to lead to messiness.
-
-## Views
-[docs wip]
-
-### forms
+### Forms
 Forms and lists are probably the most used concepts on any page. Together with
 links they comprise most of what can be done on web pages.
 ```js
@@ -460,7 +461,7 @@ const view = choo.view`
 `
 ```
 
-### links
+### Links
 In HTML links are represented with the `<a href="/some-location">` tag. By
 default `choo` enables a `subscription` for all `a` tags on a page. When a link
 is clicked, the click event is caught, and the value of `href` is passed into
@@ -474,10 +475,10 @@ const nav = choo.view`
 `
 ```
 
-### styles
+### Styles
 [docs wip]
 
-## Rendering in Node
+### Rendering in Node
 Sometimes it's necessary to render code inside of Node; for serving hyper fast
 first requests, testing or other purposes. Applications that are capable of
 being rendered in both Node and the browser are called
@@ -521,7 +522,7 @@ if (module.parent) module.exports = app
 else document.body.appendChild(app.start())
 ```
 
-### Rehydration
+#### Rehydration
 Now that your application is succesfully rendering in Node, the next step would
 be to make it load a JavaScript bundle once has loaded the HTML. To do this we
 will use a technique called _rehydration_.
