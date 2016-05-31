@@ -98,6 +98,9 @@
 - [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
   ([github](https://github.com/shuhei/todomvc-choo))
 
+_note: If you've built something cool using `choo` or are using it in production, we'd
+love to hear from you!_
+
 ## Usage
 ```js
 const choo = require('choo')
