@@ -68,7 +68,6 @@
   - [Websockets](#websockets)
   - [Forms](#forms)
   - [Links](#links)
-  - [Styles](#styles)
   - [Rendering in Node](#rendering-in-node)
 - [API](#api)
 - [Errors](#errors)
@@ -479,9 +478,6 @@ const nav = choo.view`
   <a href="/second-link">second link</a>
 `
 ```
-
-### Styles
-[docs wip]
 
 ### Rendering in Node
 Sometimes it's necessary to render code inside of Node; for serving hyper fast
