@@ -53,7 +53,7 @@
 ## Table of Content
 - [Features](#features)
 - [Demos](#demos)
-- [Usage](#usage)
+- [Getting started](#getting-started)
 - [Concepts](#concepts)
   - [Models](#models)
   - [Actions](#actions)
@@ -89,7 +89,7 @@
 
 ## Demos
 - [Input example](https://github.com/yoshuawuyts/choo/tree/master/examples/title)
-  (@examples directory)
+  ([requirebin](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186))
 - [HTTP effects example](https://github.com/yoshuawuyts/choo/tree/master/examples/http)
   (@examples directory)
 - [Mailbox routing example](https://github.com/yoshuawuyts/choo/tree/master/examples/mailbox)
@@ -100,36 +100,75 @@
 _note: If you've built something cool using `choo` or are using it in production, we'd
 love to hear from you!_
 
-## Usage
+## Getting started
+Let's create an input box that changes the content of a textbox in real time.
+[Click here to see the final app](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186).
+
+First we import `choo` and create a new instance:
 ```js
 const choo = require('choo')
-
 const app = choo()
+```
+
+Then we define a model. We set an initial value of `state` and a `reducer` that
+can be called to modify it:
+```js
 app.model({
-  namespace: 'input',
-  state: {
-    title: 'my demo app'
-  },
+  state: { title: 'Set the title' },
   reducers: {
-    update: (action, state) => ({ title: action.payload })
-  },
-  effects: {
-    update: (action, state, send) => (document.title = action.payload)
+    update: (action, state) => ({ title: action.value })
+  }
+})
+```
+
+Then we create a new view. It has an `h1` tag which displays the current title,
+and an `<input>` field which sends the current value of the text box on every
+input:
+```js
+const mainView = (params, state, send) => choo.view`
+  <main>
+    <h1>${state.title}</h1>
+    <input
+      type="text"
+      oninput=${(e) => send('update', { value: e.target.value })}>
+  </main>
+`
+```
+
+We then bind the view to the `/` route on our application
+```js
+app.router((route) => [
+  route('/', mainView)
+])
+```
+
+And then start the app and append it to the DOM. You can now run it and [see it
+in action!](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186)
+```js
+const tree = app.start()
+document.body.appendChild(tree)
+```
+
+And all together now:
+```js
+const choo = require('choo')
+const app = choo()
+
+app.model({
+  state: { title: 'Set the title' },
+  reducers: {
+    update: (action, state) => ({ title: action.value })
   }
 })
 
-const mainView = (params, state, send) => {
-  return choo.view`
-    <main class="app">
-      <h1>${state.input.title}</h1>
-      <label>Set the title</label>
-      <input
-        type="text"
-        placeholder=${state.input.title}
-        oninput=${(e) => send('input:update', { payload: e.target.value })}>
-    </main>
-  `
-}
+const mainView = (params, state, send) => choo.view`
+  <main>
+    <h1>${state.title}</h1>
+    <input
+      type="text"
+      oninput=${(e) => send('update', { value: e.target.value })}>
+  </main>
+`
 
 app.router((route) => [
   route('/', mainView)
