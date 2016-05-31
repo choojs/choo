@@ -3,6 +3,7 @@ const sheetRouter = require('sheet-router')
 const document = require('global/document')
 const href = require('sheet-router/href')
 const sendAction = require('send-action')
+const mutate = require('xtend/mutable')
 const assert = require('assert')
 const xtend = require('xtend')
 const yo = require('yo-yo')
@@ -118,6 +119,7 @@ function choo () {
     function handleAction (action, state, send) {
       var reducersCalled = false
       var effectsCalled = false
+      const newState = xtend(state)
 
       // validate if a namespace exists. Namespaces
       // are delimited by the first ':'. Perhaps
@@ -132,9 +134,12 @@ function choo () {
       const _reducers = ns ? reducers[ns] : reducers
       if (_reducers && _reducers[action.type]) {
         if (ns) {
-          const newState = _reducers[action.type](action, state[ns])
-          state[ns] = xtend(state[ns], newState)
-        } else state = xtend(state, reducers[action.type](action, state))
+          const reducedState = _reducers[action.type](action, state[ns])
+          if (!newState[ns]) newState[ns] = {}
+          mutate(newState[ns], xtend(state[ns], reducedState))
+        } else {
+          mutate(newState, reducers[action.type](action, state))
+        }
         reducersCalled = true
       }
 
@@ -149,14 +154,16 @@ function choo () {
         throw new Error('Could not find action ' + action.type)
       }
 
-      return state
+      // allows (newState === oldState) checks
+      return (reducersCalled) ? newState : state
     }
 
     // update the DOM after every state mutation
     // (obj, obj) -> null
-    function onchange (action, state) {
+    function onchange (action, newState, oldState) {
+      if (newState === oldState) return
       const oldTree = document.querySelector('#' + rootId)
-      const newTree = _router(state.app.location, state, send)
+      const newTree = _router(newState.app.location, newState, send, oldState)
       newTree.setAttribute('id', rootId)
       yo.update(oldTree, newTree)
     }
