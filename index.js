@@ -165,7 +165,7 @@ function choo () {
       const oldTree = document.querySelector('#' + rootId)
       const newTree = _router(newState.app.location, newState, send, oldState)
       newTree.setAttribute('id', rootId)
-      yo.update(oldTree, newTree)
+      if (oldTree) yo.update(oldTree, newTree)
     }
   }
 
