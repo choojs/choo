@@ -71,6 +71,7 @@
   - [Styles](#styles)
   - [Rendering in Node](#rendering-in-node)
 - [API](#api)
+- [Errors](#errors)
 - [FAQ](#faq)
 - [Installation](#installation)
 - [See Also](#see-also)
@@ -609,6 +610,22 @@ following values:
 - __opts.href:__ default: `true`. Handle all relative `<a
   href="<location>"></a>` clicks and update internal `state.location`
   accordingly.
+
+## Errors
+### Could not find DOM node (#id) to update
+This means that a re-render of the DOM was triggered before the first render
+was done. This is usually the case when `send()` is called inside a
+`subscription` before the DOM is done rendering. Instead try listening for a
+`'DOMContentLoaded'` event:
+```js
+document.addEventListener('DOMContentLoaded', (e) => send('init'))
+```
+
+### send() cannot be called on the server
+This means a `send()` event was triggered in Node. In Node, `reducers`,
+`effects` and `subscriptions` are disabled for performance reasons, so if
+`send()` was called to trigger an action it wouldn't work. Try finding where in
+the DOM tree `send()` is called, and disable it when called from within Node.
 
 ## FAQ
 ### Why did you build this?

@@ -163,6 +163,7 @@ function choo () {
     function onchange (action, newState, oldState) {
       if (newState === oldState) return
       const oldTree = document.querySelector('#' + rootId)
+      assert.ok(oldTree, "Could not find DOM node '#" + rootId + "' to update")
       const newTree = _router(newState.app.location, newState, send, oldState)
       newTree.setAttribute('id', rootId)
       yo.update(oldTree, newTree)
