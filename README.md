@@ -97,8 +97,8 @@
 - [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
   ([github](https://github.com/shuhei/todomvc-choo))
 
-_note: If you've built something cool using `choo` or are using it in production, we'd
-love to hear from you!_
+_note: If you've built something cool using `choo` or are using it in
+production, we'd love to hear from you!_
 
 ## Getting started
 Let's create an input box that changes the content of a textbox in real time.
