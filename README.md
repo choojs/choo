@@ -652,12 +652,8 @@ following values:
 ## Errors
 ### Could not find DOM node (#id) to update
 This means that a re-render of the DOM was triggered before the first render
-was done. This is usually the case when `send()` is called inside a
-`subscription` before the DOM is done rendering. Instead try listening for a
-`'DOMContentLoaded'` event:
-```js
-document.addEventListener('DOMContentLoaded', (e) => send('init'))
-```
+was done. This is usually the case when `send()` is called before the DOM is
+done rendering, usually done (incorrectly) from within an `effect`.
 
 ### send() cannot be called on the server
 This means a `send()` event was triggered in Node. In Node, `reducers`,

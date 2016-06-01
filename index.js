@@ -81,7 +81,9 @@ function choo () {
       if (model.subscriptions) {
         assert.ok(Array.isArray(model.subscriptions, 'subs must be an array'))
         model.subscriptions.forEach(function (sub) {
-          sub(send)
+          document.addEventListener('DOMContentLoaded', function () {
+            sub(send)
+          })
         })
       }
     })
