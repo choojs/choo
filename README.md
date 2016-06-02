@@ -84,7 +84,7 @@
 - __transparent side effects:__ using `effects` and `subscriptions` brings
   clarity to IO
 - __omakase:__ composed out of a balanced selection of open source packages
-- __idempotent:__ renders seemlessly in both Node and browsers
+- __idempotent:__ renders seamlessly in both Node and browsers
 - __very cute:__ choo choo!
 
 ## Demos
@@ -396,7 +396,7 @@ app.model({
   ],
   effects: {
     'sse:close': () => stream.close()
-    'app:error': (state, event_ => console.error(`error: ${event.payload}`)),
+    'app:error': (state, event) => console.error(`error: ${event.payload}`),
     'app:print': (state, event) => console.log(`sse: ${event.payload}`)
   }
 })
