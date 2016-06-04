@@ -2,6 +2,8 @@ const history = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
 const href = require('sheet-router/href')
+const hash = require('sheet-router/hash')
+const hashMatch = require('hash-match')
 const sendAction = require('send-action')
 const mutate = require('xtend/mutable')
 const assert = require('assert')
@@ -205,6 +207,13 @@ function appInit (opts) {
   // enable HTML5 history API
   if (opts.href !== false) pushLocationSub(href)
   if (opts.history !== false) pushLocationSub(history)
+  if (opts.hash !== false) {
+    pushLocationSub(function (navigate) {
+      hash(function (fragment) {
+        navigate(hashMatch(fragment))
+      })
+    })
+  }
 
   return model
 
