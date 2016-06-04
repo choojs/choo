@@ -95,8 +95,8 @@
 ## Demos
 - [Input example](https://github.com/yoshuawuyts/choo/tree/master/examples/title)
   ([requirebin](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186))
-- [HTTP effects example](https://github.com/yoshuawuyts/choo/tree/master/examples/http)
-  (@examples directory)
+- [HTTP effects example](https://fork-fang.hyperdev.space/)
+  ([hyperdev](https://hyperdev.com/#!/project/fork-fang))
 - [Mailbox routing example](https://github.com/yoshuawuyts/choo/tree/master/examples/mailbox)
   (@examples directory)
 - [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
