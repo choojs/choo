@@ -52,7 +52,10 @@ function choo () {
   // start the application
   // (str?, obj?) -> DOMNode
   function start (rootId, opts) {
-    if (!opts) opts = rootId
+    if (!opts) {
+      opts = rootId
+      rootId = null
+    }
     opts = opts || {}
     const name = opts.name || 'choo'
     const initialState = {}
