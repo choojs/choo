@@ -192,12 +192,9 @@ function choo () {
 // initial application state model
 // obj -> obj
 function appInit (opts) {
-  var initialLocation
-  if (opts.history !== false) {
-    initialLocation = document.location.href
-  } else {
-    initialLocation = hashMatch(document.location.hash)
-  }
+  const initialLocation = (opts.hash === true)
+    ? hashMatch(document.location.hash)
+    : document.location.href
 
   const model = {
     namespace: 'app',
@@ -213,18 +210,18 @@ function appInit (opts) {
     }
   }
 
-  // enable catching <href a=""></href> links
-  // enable HTML5 history API
-  if (opts.href !== false) pushLocationSub(href)
-  if (opts.history !== false) {
-    pushLocationSub(history)
-  // otherwise enable hash history
-  } else {
+  // if hash routing explicitly enabled, subscribe to it
+  if (opts.hash === true) {
     pushLocationSub(function (navigate) {
       hash(function (fragment) {
         navigate(hashMatch(fragment))
       })
     })
+  // otherwise, subscribe to HTML5 history API
+  } else {
+    if (opts.history !== false) pushLocationSub(history)
+    // enable catching <a href=""></a> links
+    if (opts.href !== false) pushLocationSub(href)
   }
 
   return model
