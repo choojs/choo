@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "global": "^4.3.0",
-    "send-action": "^1.1.0",
+    "send-action": "^2.0.0",
     "sheet-router": "^3.0.0",
     "xhr": "^2.2.0",
     "xtend": "^4.0.1",
