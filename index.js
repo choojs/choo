@@ -2,6 +2,8 @@ const history = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
 const href = require('sheet-router/href')
+const hash = require('sheet-router/hash')
+const hashMatch = require('hash-match')
 const sendAction = require('send-action')
 const mutate = require('xtend/mutable')
 const assert = require('assert')
@@ -190,9 +192,13 @@ function choo () {
 // initial application state model
 // obj -> obj
 function appInit (opts) {
+  const initialLocation = (opts.hash === true)
+    ? hashMatch(document.location.hash)
+    : document.location.href
+
   const model = {
     namespace: 'app',
-    state: { location: document.location.href },
+    state: { location: initialLocation },
     subscriptions: [],
     reducers: {
       // handle href links
@@ -204,10 +210,19 @@ function appInit (opts) {
     }
   }
 
-  // enable catching <href a=""></href> links
-  // enable HTML5 history API
-  if (opts.href !== false) pushLocationSub(href)
-  if (opts.history !== false) pushLocationSub(history)
+  // if hash routing explicitly enabled, subscribe to it
+  if (opts.hash === true) {
+    pushLocationSub(function (navigate) {
+      hash(function (fragment) {
+        navigate(hashMatch(fragment))
+      })
+    })
+  // otherwise, subscribe to HTML5 history API
+  } else {
+    if (opts.history !== false) pushLocationSub(history)
+    // enable catching <a href=""></a> links
+    if (opts.href !== false) pushLocationSub(href)
+  }
 
   return model
 

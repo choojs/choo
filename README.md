@@ -655,6 +655,10 @@ following values:
 - __opts.href:__ default: `true`. Handle all relative `<a
   href="<location>"></a>` clicks and update internal `state.location`
   accordingly.
+- __opts.hash:__ default: `false`. Enable a `subscription` to the hash change
+  event, updating the internal `state.location` state whenever the URL hash
+  changes (eg `localhost/#posts/123`). Enabling this option automatically
+  disables `opts.history` and `opts.href`.
 
 ## Errors
 ### Could not find DOM node (#id) to update
