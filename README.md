@@ -478,7 +478,7 @@ function view (params, state, send) {
 
 app.model({
   effects: {
-    login: (state, action, send) => {
+    login: (action, state, send) => {
       http.post('/login', { body: action.data }, (err, res, body) => {
         send('authorize', { payload: body })
       })
