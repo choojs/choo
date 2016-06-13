@@ -243,7 +243,7 @@ Outside the model they're called by `send('todos:add')` and
 const app = choo()
 app.model({
   namespace: 'todos',
-  model: { todos: [] },
+  state: { todos: [] },
   reducers: {
     add: (state, action) => ({ todos: state.todos.concat(action.payload) })
   }
