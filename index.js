@@ -139,19 +139,19 @@ function choo () {
       const _reducers = ns ? reducers[ns] : reducers
       if (_reducers && _reducers[action.type]) {
         if (ns) {
-          const reducedState = _reducers[action.type](action, state[ns])
+          const reducedState = _reducers[action.type](action, Object.freeze(state[ns]))
           if (!newState[ns]) newState[ns] = {}
           mutate(newState[ns], xtend(state[ns], reducedState))
         } else {
-          mutate(newState, reducers[action.type](action, state))
+          mutate(newState, reducers[action.type](action, Object.freeze(state)))
         }
         reducersCalled = true
       }
 
       const _effects = ns ? effects[ns] : effects
       if (_effects && _effects[action.type]) {
-        if (ns) _effects[action.type](action, state[ns], send)
-        else _effects[action.type](action, state, send)
+        if (ns) _effects[action.type](action, Object.freeze(state[ns]), send)
+        else _effects[action.type](action, Object.freeze(state), send)
         effectsCalled = true
       }
 

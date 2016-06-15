@@ -262,6 +262,10 @@ and has access to the full application state. Try and keep the logic in these
 bulk of your logic will safely shielded, with only a few points touching every
 part of your application.
 
+Within the scope of `reducers` and `effects`, you can access the current `state`,
+however, the object is frozen, disallowing changes. To update the state, you 
+must return an object with your updates from a `reducer`.
+
 ## Effects
 Side effects are done through `effects` declared in `app.model()`. Unlike
 `reducers` they cannot modify the state by returning objects, but get a
