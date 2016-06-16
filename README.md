@@ -140,6 +140,9 @@ const mainView = (params, state, send) => choo.view`
 `
 ```
 
+_Note_: if an `id` property is defined on the outer-most element it will be
+replaced.
+
 We then bind the view to the `/` route on our application
 ```js
 app.router((route) => [
