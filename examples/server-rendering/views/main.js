@@ -6,7 +6,7 @@ module.exports = function (params, state, send) {
   const clientMessage = state.message.client
 
   assert.equal(typeof serverMessage, 'string', 'server should be a string')
-  assert.equal(typeof clientMessage, 'string', 'server should be a string')
+  assert.equal(typeof clientMessage, 'string', 'client should be a string')
 
   return choo.view`
     <section id="app-root">
