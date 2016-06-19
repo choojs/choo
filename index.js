@@ -54,7 +54,7 @@ function choo () {
   // start the application
   // (str?, obj?) -> DOMNode
   function start (rootId, opts) {
-    if (!opts) {
+    if (!opts && typeof rootId !== 'string') {
       opts = rootId
       rootId = null
     }
