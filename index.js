@@ -84,7 +84,7 @@ function choo () {
     // react to actions (read-only)
     _models.forEach(function (model) {
       if (model.subscriptions) {
-        assert.ok(Array.isArray(model.subscriptions, 'subs must be an array'))
+        assert.ok(Array.isArray(model.subscriptions), 'subs must be an array')
         model.subscriptions.forEach(function (sub) {
           sub(send)
         })
