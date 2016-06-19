@@ -1,3 +1,8 @@
+## `2.2.2`
+- [53](https://github.com/yoshuawuyts/choo/pull/53) - fix assert call for
+  subscriptions
+- [52](https://github.com/yoshuawuyts/choo/pull/52) - fix naming rootId
+
 ## `2.0.0`
 ### breaking changes
 - namespaces are now enforced more strictly
