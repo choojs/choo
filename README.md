@@ -290,7 +290,7 @@ An example subscription that logs `"dog?"` every second:
 const app = choo()
 app.model({
   subscriptions: [
-    (send) => setTimeout(() => send('app:print', { payload: 'dog?' }), 1000)
+    (send) => setInterval(() => send('app:print', { payload: 'dog?' }), 1000)
   ],
   effects: {
     'app:print': (state, action) => console.log(action.payload)
