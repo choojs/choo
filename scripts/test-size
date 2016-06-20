@@ -1,10 +1,65 @@
 #!/bin/sh
 
-browserify index.js \
-  -g unassertify \
-  -g es2020 \
-  -g uglifyify \
-  -p bundle-collapser/plugin \
-  | uglifyjs \
-  | gzip-size \
-  | pretty-bytes
+usage () {
+cat << USAGE
+script/test-size
+  Commands:
+    g, gzip (default)    Output gzip size
+    m, minified          Output size minified
+    d, discify           Run discify
+USAGE
+}
+
+gzip_size () {
+  browserify index.js \
+    -g unassertify \
+    -g es2020 \
+    -g uglifyify \
+    -p bundle-collapser/plugin \
+    | uglifyjs \
+    | gzip-size \
+    | pretty-bytes
+}
+
+min_size () {
+  browserify index.js \
+    -g unassertify \
+    -g es2020 \
+    -g uglifyify \
+    -p bundle-collapser/plugin \
+    | uglifyjs \
+    | wc -c \
+    | pretty-bytes
+}
+
+run_discify () {
+  browserify index.js --full-paths \
+    -g unassertify \
+    -g es2020 \
+    -g uglifyify \
+    | uglifyjs \
+    | discify --open
+}
+
+# set CLI flags
+getopt -T > /dev/null
+if [ "$?" -eq 4 ]; then
+  args="$(getopt --long help discify minified --options hmdg -- "$*")"
+else args="$(getopt h "$*")"; fi
+[ ! $? -eq 0 ] && { usage && exit 2; }
+eval set -- "$args"
+
+# parse CLI flags
+while true; do
+  case "$1" in
+    -h|--help) usage && exit 1 ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+case "$1" in
+  d|discify) shift; run_discify "$@" ;;
+  m|minified) shift; printf "min:  %s\n" "$(min_size)" "$@" ;;
+  g|gzip|*) shift; printf "gzip: %s\n" "$(gzip_size)" "$@" ;;
+esac
