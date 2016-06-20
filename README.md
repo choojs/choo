@@ -397,7 +397,7 @@ app.model({
     }
   ],
   effects: {
-    'sse:close': () => stream.close()
+    'sse:close': () => stream.close(),
     'app:error': (state, event) => console.error(`error: ${event.payload}`),
     'app:print': (state, event) => console.log(`sse: ${event.payload}`)
   }
