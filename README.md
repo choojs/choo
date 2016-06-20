@@ -288,7 +288,7 @@ chat app, or when catching keyboard input for a videogame.
 An example subscription that logs `"dog?"` every second:
 ```js
 const app = choo()
-choo.model({
+app.model({
   subscriptions: [
     (send) => setTimeout(() => send('app:print', { payload: 'dog?' }), 1000)
   ],
