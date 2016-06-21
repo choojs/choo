@@ -248,7 +248,7 @@ app.model({
   namespace: 'todos',
   state: { todos: [] },
   reducers: {
-    add: (state, action) => ({ todos: state.todos.concat(action.payload) })
+    add: (action, state) => ({ todos: state.todos.concat(action.payload) })
   }
 })
 ```
@@ -293,7 +293,7 @@ app.model({
     (send) => setInterval(() => send('app:print', { payload: 'dog?' }), 1000)
   ],
   effects: {
-    'app:print': (state, action) => console.log(action.payload)
+    'app:print': (action, state) => console.log(action.payload)
   }
 })
 ```
