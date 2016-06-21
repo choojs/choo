@@ -190,7 +190,7 @@ document.body.appendChild(tree)
 `choo` cleanly structures internal data flow, so that all pieces of logic can
 be combined into a nice, cohesive machine. Internally all logic lives within
 `models` that contain several properties. `subscriptions` are functions that
-are called at startup and have `send()` passed in, so they act as read-only
+are called at DOM ready and have `send()` passed in, so they act as read-only
 sources of data. `effects` react to changes, perform an `action` and can then
 post the results. `reducers` take data, modify it, and update the internal
 `state`.
