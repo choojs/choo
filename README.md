@@ -289,11 +289,12 @@ An example subscription that logs `"dog?"` every second:
 ```js
 const app = choo()
 app.model({
+  namespace: 'app',
   subscriptions: [
     (send) => setInterval(() => send('app:print', { payload: 'dog?' }), 1000)
   ],
   effects: {
-    'app:print': (action, state) => console.log(action.payload)
+    print: (action, state) => console.log(action.payload)
   }
 })
 ```
