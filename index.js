@@ -81,14 +81,17 @@ function choo () {
 
     // subscriptions are loaded after sendAction() is called
     // because they both need access to send() and can't
-    // react to actions (read-only)
-    _models.forEach(function (model) {
-      if (model.subscriptions) {
-        assert.ok(Array.isArray(model.subscriptions), 'subs must be an array')
-        model.subscriptions.forEach(function (sub) {
-          sub(send)
-        })
-      }
+    // react to actions (read-only) - also wait on DOM to
+    // be loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      _models.forEach(function (model) {
+        if (model.subscriptions) {
+          assert.ok(Array.isArray(model.subscriptions), 'subs must be an arr')
+          model.subscriptions.forEach(function (sub) {
+            sub(send)
+          })
+        }
+      })
     })
 
     // If an id is provided, the application will rehydrate
