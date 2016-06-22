@@ -1,5 +1,5 @@
 const tape = require('tape')
-const choo = require('../')
+const choo = require('../../')
 
 tape('should render on the server', function (t) {
   t.test('should render a static response', function (t) {

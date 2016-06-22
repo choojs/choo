@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i xhr",
-    "test": "standard && npm run deps && NODE_ENV=test node tests/*",
-    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/*"
+    "test:server": "standard && npm run deps && NODE_ENV=test node tests/server/*",
+    "test:server:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/server/*",
+    "test:browser": "standard && npm run deps && NODE_ENV=test karma start",
+    "test:browser:cov": "standard && npm run deps && NODE_ENV=test COVERAGE=true karma start",
+    "test:cov": "npm run test:server:cov && npm run test:browser:cov",
+    "test": "npm run test:server && npm run test:browser"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
@@ -30,11 +34,21 @@
   "devDependencies": {
     "bankai": "^2.0.2",
     "browserify": "^13.0.1",
+    "browserify-istanbul": "^2.0.0",
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.5.1",
     "es2020": "^1.0.1",
     "insert-css": "^0.2.0",
-    "istanbul": "^0.4.3",
+    "istanbul": "^0.4.4",
+    "karma": "^0.13.22",
+    "karma-browserify": "^5.0.5",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-coverage": "^1.0.0",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-sauce-launcher": "^1.0.0",
+    "karma-script-launcher": "^1.0.0",
+    "karma-tap": "^1.0.4",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.0",
     "standard": "^7.1.0",

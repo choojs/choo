@@ -3,3 +3,4 @@ coverage/
 tmp/
 npm-debug.log*
 .DS_Store
+.sauce-credentials.json
