@@ -326,7 +326,20 @@ within namespaced `models`, and usage should preferably be kept to a minimum.
 Changing views all over the place tends to lead to messiness.
 
 ## Views
-[docs wip]
+Views are pure functions that return a DOM tree for the router to render. They’re passed the current state, and any time the state changes they’re run again with the new state.
+
+Views are also passed the `send` function, which they can use to dispatch actions that can update the state. For example, the DOM tree can have an `onclick` handler that dispatches an `add` action.
+
+```javascript
+const view = (params, state, send) => {
+  return choo.view`
+    <div>
+      <h1>Total todos: ${state.todos.length}</h1>
+      <button onclick=${(e) => send('add', { payload: {title: 'demo'})}>Add</button>
+    </div>`
+}
+```
+In this example, when the `Add` button is clicked, the view will dispatch an `add` action that the model’s `add` reducer will receive. [As seen above](#models), the reducer will add an item to the state’s `todos` array. The state change will cause this view to be run again with the new state, and the resulting DOM tree will be used to [efficiently patch the DOM](#does-choo-use-a-virtual-dom).
 
 ## Common Actions
 ### HTTP
