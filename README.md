@@ -728,11 +728,19 @@ give you my opinions directly instead. Ready?  Here goes:
 - __mercury:__ ah, `mercury` is an interesting one. It seemed like a brilliant
   idea until I started using it - the abstractions felt heavy, and it took team
   members a long time to pick up. In the end I think using `mercury` helped
-  greatly in getting `choo` where it is now.
+  shaped `choo` greatly, despite not working out for me.
 - __deku:__ `deku` is fun. I even contributed a bit in the early days. It could
   probably best be described as "a functional version of `react`". The
   dependence on `JSX` isn't great, but give it a shot if you think it looks
   neat.
+- __cycle:__ `cycle`'s pretty good - unlike most frameworks it lays out a clear
+  architecture which helps with reasoning about it. That said, it's built on
+  `virtual-dom` and `RxJS` which are a bit heavy for my taste. `choo` works
+  pretty well for FRP style programming, but something like [inu][inu] might be
+  an interesting alternative.
+- __vue:__ like `cycle`, `vue` is pretty good. But like `cycle` it uses tech
+  that provides framework lock in, and additionally doesn't have a clean enough
+  architecture. I appreciate what it does, but don't think it's the answer.
 
 ### Which packages was choo built on?
 - __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo)
@@ -819,3 +827,4 @@ $ npm install choo
 [dom]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
 [sheet-router]: https://github.com/yoshuawuyts/sheet-router
 [html-input]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+[inu]: https://github.com/ahdinosaur/inu
