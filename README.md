@@ -89,7 +89,7 @@
 - __transparent side effects:__ using `effects` and `subscriptions` brings
   clarity to IO
 - __omakase:__ composed out of a balanced selection of open source packages
-- __idempotent:__ renders seamlessly in both Node and browsers
+- __isomorphic:__ renders seamlessly in both Node and browsers
 - __very cute:__ choo choo!
 
 ## Demos
