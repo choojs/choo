@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i xhr",
-    "test": "standard && npm run deps && NODE_ENV=test node tests/*",
-    "test:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/*"
+    "test:server": "standard && npm run deps && NODE_ENV=test node tests/server/*",
+    "test:server:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/server/*",
+    "test:browser": "standard && npm run deps && NODE_ENV=test zuul tests/browser/*",
+    "test:browser:local": "standard && npm run deps && NODE_ENV=test zuul --local 8080 -- tests/browser/*",
+    "test:cov": "npm run test:server:cov && npm run test:browser",
+    "test": "npm run test:server && npm run test:browser"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
@@ -30,15 +34,18 @@
   "devDependencies": {
     "bankai": "^2.0.2",
     "browserify": "^13.0.1",
+    "browserify-istanbul": "^2.0.0",
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.5.1",
     "es2020": "^1.0.1",
     "insert-css": "^0.2.0",
-    "istanbul": "^0.4.3",
+    "istanbul": "^0.4.4",
+    "karma-sauce-launcher": "^1.0.0",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.0",
     "standard": "^7.1.0",
     "tachyons": "^4.0.0-beta.19",
-    "tape": "^4.5.1"
+    "tape": "^4.5.1",
+    "zuul": "toddself/zuul"
   }
 }
