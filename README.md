@@ -716,7 +716,7 @@ productive right from the start.
 Ah, so this is where I get to rant. `choo` (_chugga-chugga-chugga-choo-choo!_)
 was built because other options didn't quite cut it for me, so instead of
 presenting some faux-objective chart with skewed benchmarks and checklists I'll
-give you my opinions directly instead. Ready?  Here goes:
+give you my opinions directly. Ready?  Here goes:
 - __react:__ despite being at the root of a giant paradigm shift for frontend
   (thank you forever!), `react` is kind of big (`155kb` was it?). They also
   like classes a lot, and enforce a _lot_ of abstractions. It also encourages
