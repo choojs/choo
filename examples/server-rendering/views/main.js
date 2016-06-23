@@ -16,7 +16,7 @@ module.exports = function (params, state, send) {
         The first message is passed in by the server on compile time,
         the second message was set by the client.
         The more static the data you pass in, the more cachable your site
-        beocmes (and thus performant). Try and keep the amount of properties
+        becomes (and thus performant). Try and keep the amount of properties
         you pass in on the server to a minimum for most applications - it'll
         make life a lot easier in the long run, hah.
       `}</p>
