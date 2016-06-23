@@ -717,20 +717,20 @@ Ah, so this is where I get to rant. `choo` (_chugga-chugga-chugga-choo-choo!_)
 was built because other options didn't quite cut it for me, so instead of
 presenting some faux-objective chart with skewed benchmarks and checklists I'll
 give you my opinions directly instead. Ready?  Here goes:
-- __react:__ `react` is kind of big (`155kb` was it?), has a lot of new, odd
-  words and does weird things with versioning. They also like classes a lot,
-  and enforce a _lot_ of abstractions. It also encourages the use of `JSX` and
-  `babel` which break _JavaScript, The Language™_. And all that without even
-  making clear how code should flow, which is bad in a team setting. I don't
-  like complicated things and in my view `react` is one of them. `react` is not
-  for me.
+- __react:__ despite being at the root of a giant paradigm shift for frontend
+  (thank you forever!), `react` is kind of big (`155kb` was it?). They also
+  like classes a lot, and enforce a _lot_ of abstractions. It also encourages
+  the use of `JSX` and `babel` which break _JavaScript, The Language™_. And all
+  that without making clear how code should flow, which is crucial in a team
+  setting. I don't like complicated things and in my view `react` is one of
+  them. `react` is not for me.
 - __mithril:__ never used it, never will. I didn't like the API, but if you
   like it maybe it's worth a shot - the API seems small enough. I wouldn't know
   how pleasant it is past face value.
 - __preact:__ a pretty cool idea; seems to fix most of what is wrong with
-  `react` - except what is broken by design (the API). It also doesn't fix the
-  large dependencies `react` seems to use (e.g. `react-router` and friends). If
-  `react` is your jam, and you will not budge, sitting at `3kb` this is
+  `react`. However it doesn't fix the large dependencies `react` seems to use
+  (e.g. `react-router` and friends) and doesn't help at all with architecture.
+  If `react` is your jam, and you will not budge, sitting at `3kb` this is
   probably a welcome gift.
 - __angular:__ definitely not for me. I like small things with a clear mental
   model; `angular` doesn't tick any box in my book of nice things.
@@ -751,8 +751,8 @@ give you my opinions directly instead. Ready?  Here goes:
   `virtual-dom` and `RxJS` which are a bit heavy for my taste. `choo` works
   pretty well for FRP style programming, but something like [inu][inu] might be
   an interesting alternative.
-- __vue:__ like `cycle`, `vue` is pretty good. But like `cycle` it uses tech
-  that provides framework lock in, and additionally doesn't have a clean enough
+- __vue:__ like `cycle`, `vue` is pretty good. But it also uses tech that
+  provides framework lock in, and additionally doesn't have a clean enough
   architecture. I appreciate what it does, but don't think it's the answer.
 
 ### Which packages was choo built on?
