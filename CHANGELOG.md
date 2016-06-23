@@ -1,3 +1,8 @@
+## `2.3.0`
+- [55](https://github.com/yoshuawuyts/choo/pull/55) - load subscriptions once
+  DOM is ready
+- heaps of documentation fixes; looks like choo is taking off 🐨
+
 ## `2.2.2`
 - [53](https://github.com/yoshuawuyts/choo/pull/53) - fix assert call for
   subscriptions
