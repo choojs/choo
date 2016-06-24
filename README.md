@@ -55,7 +55,7 @@
   </a>
 </div>
 
-## Table of Content
+## Table of Contents
 - [Features](#features)
 - [Demos](#demos)
 - [Getting started](#getting-started)
