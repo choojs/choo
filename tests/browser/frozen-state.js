@@ -3,53 +3,58 @@ const choo = require('../../')
 
 tape('should render on the client', function (t) {
   t.test('state should not be mutable', function (t) {
-    t.plan(3)
+    t.plan(4)
 
     const app = choo()
     const state = {
       foo: 'baz',
       beep: 'boop'
     }
+
     app.model({
       state: state,
+      namespace: 'test',
       reducers: {
-        mutate: (action, state) => {
-          state.foo = 'zap'
+        'no-reducer-mutate': (action, state) => {
           return {}
         },
-        noMutate: (action, state) => {
-          return {beep: 'poob'}
+        'mutate-on-return': (action, state) => {
+          delete action.type
+          return action
         }
       },
       effects: {
-        effectMutate: (action, state) => {
-          state.foo = 'zap'
+        'triggers-reducers': (action, state, send) => {
+          send('test:mutate-on-return', {beep: 'barp'})
         }
       }
     })
 
+    let loop = -1
+
+    const asserts = [
+      (state) => t.deepEqual(state, {foo: 'baz', beep: 'boop'}, 'intial state'),
+      (state) => t.deepEqual(state, {foo: 'baz', beep: 'boop'}, 'no change in state'),
+      (state) => t.deepEqual(state, {foo: 'oof', beep: 'boop'}, 'change in state from reducer'),
+      (state) => t.deepEqual(state, {foo: 'oof', beep: 'barp'}, 'change in state from effect')
+    ]
+
+    const triggers = [
+      (send) => send('test:no-reducer-mutate'),
+      (send) => send('test:mutate-on-return', {foo: 'oof'}),
+      (send) => send('test:triggers-reducers')
+    ]
+
     app.router((route) => [
       route('/', function (params, state, send) {
-        const okd = (evt) => {
-          if (evt.key === 'a') {
-            send('mutate')
-          } else {
-            send('noMutate')
-          }
-        }
-        return choo.view`<span class="test" onkeydown=${okd}>${state.foo}:${state.beep}</span>`
+        ++loop
+        asserts[loop] && asserts[loop](state.test)
+        setTimeout(() => triggers[loop] && triggers[loop](send), 5)
+        return choo.view`<div><span class="test">${state.foo}:${state.beep}</span></div>`
       })
     ])
-    document.body.appendChild(app.start())
-    const $el = document.querySelector('.test')
-    const mutate = new window.KeyboardEvent('keydown', {key: 'a'})
-    const noMutate = new window.KeyboardEvent('keydown', {key: 'b'})
-    const effectMutate = new window.KeyboardEvent('keydown', {key: 'c'})
-    $el.dispatchEvent(mutate)
-    t.equal($el.innerText, 'baz:boop', 'state did not mutate')
-    $el.dispatchEvent(noMutate)
-    t.equal($el.innerText, 'baz:poob', 'state was updated from a return')
-    $el.dispatchEvent(effectMutate)
-    t.equal($el.innerText, 'baz:poob', 'state was not updated from an effect')
+
+    const tree = app.start()
+    document.body.appendChild(tree)
   })
 })
