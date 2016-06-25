@@ -5,6 +5,7 @@ const href = require('sheet-router/href')
 const hash = require('sheet-router/hash')
 const hashMatch = require('hash-match')
 const sendAction = require('send-action')
+const window = require('global/window')
 const mutate = require('xtend/mutable')
 const assert = require('assert')
 const xtend = require('xtend')
@@ -206,9 +207,11 @@ function appInit (opts) {
     reducers: {
       // handle href links
       location: function setLocation (action, state) {
-        return {
-          location: action.location.replace(/#.*/, '')
+        const newLocation = action.location.replace(/#.*/, '')
+        if (window && (window.location !== newLocation)) {
+          window.history.pushState({}, null, newLocation)
         }
+        return { location: newLocation }
       }
     }
   }
