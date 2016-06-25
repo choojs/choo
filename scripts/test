@@ -1,0 +1,8 @@
+#!/bin/sh
+
+dirname=$(dirname "$(readlink -f "$0")")
+smokestack="$dirname/../node_modules/.bin/smokestack"
+browserify="$dirname/../node_modules/.bin/browserify"
+# tap_closer="$dirname/../node_modules/.bin/tap-closer"
+
+"$browserify" tests/render.js | "$smokestack" -b chrome
