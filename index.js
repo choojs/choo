@@ -179,9 +179,9 @@ function choo () {
   }
 
   // register all routes on the router
-  // [obj|fn] -> null
-  function router (cb) {
-    _router = sheetRouter(cb)
+  // (str?, [fn|[fn]]) -> obj
+  function router (defaultRoute, cb) {
+    _router = sheetRouter(defaultRoute, cb)
     return _router
   }
 
