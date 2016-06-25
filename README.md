@@ -45,7 +45,7 @@
   </a>
   <!-- IRC -->
   <a href="https://webchat.freenode.net/?channels=choo">
-    <img src="https://img.shields.io/badge/irc-freenode-blue.svg"
+    <img src="https://img.shields.io/badge/irc-freenode-blue.svg?style=flat-square"
       alt="IRC - Freenode" />
   </a>
 </div>
