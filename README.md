@@ -823,6 +823,9 @@ $ npm install choo
 - [budo](https://github.com/mattdesl/budo) - quick prototyping tool for
   `browserify`
 - [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
+- [yo-yo](https://github.com/maxogden/yo-yo) - tiny library for modular UI
+- [bel](https://github.com/shama/bel) - composable DOM elements using template
+  strings
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
