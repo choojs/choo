@@ -43,6 +43,11 @@
     <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square"
       alt="Standard" />
   </a>
+  <!-- IRC -->
+  <a href="https://webchat.freenode.net/?channels=choo">
+    <img src="https://img.shields.io/badge/irc-freenode-blue.svg"
+      alt="IRC - Freenode" />
+  </a>
 </div>
 
 <br />
