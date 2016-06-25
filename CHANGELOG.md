@@ -1,3 +1,6 @@
+## `2.3.1`
+- [76](https://github.com/yoshuawuyts/choo/pull/76) - fix router arguments
+
 ## `2.3.0`
 - [55](https://github.com/yoshuawuyts/choo/pull/55) - load subscriptions once
   DOM is ready
