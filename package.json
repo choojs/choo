@@ -33,7 +33,7 @@
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.5.1",
     "es2020": "^1.0.1",
-    "insert-css": "^0.2.0",
+    "insert-css": "^1.0.0",
     "istanbul": "^0.4.3",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.0",
