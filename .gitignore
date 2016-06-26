@@ -5,3 +5,5 @@ npm-debug.log*
 .DS_Store
 .sauce-credentials.json
 *.swp
+sauce_connect.log
+.zuulrc
