@@ -14,5 +14,9 @@ browsers:
   - name: safari
     version: latest
     os: 'Mac 10.11'
+browserify:
+  - transform: es2020
+  - transform: sheetify/transform
+
 
 
