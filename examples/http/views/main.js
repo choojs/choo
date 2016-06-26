@@ -1,7 +1,7 @@
 const html = require('../../../html')
 
 module.exports = function (params, state, send) {
-  const error = state.app.error[0]
+  const error = state.app.errors[0]
   const title = state.api.title
   return html`
     <section>
