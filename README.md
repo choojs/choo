@@ -472,7 +472,6 @@ own][ws-reconnect] if you're building something for production.
 Forms and lists are probably the most used concepts on any page. Together with
 links they comprise most of what can be done on web pages.
 ```js
-const document = require('global/document')
 const choo = require('choo')
 const http = require('choo/http')
 const app = choo()
