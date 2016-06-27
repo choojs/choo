@@ -388,7 +388,7 @@ function postJson (state, action, send) {
 
 function httpDelete (state, action, send) {
   const body = { foo: 'bar' }
-  http.post('/my-endpoint', { json: body }, function (err, res, body) {
+  http.del('/my-endpoint', { json: body }, function (err, res, body) {
     if (err) return send('app:error', { payload: err.message })
     if (res.statusCode !== 200) {
       return send('app:error', { payload:'something went wrong' })
