@@ -1,0 +1,22 @@
+ui: tape
+browsers:
+  - name: chrome
+    version: latest
+    os: 'Mac 10.11'
+  - name: internet explorer
+    version: 11
+    os: 'Windows 10'
+  - name: firefox
+    version: latest
+    os: 'Mac 10.11'
+  - name: microsoftedge
+    version: latest
+  - name: safari
+    version: latest
+    os: 'Mac 10.11'
+browserify:
+  - transform: es2020
+  - transform: sheetify/transform
+
+
+
