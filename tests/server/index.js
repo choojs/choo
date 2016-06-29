@@ -1,5 +1,6 @@
 const tape = require('tape')
 const choo = require('../../')
+const view = require('../../html')
 
 tape('should render on the server', function (t) {
   t.test('should render a static response', function (t) {
@@ -7,7 +8,7 @@ tape('should render on the server', function (t) {
 
     const app = choo()
     app.router((route) => [
-      route('/', () => choo.view`<h1>Hello Tokyo!</h1>`)
+      route('/', () => view`<h1>Hello Tokyo!</h1>`)
     ])
 
     const html = app.toString('/')
@@ -21,7 +22,7 @@ tape('should render on the server', function (t) {
     const app = choo()
     app.router((route) => [
       route('/', function (params, state) {
-        return choo.view`<h1>meow meow ${state.message}</h1>`
+        return view`<h1>meow meow ${state.message}</h1>`
       })
     ])
 
@@ -37,7 +38,7 @@ tape('should render on the server', function (t) {
     app.model({ state: { bin: 'baz', beep: 'boop' } })
     app.router((route) => [
       route('/', function (params, state) {
-        return choo.view`<h1>${state.foo} ${state.bin} ${state.beep}</h1>`
+        return view`<h1>${state.foo} ${state.bin} ${state.beep}</h1>`
       })
     ])
 
@@ -57,7 +58,7 @@ tape('should render on the server', function (t) {
     })
     app.router((route) => [
       route('/', function (params, state) {
-        return choo.view`
+        return view`
           <h1>${state.hello.foo} ${state.hello.bin} ${state.hello.beep}</h1>
         `
       })

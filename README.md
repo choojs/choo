@@ -117,6 +117,7 @@ Let's create an input box that changes the content of a textbox in real time.
 First we import `choo` and create a new instance:
 ```js
 const choo = require('choo')
+const html = require('choo/html')
 const app = choo()
 ```
 
@@ -135,7 +136,7 @@ Then we create a new view. It has an `h1` tag which displays the current title,
 and an `<input>` field which sends the current value of the text box on every
 input:
 ```js
-const mainView = (params, state, send) => choo.view`
+const mainView = (params, state, send) => html`
   <main>
     <h1>${state.title}</h1>
     <input
@@ -165,6 +166,7 @@ document.body.appendChild(tree)
 And all together now:
 ```js
 const choo = require('choo')
+const html = require('choo/html')
 const app = choo()
 
 app.model({
@@ -174,7 +176,7 @@ app.model({
   }
 })
 
-const mainView = (params, state, send) => choo.view`
+const mainView = (params, state, send) => html`
   <main>
     <h1>${state.title}</h1>
     <input
@@ -337,7 +339,7 @@ Views are also passed the `send` function, which they can use to dispatch action
 
 ```javascript
 const view = (params, state, send) => {
-  return choo.view`
+  return html`
     <div>
       <h1>Total todos: ${state.todos.length}</h1>
       <button onclick=${(e) => send('add', { payload: {title: 'demo'})}>Add</button>
@@ -477,10 +479,11 @@ links they comprise most of what can be done on web pages.
 ```js
 const choo = require('choo')
 const http = require('choo/http')
+const html = require('choo/html')
 const app = choo()
 
 function view (params, state, send) {
-  return choo.view`
+  return html`
     <form onsubmit=${onSubmit}>
       <fieldset>
         <label>username</label>
@@ -520,7 +523,7 @@ app.start()
 If you want a form element to be selected when it's loaded, add the
 [`autofocus`][html-input] property.
 ```js
-const view = choo.view`
+const view = html`
   <form>
     <input type="text" autofocus>
   </form>
@@ -534,7 +537,7 @@ is clicked, the click event is caught, and the value of `href` is passed into
 the router causing a state change. If you want to disable this behavior, set
 `app.start({ href: false })`.
 ```js
-const nav = choo.view`
+const nav = html`
   <a href="/">home</a>
   <a href="/first-link">first link</a>
   <a href="/second-link">second link</a>
@@ -573,10 +576,11 @@ In order to make our `choo` app call `app.start()` in the browser and be
 `require()`-able in Node, we check if [`module.parent`][module-parent] exists:
 ```js
 const choo = require('choo')
+const html = require('choo/html')
 const app = choo()
 
 app.router((route) => [
-  route('/', (params, state, send) => choo.view`
+  route('/', (params, state, send) => html`
     <h1>${state.message}</h1>
   `)
 ])
@@ -602,10 +606,11 @@ dehydrated DOM nodes to make them dynamic, rather than a new DOM tree and
 attaching it to the DOM.
 ```js
 const choo = require('choo')
+const html = require('choo/html')
 const app = choo()
 
 app.router((route) => [
-  route('/', (params, state, send) => choo.view`
+  route('/', (params, state, send) => html`
     <h1 id="app-root">${state.message}</h1>
   `)
 ])
@@ -641,11 +646,6 @@ arguments:
   a signature of `(action, state, send)` where `send` is a reference to
   `app.send()`
 
-### choo.view\`html\`
-Tagged template string HTML builder. See
-[`yo-yo`](https://github.com/maxogden/yo-yo) for full documentation. Views
-should be passed to `app.router()`
-
 ### app.router(params, state, send)
 Creates a new router. See
 [`sheet-router`](https://github.com/yoshuawuyts/sheet-router) for full
@@ -675,6 +675,11 @@ following values:
   event, updating the internal `state.location` state whenever the URL hash
   changes (eg `localhost/#posts/123`). Enabling this option automatically
   disables `opts.history` and `opts.href`.
+
+### choo/html\`html\`
+Tagged template string HTML builder. See
+[`yo-yo`](https://github.com/maxogden/yo-yo) for full documentation. Views
+should be passed to `app.router()`
 
 ## Errors
 ### Could not find DOM node (#id) to update

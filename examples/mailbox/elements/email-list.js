@@ -1,10 +1,10 @@
 const dateformat = require('dateformat')
-const choo = require('../../../')
+const html = require('../../../html')
 
 module.exports = function (params, state, send) {
   const mailbox = params.mailbox
   const messages = state[mailbox].messages
-  return choo.view`
+  return html`
     <div>
       <div class="db cf w-100">
         <div class="fl mb3 w-25 mt0 b">Date</th>
@@ -20,7 +20,7 @@ module.exports = function (params, state, send) {
 }
 
 function createMessage (message, mailbox) {
-  return choo.view`
+  return html`
     <div class="db cf w-100">
       <a href="${'/' + mailbox + '/' + message.id}">
         <div class="fl mb3 w-25 f6 link">

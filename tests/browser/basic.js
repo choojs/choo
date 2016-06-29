@@ -1,5 +1,6 @@
 const tape = require('tape')
 const choo = require('../../')
+const view = require('../../html')
 
 tape('should render on the client', function (t) {
   t.test('state should not be mutable', function (t) {
@@ -50,7 +51,7 @@ tape('should render on the client', function (t) {
         ++loop
         asserts[loop] && asserts[loop](state.test)
         setTimeout(() => triggers[loop] && triggers[loop](send), 5)
-        return choo.view`<div><span class="test">${state.foo}:${state.beep}</span></div>`
+        return view`<div><span class="test">${state.foo}:${state.beep}</span></div>`
       })
     ])
 
