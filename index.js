@@ -40,7 +40,7 @@ function choo (opts) {
     const state = _store.state({ state: serverState })
     const router = createRouter(_defaultRoute, _routes, createSend)
     const tree = router(route, state)
-    return tree.toString()
+    return tree.outerHTML || tree.toString()
 
     function createSend () {
       return function send () {
