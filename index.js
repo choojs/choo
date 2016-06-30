@@ -10,7 +10,6 @@ const assert = require('assert')
 const xtend = require('xtend')
 const yo = require('yo-yo')
 
-choo.view = yo
 module.exports = choo
 
 // framework for creating sturdy web applications

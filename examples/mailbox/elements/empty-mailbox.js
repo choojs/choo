@@ -1,7 +1,7 @@
-const choo = require('../../../')
+const html = require('../../../html')
 
 module.exports = function (params, state, send) {
-  return choo.view`
+  return html`
     <section>
       <p>Select a mailbox</p>
     </section>

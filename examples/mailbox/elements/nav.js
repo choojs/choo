@@ -1,9 +1,9 @@
-const choo = require('../../../')
+const html = require('../../../html')
 
 const mailboxes = [ 'inbox', 'spam', 'sent' ]
 
 module.exports = function (params, state, send) {
-  return choo.view`
+  return html`
     <aside class="fl mt4 w-20 db">
       <ul>
         <li>
@@ -19,7 +19,7 @@ module.exports = function (params, state, send) {
 }
 
 function createLi (mailbox, messages) {
-  return choo.view`
+  return html`
     <li class="mt4 f6">
       <a href="/${mailbox}">
         ${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}
