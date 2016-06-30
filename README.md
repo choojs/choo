@@ -434,7 +434,10 @@ app.model({
   namespace: 'input',
   subscriptions: [
     function (send) {
-      onkeypress = (e) => send('input:print', { payload: e.keyCode })
+      document.addEventListener(
+        'keypress',
+        (e) => send('input:print', { payload: e.keyCode })
+      )
     }
   ],
   effects: {
