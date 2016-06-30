@@ -1,0 +1,18 @@
+{
+  "name": "choo",
+  "description": "A 7kb framework for creating sturdy frontend applications",
+  "main": "index.js",
+  "authors": [
+    "N"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "client",
+    "frontend",
+    "framework",
+    "minimal",
+    "composable",
+    "tiny"
+  ],
+  "homepage": "https://github.com/sibStephen/choo"
+}
