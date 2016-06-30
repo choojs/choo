@@ -38,7 +38,7 @@ function choo (opts) {
     const tree = _router(route, state, function () {
       assert.fail('choo: send() cannot be called from Node')
     })
-    return tree.toString()
+    return tree.outerHTML || tree.toString()
   }
 
   // start the application
