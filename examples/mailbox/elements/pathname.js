@@ -1,9 +1,9 @@
 const pathname = require('pathname-match')
-const choo = require('../../../')
+const html = require('../../../html')
 
 module.exports = function (params, state, send) {
   const location = state.app.location
-  return choo.view`
+  return html`
     <span class="fl mt4 w-100 f4 b">
       URL: ${pathname(location) || '/'}
     </span>
