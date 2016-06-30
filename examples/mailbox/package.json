@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "css-wipe": "^4.2.1",
-    "dateformat": "^1.0.12"
+    "dateformat": "^1.0.12",
+    "tachyons": "^4.0.0-beta.33"
   }
 }
