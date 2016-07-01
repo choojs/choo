@@ -11,7 +11,10 @@
     "test:browser:local": "standard && npm run deps && NODE_ENV=test zuul --local 8080 -- tests/browser/*",
     "test:cov": "npm run test:server:cov",
     "preversion": "if [ ! -z $SKIP_TEST ]; then npm run test:browser; fi",
-    "test": "npm run test:server"
+    "test": "npm run test:server",
+    "build:dev": "NODE_ENV=development browserify index.js --standalone=choo -t envify > dist/choo.js",
+    "build:min": "NODE_ENV=production browserify index.js --standalone=choo -t envify -g unassertify -g uglifyify | uglifyjs > dist/choo.min.js",
+    "prepublish": "mkdir -p 'dist/' && npm run build:dev && npm run build:min"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
@@ -21,6 +24,11 @@
     "minimal",
     "composable",
     "tiny"
+  ],
+  "files": [
+    "index.js",
+    "http.js",
+    "dist"
   ],
   "license": "MIT",
   "dependencies": {
@@ -38,6 +46,7 @@
     "browserify-istanbul": "^2.0.0",
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.5.1",
+    "envify": "^3.4.1",
     "es2020": "^1.0.1",
     "insert-css": "^0.2.0",
     "istanbul": "^0.4.4",
@@ -47,6 +56,9 @@
     "standard": "^7.1.0",
     "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1",
+    "uglifyify": "^3.0.2",
+    "uglifyjs": "^2.4.10",
+    "unassertify": "^2.0.3",
     "zuul": "toddself/zuul"
   }
 }

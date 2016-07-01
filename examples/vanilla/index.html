@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Vanilla example</title>
+    </head>
+    <body>
+        <script src="../../dist/choo.min.js"></script>
+        <script>
+            const app = choo()
+
+            app.model({
+              namespace: 'counter',
+              state: {
+                  count: 0
+              },
+              reducers: {
+                increment: (action, state) => ({count: state.count + 1}),
+                decrement: (action, state) => ({count: state.count - 1})
+              }
+            })
+
+            const mainView = (params, state, send) => {
+              return choo.view`
+                <main class="app">
+                  <h1>Counter example</h1>
+                  <div>
+                      Count: ${state.counter.count}
+                      <button onclick=${(e) => send('counter:increment')}>+</button>
+                      <button onclick=${(e) => send('counter:decrement')}>-</button>
+                  </div>
+                </main>
+              `
+            }
+
+            app.router((route) => [
+              route('/', mainView)
+            ])
+
+            const tree = app.start()
+            document.body.appendChild(tree)
+        </script>
+    </body>
+</html>
