@@ -83,6 +83,7 @@
 - [Errors](#errors)
 - [FAQ](#faq)
 - [Installation](#installation)
+- [Contributing](#contributing)
 - [See Also](#see-also)
 - [License](#license)
 
@@ -839,6 +840,13 @@ Sure.
 ```sh
 $ npm install choo
 ```
+
+## Contributing
+Browser tests can be run with the right credentials via the `npm run test:browser`
+command.  This will be run automatically when `npm version` is executed.
+
+You may skip the tests by providing `SKIP_TEST=true` when running the version
+command.
 
 ## See Also
 - [budo](https://github.com/mattdesl/budo) - quick prototyping tool for

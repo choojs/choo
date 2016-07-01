@@ -9,8 +9,9 @@
     "test:server:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/server/*",
     "test:browser": "standard && npm run deps && NODE_ENV=test zuul tests/browser/*",
     "test:browser:local": "standard && npm run deps && NODE_ENV=test zuul --local 8080 -- tests/browser/*",
-    "test:cov": "npm run test:server:cov && npm run test:browser",
-    "test": "npm run test:server && npm run test:browser"
+    "test:cov": "npm run test:server:cov",
+    "preversion": "if [ ! -z $SKIP_TEST ]; then npm run test:browser; fi",
+    "test": "npm run test:server"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
