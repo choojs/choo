@@ -1,6 +1,6 @@
 const html = require('../../../html')
 
-module.exports = function (params, state, send) {
+module.exports = function (state, prev, send) {
   return html`
     <section>
       <p>Select a mailbox</p>

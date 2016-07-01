@@ -15,7 +15,7 @@ app.model({
   }
 })
 
-const mainView = (params, state, send) => {
+const mainView = (state, prev, send) => {
   return html`
     <main class="app">
       <h1>${state.input.title}</h1>

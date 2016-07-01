@@ -2,7 +2,7 @@ const html = require('../../../html')
 
 const mailboxes = [ 'inbox', 'spam', 'sent' ]
 
-module.exports = function (params, state, send) {
+module.exports = function (state, prev, send) {
   return html`
     <aside class="fl mt4 w-20 db">
       <ul>
