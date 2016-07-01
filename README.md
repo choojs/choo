@@ -7,7 +7,7 @@
   <strong>Fun functional programming</strong>
 </div>
 <div align="center">
-  A <code>7kb</code> framework for creating sturdy frontend applications
+  A <code>5kb</code> framework for creating sturdy frontend applications
 </div>
 
 <br />
@@ -88,7 +88,7 @@
 - [License](#license)
 
 ## Features
-- __minimal size:__ weighing `7kb`, `choo` is a tiny little framework
+- __minimal size:__ weighing `5kb`, `choo` is a tiny little framework
 - __single state:__ immutable single state helps reason about changes
 - __small api:__ with only 6 methods, there's not a lot to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
@@ -797,6 +797,9 @@ Consider running some of the following:
   statements which reduces file size. Use as a `--global` transform
 - [es2020](https://github.com/yoshuawuyts/es2020) - backport `const`,
   `fat-arrows` and `template strings` to older browsers
+- [yo-yoify](https://github.com/shama/yo-yoify) - replace the internal `hyperx`
+  dependency with `document.createElement` calls; greatly speeds up performance
+  too
 - [uglifyify](https://github.com/hughsk/uglifyify) - minify your code using
   UglifyJS2. Use as a `--global` transform
 - [bulkify](https://www.npmjs.com/package/bulkify) - transform inline
@@ -821,6 +824,7 @@ Generally for production builds you'll want to run:
 ```sh
 $ NODE_ENV=production browserify \
   -t envify \
+  -g yo-yoify \
   -g unassertify \
   -g es2020 \
   -g uglifyify \
