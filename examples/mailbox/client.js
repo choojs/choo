@@ -2,7 +2,6 @@ const choo = require('../../')
 const sf = require('sheetify')
 
 sf('css-wipe/dest/bundle')
-sf('tachyons')
 
 const app = choo()
 
