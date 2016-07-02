@@ -25,8 +25,8 @@ tape('should render on the client', function (t) {
         }
       },
       effects: {
-        'triggers-reducers': (action, state, send) => {
-          send('test:mutate-on-return', {beep: 'barp'})
+        'triggers-reducers': (action, state, send, done) => {
+          send('test:mutate-on-return', {beep: 'barp'}, done)
         }
       }
     })
