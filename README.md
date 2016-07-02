@@ -242,7 +242,7 @@ and `reducers`. They're generally grouped around a theme (or domain, if you
 like). To provide some sturdiness to your `models`, they can either be
 namespaced or not. Namespacing means that only state within the model can be
 accessed. Models can still trigger actions on other models, though it's
-recommeded to keep that to a minimum.
+recommended to keep that to a minimum.
 
 So say we have a `todos` namespace, an `add` reducer and a `todos` model.
 Outside the model they're called by `send('todos:add')` and
@@ -259,7 +259,7 @@ app.model({
 })
 ```
 
-In most cases using namespaces is beneficial, as having clear boundries makes
+In most cases using namespaces is beneficial, as having clear boundaries makes
 it easier to follow logic. But sometimes you need to call `actions` that
 operate over multiple domains (such as a "logout" `action`), or have a
 `subscription` that might trigger multiple `reducers` (such as a `websocket`
@@ -587,7 +587,7 @@ else document.body.appendChild(app.start())
 ```
 
 #### Rehydration
-Now that your application is succesfully rendering in Node, the next step would
+Now that your application is successfully rendering in Node, the next step would
 be to make it load a JavaScript bundle once has loaded the HTML. To do this we
 will use a technique called _rehydration_.
 
@@ -808,7 +808,7 @@ Out of the box `choo` only supports runtimes which support:
 
 This does not include Safari 9 or any version of IE. If support for these
 platforms is required you will have to provide some sort of transform that
-makes this functionalty available in older browsers.  The test suite uses
+makes this functionality available in older browsers.  The test suite uses
 [es2020](https://github.com/yoshuawuyts/es2020) as a global transform, but
 anything else which might satisfy this requirement is fair game.
 
