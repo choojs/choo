@@ -6,26 +6,26 @@ module.exports = {
     title: 'Button pushing machine 3000'
   },
   reducers: {
-    set: (action, state) => ({ 'title': action.payload })
+    set: (action, state) => ({ 'title': action.data })
   },
   effects: {
-    good: (action, state, send) => request('/good', send),
-    bad: (action, state, send) => request('/bad', send)
+    good: function (action, state, send, done) {
+      request('/good', send, done)
+    },
+    bad: (action, state, send, done) => request('/bad', send, done)
   }
 }
 
-function request (uri, send, state) {
+function request (uri, send, done) {
   http(uri, { json: true }, function (err, res, body) {
-    if (err) return send('app:error', { payload: 'HTTP error' })
+    if (err) return done(new Error('HTTP error'))
     if (res.statusCode !== 200) {
       const message = (body && body.message)
         ? body.message
         : 'unknown server error'
-      return send('app:error', { payload: message })
+      return done(new Error(message))
     }
-    if (!body) {
-      return send('app:error', { payload: 'fatal: no body received' })
-    }
-    send('api:set', { payload: body.message || body.title })
+    if (!body) return done(new Error('fatal: no body received'))
+    send('api:set', { data: body.message || body.title }, done)
   })
 }

@@ -1,4 +1,5 @@
 const choo = require('../../')
+const html = require('../../html')
 
 const app = choo()
 app.model(createModel())
@@ -10,7 +11,7 @@ const tree = app.start()
 document.body.appendChild(tree)
 
 function mainView (params, state, send) {
-  return choo.view`
+  return html`
     <div>${state.logger.msg}</div>
   `
 }

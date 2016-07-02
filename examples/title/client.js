@@ -1,4 +1,5 @@
 const choo = require('../../')
+const html = require('../../html')
 
 const app = choo()
 app.model({
@@ -15,7 +16,7 @@ app.model({
 })
 
 const mainView = (params, state, send) => {
-  return choo.view`
+  return html`
     <main class="app">
       <h1>${state.input.title}</h1>
       <label>Set the title</label>
