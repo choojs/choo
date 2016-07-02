@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i xhr",
+    "test:electron": "browserify tests/**/*.js -t es2020 | tape-run",
     "test:server": "standard && npm run deps && NODE_ENV=test node tests/server/*",
     "test:server:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/server/*",
     "test:browser": "standard && npm run deps && NODE_ENV=test zuul tests/browser/*",
@@ -47,6 +48,7 @@
     "standard": "^7.1.0",
     "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1",
+    "tape-run": "~2.1.4",
     "yo-yoify": "^3.1.0",
     "zuul": "toddself/zuul"
   }
