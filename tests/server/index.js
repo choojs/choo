@@ -98,7 +98,7 @@ tape('should render on the server', function (t) {
       })
     ])
 
-    const msg = /send\(\) cannot be called on the server/
+    const msg = /send\(\) cannot be called/
     t.throws(app.toString.bind(null, '/', { message: 'nyan!' }), msg)
   })
 })
