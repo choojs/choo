@@ -13,6 +13,7 @@ USAGE
 gzip_size () {
   browserify index.js \
     -g unassertify \
+    -g yo-yoify \
     -g es2020 \
     -g uglifyify \
     -p bundle-collapser/plugin \
@@ -24,6 +25,7 @@ gzip_size () {
 min_size () {
   browserify index.js \
     -g unassertify \
+    -g yo-yoify \
     -g es2020 \
     -g uglifyify \
     -p bundle-collapser/plugin \
@@ -35,6 +37,7 @@ min_size () {
 run_discify () {
   browserify index.js --full-paths \
     -g unassertify \
+    -g yo-yoify \
     -g es2020 \
     -g uglifyify \
     | uglifyjs \
