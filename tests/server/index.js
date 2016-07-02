@@ -21,7 +21,7 @@ tape('should render on the server', function (t) {
 
     const app = choo()
     app.router((route) => [
-      route('/', function (params, state) {
+      route('/', function (state, prev, send) {
         return view`<h1>meow meow ${state.message}</h1>`
       })
     ])
@@ -37,7 +37,7 @@ tape('should render on the server', function (t) {
     const app = choo()
     app.model({ state: { bin: 'baz', beep: 'boop' } })
     app.router((route) => [
-      route('/', function (params, state) {
+      route('/', function (state, prev, send) {
         return view`<h1>${state.foo} ${state.bin} ${state.beep}</h1>`
       })
     ])
@@ -57,7 +57,7 @@ tape('should render on the server', function (t) {
       state: { bin: 'baz', beep: 'boop' }
     })
     app.router((route) => [
-      route('/', function (params, state) {
+      route('/', function (state, prev, send) {
         return view`
           <h1>${state.hello.foo} ${state.hello.bin} ${state.hello.beep}</h1>
         `
@@ -80,7 +80,7 @@ tape('should render on the server', function (t) {
 
     const app = choo()
     app.router((route) => [
-      route('/', function (params, state, send) {
+      route('/', function (state, prev, send) {
         send('hey!')
       })
     ])
@@ -93,7 +93,7 @@ tape('should render on the server', function (t) {
 
     const app = choo()
     app.router((route) => [
-      route('/', function (params, state, send) {
+      route('/', function (state, prev, send) {
         send('hey!')
       })
     ])

@@ -30,7 +30,7 @@
     "sheet-router": "^3.1.0",
     "xhr": "^2.2.0",
     "xtend": "^4.0.1",
-    "yo-yo": "^1.2.0"
+    "yo-yo": "^1.2.2"
   },
   "devDependencies": {
     "bankai": "^2.0.2",

@@ -1,6 +1,6 @@
 const html = require('../../../html')
 
-module.exports = function (params, state, send) {
+module.exports = function (state, prev, send) {
   const error = state.app.errors[0]
   const title = state.api.title
   return html`

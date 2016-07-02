@@ -1,6 +1,7 @@
 const html = require('../../../html')
 
-module.exports = function (params, state, send) {
+module.exports = function (state, prev, send) {
+  const params = state.params
   const mailbox = params.mailbox
   const message = params.message
 

@@ -1,7 +1,7 @@
 const assert = require('assert')
 const html = require('../../../html')
 
-module.exports = function (params, state, send) {
+module.exports = function (state, prev, send) {
   const serverMessage = state.message.server
   const clientMessage = state.message.client
 
