@@ -47,7 +47,7 @@ tape('should render on the client', function (t) {
     ]
 
     app.router((route) => [
-      route('/', function (params, state, send) {
+      route('/', function (state, prev, send) {
         ++loop
         asserts[loop] && asserts[loop](state.test)
         setTimeout(() => triggers[loop] && triggers[loop](send), 5)
