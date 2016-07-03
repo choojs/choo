@@ -128,7 +128,7 @@ can be called to modify it:
 app.model({
   state: { title: 'Set the title' },
   reducers: {
-    update: (action, state) => ({ title: action.value })
+    update: (data, state) => ({ title: data.value })
   }
 })
 ```
@@ -173,7 +173,7 @@ const app = choo()
 app.model({
   state: { title: 'Set the title' },
   reducers: {
-    update: (action, state) => ({ title: action.value })
+    update: (data, state) => ({ title: data.value })
   }
 })
 
@@ -203,9 +203,9 @@ sources of data. `effects` react to changes, perform an `action` and can then
 post the results. `reducers` take data, modify it, and update the internal
 `state`.
 
-Communication of data is done using objects called `actions`. Each `action` has
-any number of properties for data, and a unique `type` that can trigger
-properties on the models.
+Communication of data is done using objects called `actions`. Each `action`
+consists of a unique `actionName` and an optional payload of `data`, which can
+be any value.
 
 When a `reducer` modifies `state`, the `router` is called, which in turn calls
 `views`. `views` take `state` and return [DOM][dom] nodes which are then
@@ -256,7 +256,7 @@ app.model({
   namespace: 'todos',
   state: { todos: [] },
   reducers: {
-    add: (action, state) => ({ todos: state.todos.concat(action.payload) })
+    add: (data, state) => ({ todos: state.todos.concat(data.payload) })
   }
 })
 ```
@@ -302,7 +302,7 @@ app.model({
     (send) => setInterval(() => send('app:print', { payload: 'dog?' }), 1000)
   ],
   effects: {
-    print: (action, state) => console.log(action.payload)
+    print: (data, state) => console.log(data.payload)
   }
 })
 ```
@@ -368,7 +368,7 @@ app.model({
   }
 })
 
-function getJson (state, action, send) {
+function getJson (state, data, send) {
   http.get('/my-endpoint', { json: true }, function (err, res, body) {
     if (err) return send('app:error', { payload: err.message })
     if (res.statusCode !== 200 || !body) {
@@ -378,7 +378,7 @@ function getJson (state, action, send) {
   })
 }
 
-function postJson (state, action, send) {
+function postJson (state, data, send) {
   const body = { foo: 'bar' }
   http.post('/my-endpoint', { json: body }, function (err, res, body) {
     if (err) return send('app:error', { payload: err.message })
@@ -389,7 +389,7 @@ function postJson (state, action, send) {
   })
 }
 
-function httpDelete (state, action, send) {
+function httpDelete (state, data, send) {
   const body = { foo: 'bar' }
   http.del('/my-endpoint', { json: body }, function (err, res, body) {
     if (err) return send('app:error', { payload: err.message })
@@ -499,15 +499,15 @@ function view (params, state, send) {
   `
 
   function onSubmit (event) {
-    send('login', { data: new FormData(event.target) })
+    send('login', new FormData(event.target))
     event.preventDefault()
   }
 }
 
 app.model({
   effects: {
-    login: (action, state, send) => {
-      http.post('/login', { body: action.data }, (err, res, body) => {
+    login: (data, state, send) => {
+      http.post('/login', { body: data }, (err, res, body) => {
         send('authorize', { payload: body })
       })
     }
@@ -642,9 +642,9 @@ arguments:
   in-namespace only.
 - __state:__ object. Key value store of initial values
 - __reducers:__ object. Syncronous functions that modify state. Each function
-  has a signature of `(action, state)`
+  has a signature of `(data, state)`
 - __effects:__ object. Asyncronous functions that perform IO. Each function has
-  a signature of `(action, state, send)` where `send` is a reference to
+  a signature of `(data, state, send)` where `send` is a reference to
   `app.send()`
 
 ### app.router(params, state, send)
