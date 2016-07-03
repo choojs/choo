@@ -99,11 +99,11 @@
 - __very cute:__ choo choo!
 
 ## Demos
-- [Input example](https://github.com/yoshuawuyts/choo/tree/master/examples/title)
+- [Input example](examples/title/)
   ([requirebin](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186))
 - [HTTP effects example](https://fork-fang.hyperdev.space/)
   ([hyperdev](https://hyperdev.com/#!/project/fork-fang))
-- [Mailbox routing example](https://github.com/yoshuawuyts/choo/tree/master/examples/mailbox)
+- [Mailbox routing example](examples/mailbox/)
   (@examples directory)
 - [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
   ([github](https://github.com/shuhei/todomvc-choo))
