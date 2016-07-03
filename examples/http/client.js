@@ -10,12 +10,12 @@ const app = choo({
     const send = createSend('onError: ')
     send('app:error', err)
   },
-  onAction: function (action, state, name, caller, createSend) {
+  onAction: function (data, state, name, caller, createSend) {
     console.groupCollapsed(`Action: ${caller} -> ${name}`)
-    console.log(action)
+    console.log(data)
     console.groupEnd()
   },
-  onState: function (action, state, prev, createSend) {
+  onState: function (data, state, prev, createSend) {
     console.groupCollapsed('State')
     console.log(prev)
     console.log(state)

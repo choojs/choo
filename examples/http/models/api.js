@@ -6,13 +6,13 @@ module.exports = {
     title: 'Button pushing machine 3000'
   },
   reducers: {
-    set: (action, state) => ({ 'title': action.data })
+    set: (data, state) => ({ 'title': data })
   },
   effects: {
-    good: function (action, state, send, done) {
+    good: function (data, state, send, done) {
       request('/good', send, done)
     },
-    bad: (action, state, send, done) => request('/bad', send, done)
+    bad: (data, state, send, done) => request('/bad', send, done)
   }
 }
 
@@ -26,6 +26,6 @@ function request (uri, send, done) {
       return done(new Error(message))
     }
     if (!body) return done(new Error('fatal: no body received'))
-    send('api:set', { data: body.message || body.title }, done)
+    send('api:set', body.message || body.title, done)
   })
 }
