@@ -1,4 +1,5 @@
 const tape = require('tape')
+const minDocument = require('min-document')
 const choo = require('../../')
 const view = require('../../html')
 
@@ -13,6 +14,19 @@ tape('should render on the server', function (t) {
 
     const html = app.toString('/')
     const expected = '<h1>Hello Tokyo!</h1>'
+    t.equal(html, expected, 'strings are equal')
+  })
+
+  t.test('can render without a real DOM', function (t) {
+    t.plan(1)
+
+    const app = choo()
+    app.router((route) => [
+      route('/', () => minDocument.createElement('div'))
+    ])
+
+    const html = app.toString('/')
+    const expected = '<div></div>'
     t.equal(html, expected, 'strings are equal')
   })
 

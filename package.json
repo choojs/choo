@@ -42,6 +42,7 @@
     "insert-css": "^0.2.0",
     "istanbul": "^0.4.4",
     "karma-sauce-launcher": "^1.0.0",
+    "min-document": "~2.18.0",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.0",
     "standard": "^7.1.0",
