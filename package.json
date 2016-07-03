@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "barracks": "^7.0.3",
+    "document-ready": "~1.0.1",
     "global": "^4.3.0",
     "hash-match": "^1.0.2",
     "sheet-router": "^3.1.0",
