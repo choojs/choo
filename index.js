@@ -82,7 +82,6 @@ function choo (opts) {
   // (obj, obj, obj, str, fn) -> null
   function render (data, state, prev, name, createSend) {
     if (opts.onState) opts.onState(data, state, prev, name, createSend)
-    if (state === prev) return
 
     const newTree = _router(state.location.pathname, state, prev)
     _rootNode = yo.update(_rootNode, newTree)
