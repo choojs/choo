@@ -57,4 +57,56 @@ test('routing', function (t) {
       return view`<div>${state.user}</div>`
     }
   })
+
+  t.test('hash', function (t) {
+    t.plan(1)
+
+    const hash = Event()
+    const choo = proxyquire('../..', {
+      'sheet-router/hash': hash.listen
+    })
+
+    const app = choo()
+
+    app.model({
+      state: {
+        user: null
+      },
+      reducers: {
+        set: (action, state) => ({user: action.id})
+      },
+      effects: {
+        open: function (action, state, send, done) {
+          send('set', {id: 1}, function (err) {
+            if (err) return done(err)
+            hash.broadcast('#users/1')
+          })
+        }
+      }
+    })
+
+    app.router('/users', (route) => [
+      route('/users', parentView, [
+        route('/:user', childView)
+      ])
+    ])
+
+    const tree = app.start({hash: true})
+    document.body.appendChild(tree)
+
+    tree.onclick()
+
+    function parentView (state, prev, send) {
+      return view`
+        <button onclick=${() => send('open', {id: 1})}>
+          Open
+        </button>
+      `
+    }
+
+    function childView (state, prev, send) {
+      t.equal(state.user, 1)
+      return view`<div>${state.user}</div>`
+    }
+  })
 })
