@@ -79,8 +79,8 @@ function choo (opts) {
 
   // update the DOM after every state mutation
   // (obj, obj, obj, str, fn) -> null
-  function render (action, state, prev, name, createSend) {
-    if (opts.onState) opts.onState(action, state, prev, name, createSend)
+  function render (data, state, prev, name, createSend) {
+    if (opts.onState) opts.onState(data, state, prev, name, createSend)
     if (state === prev) return
 
     const newTree = _router(state.location.pathname, state, prev)
@@ -133,8 +133,8 @@ function appInit (opts) {
   const loc = document.location
   const state = { pathname: (opts.hash) ? hashMatch(loc.hash) : loc.href }
   const reducers = {
-    setLocation: function setLocation (action, state) {
-      return { pathname: action.location.replace(/#.*/, '') }
+    setLocation: function setLocation (data, state) {
+      return { pathname: data.location.replace(/#.*/, '') }
     }
   }
   // if hash routing explicitly enabled, subscribe to it

@@ -8,10 +8,10 @@ app.model({
     title: 'my demo app'
   },
   reducers: {
-    update: (action, state) => ({ title: action.payload })
+    update: (data, state) => ({ title: data.payload })
   },
   effects: {
-    update: (action, state, send) => (document.title = action.payload)
+    update: (data, state, send) => (document.title = data.payload)
   }
 })
 

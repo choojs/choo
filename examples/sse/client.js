@@ -35,13 +35,13 @@ function createModel () {
       }
     ],
     reducers: {
-      'print': (action, state) => {
-        return ({ msg: state.msg + ' ' + action.payload })
+      'print': (data, state) => {
+        return ({ msg: state.msg + ' ' + data.payload })
       }
     },
     effects: {
       close: () => stream.close(),
-      error: (action, state) => console.error(`error: ${action.payload}`)
+      error: (data, state) => console.error(`error: ${data.payload}`)
     }
   }
 }
