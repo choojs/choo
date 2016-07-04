@@ -145,4 +145,21 @@ test('routing', function (t) {
 
     app.start({href: false})
   })
+
+  t.test('viewless nesting', function (t) {
+    t.plan(1)
+
+    const choo = require('../..')
+    const app = choo()
+
+    app.router('/users/123', (route) => [
+      route('/users', [
+        route('/:user', function (state) {
+          t.deepEqual(state.params, {user: '123'})
+        })
+      ])
+    ])
+
+    app.start()
+  })
 })
