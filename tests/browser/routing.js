@@ -1,6 +1,7 @@
 const test = require('tape')
 const Event = require('geval/event')
 const proxyquire = require('proxyquire')
+const append = require('append-child')
 const view = require('../../html')
 
 test('routing', function (t) {
@@ -39,7 +40,7 @@ test('routing', function (t) {
     ])
 
     const tree = app.start()
-    document.body.appendChild(tree)
+    t.on('end', append(tree))
 
     t.equal(tree.innerHTML.trim(), 'Open')
     tree.onclick()
@@ -54,7 +55,7 @@ test('routing', function (t) {
 
     function childView (state, prev, send) {
       t.equal(state.user, 1)
-      return view`<div>${state.user}</div>`
+      return view`<button>${state.user}</button>`
     }
   })
 
@@ -92,7 +93,7 @@ test('routing', function (t) {
     ])
 
     const tree = app.start({hash: true})
-    document.body.appendChild(tree)
+    t.on('end', append(tree))
 
     tree.onclick()
 
@@ -106,7 +107,7 @@ test('routing', function (t) {
 
     function childView (state, prev, send) {
       t.equal(state.user, 1)
-      return view`<div>${state.user}</div>`
+      return view`<button>${state.user}</button>`
     }
   })
 

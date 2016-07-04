@@ -1,4 +1,5 @@
 const test = require('tape')
+const append = require('append-child')
 const choo = require('../../')
 const view = require('../../html')
 
@@ -51,5 +52,5 @@ test('hooks', function (t) {
   ])
 
   const tree = app.start()
-  document.body.appendChild(tree)
+  t.on('end', append(tree))
 })

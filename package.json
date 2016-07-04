@@ -34,6 +34,7 @@
     "yo-yo": "^1.2.2"
   },
   "devDependencies": {
+    "append-child": "~1.0.0",
     "bankai": "^2.0.2",
     "browserify": "^13.0.1",
     "browserify-istanbul": "^2.0.0",

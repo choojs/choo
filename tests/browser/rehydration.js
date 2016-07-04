@@ -1,5 +1,6 @@
 const test = require('tape')
 const onReady = require('document-ready')
+const append = require('append-child')
 const choo = require('../../')
 const view = require('../../html')
 
@@ -17,7 +18,7 @@ test('rehydration', function (t) {
   var node = document.createElement('div')
   node.innerHTML = app.toString('/')
   node = node.childNodes[0]
-  document.body.appendChild(node)
+  t.on('end', append(node))
 
   app.start('#app-root')
 
