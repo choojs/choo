@@ -78,6 +78,7 @@
   <li><a href="#features">Features</a></li>
   <li><a href="#demos">Demos</a></li>
   <li><a href="#example">Example</a></li>
+  <li><a href="#philosophy">Philosophy</a></li>
   <li><a href="#concepts">Concepts</a></li>
   <li><a href="#api">API</a></li>
   <li><a href="#faq">FAQ</a></li>
