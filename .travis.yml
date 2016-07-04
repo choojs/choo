@@ -3,6 +3,13 @@ node_js:
 - '6'
 sudo: false
 language: node_js
+addons:
+  apt:
+    packages:
+      - xvfb
+before_install:
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 script: npm run test:cov
 after_script: npm i -g codecov.io && cat ./coverage/lcov.info | codecov
 env:
