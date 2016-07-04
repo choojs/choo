@@ -109,4 +109,40 @@ test('routing', function (t) {
       return view`<div>${state.user}</div>`
     }
   })
+
+  t.test('disabling history', function (t) {
+    t.plan(1)
+
+    const choo = proxyquire('../..', {
+      'sheet-router/history': () => t.fail('history listener attached')
+    })
+
+    const app = choo()
+
+    app.router('/', (route) => [
+      route('/', function () {
+        t.pass('rendered')
+      })
+    ])
+
+    app.start({history: false})
+  })
+
+  t.test('disabling href', function (t) {
+    t.plan(1)
+
+    const choo = proxyquire('../..', {
+      'sheet-router/href': () => t.fail('href listener attached')
+    })
+
+    const app = choo()
+
+    app.router('/', (route) => [
+      route('/', function () {
+        t.pass('rendered')
+      })
+    ])
+
+    app.start({href: false})
+  })
 })
