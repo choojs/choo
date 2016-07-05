@@ -423,7 +423,7 @@ following values:
   disables `opts.history` and `opts.href`.
 
 ### view = choo/html\`html\`
-Tagged template string HTML builder. Built on top of [yo-yo][bel], [bel][bel]
+Tagged template string HTML builder. Built on top of [yo-yo][yo-yo], [bel][bel]
 and [hyperx][hyperx]. To register a view on the `router` it should be wrapped
 in a function with the signature of `(state, prev, send)` where `state` is the
 current `state`, `prev` is the last state, `state.params` is URI partials and
