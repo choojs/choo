@@ -15,7 +15,7 @@ const app = choo({
     console.log(data)
     console.groupEnd()
   },
-  onState: function (data, state, prev, createSend) {
+  onStateChange: function (data, state, prev, createSend) {
     console.groupCollapsed('State')
     console.log(prev)
     console.log(state)

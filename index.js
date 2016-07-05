@@ -17,7 +17,7 @@ module.exports = choo
 function choo (opts) {
   opts = opts || {}
 
-  const _store = start._store = barracks(xtend(opts, { onState: render }))
+  const _store = start._store = barracks(xtend(opts, { onStateChange: render }))
   var _router = start._router = null
   var _defaultRoute = null
   var _rootNode = null
@@ -36,7 +36,7 @@ function choo (opts) {
     serverState = serverState || {}
     assert.equal(typeof route, 'string', 'choo.app.toString: route must be a string')
     assert.equal(typeof serverState, 'object', 'choo.app.toString: serverState must be an object')
-    _store.start({ noSubscriptions: true, noReducers: true, noEffects: true })
+    _store.start({ subscriptions: false, reducers: false, effects: false })
 
     const state = _store.state({ state: serverState })
     const router = createRouter(_defaultRoute, _routes, createSend)
@@ -81,7 +81,9 @@ function choo (opts) {
   // update the DOM after every state mutation
   // (obj, obj, obj, str, fn) -> null
   function render (data, state, prev, name, createSend) {
-    if (opts.onState) opts.onState(data, state, prev, name, createSend)
+    if (opts.onStateChange) {
+      opts.onStateChange(data, state, prev, name, createSend)
+    }
 
     const newTree = _router(state.location.pathname, state, prev)
     _rootNode = yo.update(_rootNode, newTree)
@@ -119,7 +121,7 @@ function choo (opts) {
         return function chooWrap (params, state) {
           const nwPrev = prev
           const nwState = prev = xtend(state, { params: params })
-          if (!opts.noFreeze) Object.freeze(nwState)
+          if (opts.freeze !== false) Object.freeze(nwState)
           return child(nwState, nwPrev, send)
         }
       }
