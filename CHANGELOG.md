@@ -1,3 +1,85 @@
+## `3.0.0`
+Woooh, happy third birthday `choo` - _thanks dad_. You're all grown up now;
+look at how far you've come in the last month. You've grown... tinier? But yet
+you do more? I love you `choo` - _shut up dad_.
+
+### Notable changes
+#### Who's the tiniest of them all?
+`choo` is now `5kb` optimized! That's `2kb` less compared to v2. _Woah, how?_
+We now support [yo-yoify](https://github.com/shama/yo-yoify) which optimizes
+those lil template tags to `document.createElement()` calls. So not only is it
+smaller, creating elements now has no overhead. Pretty nifty eh? Mad shoutout
+to [Shama](http://twitter.com/shamakry) for building this!
+
+#### Captain Hook(s)
+V3 introduces `hooks` - powerful functions that are called at certain points in
+the refresh cycle. Unlike functions in `models` these functions have unfiltered
+access to all properties, call stacks and more. They're super useful when
+building error handling, logging or persisting for stuff like `hot reloading`.
+I quite like them, and I'm def keen to see what uses people will come up with!
+
+#### Effect Composition :train::train::train::train:
+`effects` are now composable by calling a `done(err, res)` callback when
+they're done executing. This means that multiple namespaced effects can be
+chained together to form some higher level behavior.
+
+Think of cases like "logout" - multiple models must be cleared, perhaps tokens
+invalidated on the server, all in a certain order. This requires multiple
+models to work in tandem. - And now that's possible! :sparkles:
+
+#### Pathfinders guide
+We've started work on the [choo
+handbook](https://github.com/yoshuawuyts/choo-handbook) - a lil manual to help
+you get started, not only with choo, but with web development in general. It's
+super modest still, only containing a single `choo` tutorial, but we'll be
+expanding this over the coming months. If you want to contribute some docs,
+there's [a whole section of
+ideas](https://github.com/yoshuawuyts/choo-handbook/issues/10) on stuff that
+might be neat to write. Any lil bits are welcome! Shout out to
+[Tim](https://twitter.com/timwis) for making this happen :tada:
+
+#### The Cycle of Life
+`views` have gone through a bit of a change - they're now required using
+`require('choo/html')` so they can be factored out of a project into standalone
+[bel](https://github.com/shama/bel) components at any time. But additionally
+these components have gained super powers through the adition of `onload` and
+`onunload` hooks. Components can now react to being mounted or not, which makes
+them ideal to implement standalone widgets. This behavior uses [html5
+MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
+under the hood, so it will work anywhere with a DOM!  Again, this was all
+[Shama](http://twitter.com/shamakry)'s hard work.
+
+#### Test coverage
+`choo` has gained a beaut blanket of tests, courtesy of
+[Todd](https://twitter.com/whale_eat_squid) and
+[Ben](https://twitter.com/bendrucker/). We've got server, browser and
+_pretty-much-all-browsers-known-to-mankind_ style testing which should give us
+a pretty good idea if stuff breaks. Neat!
+
+#### Core dump
+Internally we've moved the core of `choo` into a separate package -
+[barracks](https://github.com/yoshuawuyts/barracks). `choo` is now mere glue
+code around `barracks`, `yo-yo` and `sheet-router`. This is good news for folks
+who like `choo`, but don't agree with all decisions. Go forth and build your
+own lil framework!
+
+### Changelog
+- move `choo.view` out to `require('choo/html')` #71 | pr #103
+- streamline view API #35 | pr #111
+- higher order functions #34 | pr #104
+- create lifecycle hooks #1 | feature addition in dependency covered by semver
+- implement state hooks #15 | pr #104
+- add yo-yoify #3 | pr #110
+- rename "app" namespace #82 | pr #111
+- enable browser testing | pr #86
+- propagating actions creates infinite loop #114 | pr #104
+- state is now immutable in `reducers` and `effects`
+
+### Thanks
+Huge thanks to everyone who's collaborated on this, provided feedback or
+even mentioned it anywhere. It's been a hella lot of people, but seriously,
+you're the best :steam_locomotive::train::train::train::train::train:
+
 ## `2.3.1`
 - [76](https://github.com/yoshuawuyts/choo/pull/76) - fix router arguments
 
