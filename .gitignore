@@ -1,5 +1,6 @@
 node_modules/
 coverage/
+coverage.json
 tmp/
 npm-debug.log*
 .DS_Store

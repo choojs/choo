@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i xhr",
+    "test:electron": "browserify tests/**/*.js -t es2020 -p proxyquire-universal | tape-run",
+    "test:cov": "browserify tests/**/*.js -t es2020 -p proxyquire-universal -p tape-istanbul/plugin | tape-run | tape-istanbul && istanbul report",
     "test:server": "standard && npm run deps && NODE_ENV=test node tests/server/*",
-    "test:server:cov": "standard && npm run deps && NODE_ENV=test istanbul cover tests/server/*",
     "test:browser": "standard && npm run deps && NODE_ENV=test zuul tests/browser/*",
     "test:browser:local": "standard && npm run deps && NODE_ENV=test zuul --local 8080 -- tests/browser/*",
-    "test:cov": "npm run test:server:cov",
     "preversion": "if [ ! -z $SKIP_TEST ]; then npm run test:browser; fi",
-    "test": "npm run test:server"
+    "test": "npm run test:electron"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "barracks": "^7.0.3",
+    "document-ready": "~1.0.1",
     "global": "^4.3.0",
     "hash-match": "^1.0.2",
     "sheet-router": "^3.1.0",
@@ -33,20 +34,28 @@
     "yo-yo": "^1.2.2"
   },
   "devDependencies": {
+    "append-child": "~1.0.0",
     "bankai": "^2.0.2",
     "browserify": "^13.0.1",
     "browserify-istanbul": "^2.0.0",
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.5.1",
     "es2020": "^1.0.1",
+    "geval": "~2.1.1",
     "insert-css": "^0.2.0",
     "istanbul": "^0.4.4",
     "karma-sauce-launcher": "^1.0.0",
+    "min-document": "~2.18.0",
+    "proxyquire": "~1.7.10",
+    "proxyquire-universal": "~1.0.8",
+    "proxyquireify": "~3.2.0",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.0",
     "standard": "^7.1.0",
     "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1",
+    "tape-istanbul": "~1.0.2",
+    "tape-run": "~2.1.4",
     "yo-yoify": "^3.1.0",
     "zuul": "toddself/zuul"
   }

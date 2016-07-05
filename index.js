@@ -1,6 +1,7 @@
 const history = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
+const onReady = require('document-ready')
 const href = require('sheet-router/href')
 const hash = require('sheet-router/hash')
 const hashMatch = require('hash-match')
@@ -40,7 +41,7 @@ function choo (opts) {
     const state = _store.state({ state: serverState })
     const router = createRouter(_defaultRoute, _routes, createSend)
     const tree = router(route, state)
-    return tree.toString()
+    return tree.outerHTML || tree.toString()
 
     function createSend () {
       return function send () {
@@ -61,14 +62,14 @@ function choo (opts) {
     _store.model(appInit(startOpts))
     const createSend = _store.start(startOpts)
     _router = start._router = createRouter(_defaultRoute, _routes, createSend)
-    const state = _store.state()
+    const state = _store.state({state: {}})
 
     if (!selector) {
       const tree = _router(state.location.pathname, state)
       _rootNode = tree
       return tree
     } else {
-      document.addEventListener('DOMContentLoaded', function (event) {
+      onReady(function onReady () {
         const oldTree = document.querySelector(selector)
         assert.ok(oldTree, 'could not query selector: ' + selector)
         const newTree = _router(state.location.pathname, state)
@@ -81,7 +82,6 @@ function choo (opts) {
   // (obj, obj, obj, str, fn) -> null
   function render (data, state, prev, name, createSend) {
     if (opts.onState) opts.onState(data, state, prev, name, createSend)
-    if (state === prev) return
 
     const newTree = _router(state.location.pathname, state, prev)
     _rootNode = yo.update(_rootNode, newTree)
