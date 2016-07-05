@@ -7,7 +7,7 @@
   <strong>Fun functional programming</strong>
 </div>
 <div align="center">
-  A <code>7kb</code> framework for creating sturdy frontend applications
+  A <code>5kb</code> framework for creating sturdy frontend applications
 </div>
 
 <br />
@@ -50,7 +50,19 @@
   </a>
 </div>
 
-<br />
+<div align="center">
+  <h3>
+    <a href="https://github.com/yoshuawuyts/choo-handbook">
+      Handbook
+    </a>
+    <span>|</span>
+    Packages
+    <span>|</span>
+    <a href="https://github.com/yoshuawuyts/choo/blob/master/.github/CONTRIBUTING.md">
+      Contributing
+    </a>
+  </h3>
+</div>
 
 <div align="center">
   <sub>The little framework that could. Built with ❤︎ by
@@ -60,35 +72,22 @@
   </a>
 </div>
 
-## Table of Contents
-- [Features](#features)
-- [Demos](#demos)
-- [Getting started](#getting-started)
-- [Concepts](#concepts)
-  - [Models](#models)
-  - [Actions](#actions)
-  - [Effects](#effects)
-  - [Subscriptions](#subscriptions)
-  - [Router](#router)
-  - [Views](#views)
-- [Common actions](#common-actions)
-  - [HTTP](#http)
-  - [Server sent events](#server-sent-events-sse)
-  - [Keyboard](#keyboard)
-  - [Websockets](#websockets)
-  - [Forms](#forms)
-  - [Links](#links)
-  - [Rendering in Node](#rendering-in-node)
-- [API](#api)
-- [Errors](#errors)
-- [FAQ](#faq)
-- [Installation](#installation)
-- [Contributing](#contributing)
-- [See Also](#see-also)
-- [License](#license)
+<h2>Table of Contents</h2>
+<details>
+  <summary>Table of Contents</summary>
+  <li><a href="#features">Features</a></li>
+  <li><a href="#demos">Demos</a></li>
+  <li><a href="#example">Example</a></li>
+  <li><a href="#philosophy">Philosophy</a></li>
+  <li><a href="#concepts">Concepts</a></li>
+  <li><a href="#api">API</a></li>
+  <li><a href="#faq">FAQ</a></li>
+  <li><a href="#installation">Installation</a></li>
+  <li><a href="#see-also">See Also</a></li>
+</details>
 
 ## Features
-- __minimal size:__ weighing `7kb`, `choo` is a tiny little framework
+- __minimal size:__ weighing `5kb`, `choo` is a tiny little framework
 - __single state:__ immutable single state helps reason about changes
 - __small api:__ with only 6 methods, there's not a lot to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
@@ -111,73 +110,24 @@
 _note: If you've built something cool using `choo` or are using it in
 production, we'd love to hear from you!_
 
-## Getting started
+## Example
 Let's create an input box that changes the content of a textbox in real time.
-[Click here to see the final app](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186).
-
-First we import `choo` and create a new instance:
+[Click here to see the app running](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186).
 ```js
 const choo = require('choo')
-const app = choo()
-```
-
-Then we define a model. We set an initial value of `state` and a `reducer` that
-can be called to modify it:
-```js
-app.model({
-  state: { title: 'Set the title' },
-  reducers: {
-    update: (action, state) => ({ title: action.value })
-  }
-})
-```
-
-Then we create a new view. It has an `h1` tag which displays the current title,
-and an `<input>` field which sends the current value of the text box on every
-input:
-```js
-const mainView = (params, state, send) => choo.view`
-  <main>
-    <h1>${state.title}</h1>
-    <input
-      type="text"
-      oninput=${(e) => send('update', { value: e.target.value })}>
-  </main>
-`
-```
-
-_Note_: if an `id` property is defined on the outer-most element it will be
-replaced.
-
-We then bind the view to the `/` route on our application
-```js
-app.router((route) => [
-  route('/', mainView)
-])
-```
-
-And then start the app and append it to the DOM. You can now run it and [see it
-in action!](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186)
-```js
-const tree = app.start()
-document.body.appendChild(tree)
-```
-
-And all together now:
-```js
-const choo = require('choo')
+const html = require('choo/html')
 const app = choo()
 
 app.model({
-  state: { title: 'Set the title' },
+  state: { title: 'Not quite set yet' },
   reducers: {
-    update: (action, state) => ({ title: action.value })
+    update: (data, state) => ({ title: data.value })
   }
 })
 
-const mainView = (params, state, send) => choo.view`
+const mainView = (params, state, send) => html`
   <main>
-    <h1>${state.title}</h1>
+    <h1>Title: ${state.title}</h1>
     <input
       type="text"
       oninput=${(e) => send('update', { value: e.target.value })}>
@@ -191,6 +141,44 @@ app.router((route) => [
 const tree = app.start()
 document.body.appendChild(tree)
 ```
+
+And to run it, save it as `client.js` and run with [budo][budo] and
+[es2020][es2020]:
+```sh
+$ budo 'client.js' -p 8080 --open -- -t es2020
+```
+
+And to save to static files for deployment, open a new terminal and do:
+```bash
+$ mkdir -p 'dist/'
+$ curl 'localhost:8080' > 'dist/index.html'
+$ curl 'localhost:8080/bundle.js' > 'dist/bundle.js'
+```
+All just a couple of shell commands and `.js` files, no grandiose boilerplate
+needed.
+
+## Philosophy
+We believe programming should be fun and light, not stern and stressful. It's
+cool to be cute; using serious words without explaining them doesn't make for
+better results - if anything it scares people off. We don't want to be scary,
+we want to be nice and fun, and then _casually_ be the best choice around.
+_Real casually._
+
+We believe frameworks should be disposable, and components recyclable. We don't
+like the current state of web development where walled gardens jealously
+compete with one another. We want you to be free, not shackled to a damp
+dungeon wall. By making the DOM the lowest common denominator, switching from
+one framework to another becomes frictionless. Components should run anywhere
+that has a DOM, regardless of the framework. `choo` is modest in its design; we
+don't believe it will be top of the class forever, so we've made it as easy to
+toss out as it is to pick up.
+
+We don't believe that bigger is better. Big APIs, big dependencies, large file
+sizes - we see them as omens of impending userland complexity. We  want
+everyone on a team, no matter the size, to fully understand how an application
+is laid out. And once an application is built, we want it to be small,
+performant and easy to reason about. All of which makes for easy to debug code,
+better results and super smiley faces.
 
 ## Concepts
 `choo` cleanly structures internal data flow, so that all pieces of logic can
@@ -201,9 +189,9 @@ sources of data. `effects` react to changes, perform an `action` and can then
 post the results. `reducers` take data, modify it, and update the internal
 `state`.
 
-Communication of data is done using objects called `actions`. Each `action` has
-any number of properties for data, and a unique `type` that can trigger
-properties on the models.
+Communication of data is done using objects called `actions`. Each `action`
+consists of a unique `actionName` and an optional payload of `data`, which can
+be any value.
 
 When a `reducer` modifies `state`, the `router` is called, which in turn calls
 `views`. `views` take `state` and return [DOM][dom] nodes which are then
@@ -236,7 +224,7 @@ application logic. This is the _unidirectional_ architecture of `choo`.
 - __views:__ take `state` and returns a new `DOM tree` that is rendered in the
   browser
 
-## Models
+### Models
 `models` are objects that contain initial `state`, `subscriptions`, `effects`
 and `reducers`. They're generally grouped around a theme (or domain, if you
 like). To provide some sturdiness to your `models`, they can either be
@@ -254,7 +242,7 @@ app.model({
   namespace: 'todos',
   state: { todos: [] },
   reducers: {
-    add: (action, state) => ({ todos: state.todos.concat(action.payload) })
+    add: (data, state) => ({ todos: state.todos.concat(data.payload) })
   }
 })
 ```
@@ -271,7 +259,7 @@ and has access to the full application state. Try and keep the logic in these
 bulk of your logic will safely shielded, with only a few points touching every
 part of your application.
 
-## Effects
+### Effects
 Side effects are done through `effects` declared in `app.model()`. Unlike
 `reducers` they cannot modify the state by returning objects, but get a
 callback passed which is used to emit `actions` to handle results. Use effects
@@ -286,7 +274,7 @@ A typical `effect` flow looks like:
 4. When the async call is done, either a success or error action is emitted
 5. A reducer catches the action and updates the state
 
-## Subscriptions
+### Subscriptions
 Subscriptions are a way of receiving data from a source. For example when
 listening for events from a server using `SSE` or `Websockets` for a
 chat app, or when catching keyboard input for a videogame.
@@ -300,12 +288,12 @@ app.model({
     (send) => setInterval(() => send('app:print', { payload: 'dog?' }), 1000)
   ],
   effects: {
-    print: (action, state) => console.log(action.payload)
+    print: (data, state) => console.log(data.payload)
   }
 })
 ```
 
-## Router
+### Router
 The `router` manages which `views` are rendered at any given time. It also
 supports rendering a default `view` if no routes match.
 
@@ -331,14 +319,14 @@ using `send('app:location', { location: href })`. This will not work from
 within namespaced `models`, and usage should preferably be kept to a minimum.
 Changing views all over the place tends to lead to messiness.
 
-## Views
+### Views
 Views are pure functions that return a DOM tree for the router to render. They’re passed the current state, and any time the state changes they’re run again with the new state.
 
 Views are also passed the `send` function, which they can use to dispatch actions that can update the state. For example, the DOM tree can have an `onclick` handler that dispatches an `add` action.
 
 ```javascript
 const view = (params, state, send) => {
-  return choo.view`
+  return html`
     <div>
       <h1>Total todos: ${state.todos.length}</h1>
       <button onclick=${(e) => send('add', { payload: {title: 'demo'})}>Add</button>
@@ -347,318 +335,75 @@ const view = (params, state, send) => {
 ```
 In this example, when the `Add` button is clicked, the view will dispatch an `add` action that the model’s `add` reducer will receive. [As seen above](#models), the reducer will add an item to the state’s `todos` array. The state change will cause this view to be run again with the new state, and the resulting DOM tree will be used to [efficiently patch the DOM](#does-choo-use-a-virtual-dom).
 
-## Common Actions
-### HTTP
-`choo` ships with a built-in [`http` module](https://github.com/Raynos/xhr)
-that weighs only `2.4kb`:
-```js
-const http = require('choo/http')
-const choo = require('choo')
-const app = choo()
-
-app.model({
-  effects: {
-    'app:error': (state, event) => console.error(`error: ${event.payload}`),
-    'app:print': (state, event) => console.log(`http: ${event.payload}`),
-    'http:get_json': getJson,
-    'http:post_json': postJson,
-    'http:delete': httpDelete
-  }
-})
-
-function getJson (state, action, send) {
-  http.get('/my-endpoint', { json: true }, function (err, res, body) {
-    if (err) return send('app:error', { payload: err.message })
-    if (res.statusCode !== 200 || !body) {
-      return send('app:error', { payload:'something went wrong' })
-    }
-    send('app:print', { payload: body })
-  })
-}
-
-function postJson (state, action, send) {
-  const body = { foo: 'bar' }
-  http.post('/my-endpoint', { json: body }, function (err, res, body) {
-    if (err) return send('app:error', { payload: err.message })
-    if (res.statusCode !== 200 || !body) {
-      return send('app:error', { payload:'something went wrong' })
-    }
-    send('app:print', { payload: body })
-  })
-}
-
-function httpDelete (state, action, send) {
-  const body = { foo: 'bar' }
-  http.del('/my-endpoint', { json: body }, function (err, res, body) {
-    if (err) return send('app:error', { payload: err.message })
-    if (res.statusCode !== 200) {
-      return send('app:error', { payload:'something went wrong' })
-    }
-  })
-}
-```
-Note that `http` only runs in the browser to prevent accidental requests when
-rendering in Node. For more details view the [`raynos/xhr`
-documentation](https://github.com/Raynos/xhr).
-
-### Server Sent Events (SSE)
-[Server Sent Events (SSE)][sse] allow servers to push data to the browser.
-They're the unidirectional cousin of `websockets` and compliment `HTTP`
-brilliantly. To enable `SSE`, create a new `EventSource`, point it at a local
-uri (generally `/sse`) and setup a `subscription`:
-```js
-const stream = new document.EventSource('/sse')
-
-app.model({
-  subscriptions: [
-    function (send) {
-      stream.onerror = (e) => send('app:error', { payload: JSON.stringify(e) })
-      stream.onmessage = (e) => send('app:print', { payload: e.data })
-    }
-  ],
-  effects: {
-    'sse:close': () => stream.close(),
-    'app:error': (state, event) => console.error(`error: ${event.payload}`),
-    'app:print': (state, event) => console.log(`sse: ${event.payload}`)
-  }
-})
-```
-This code does not handle reconnects, server timeouts, exponential backoff and
-queueing data. You might want to use a package from `npm` or [write your
-own][sse-reconnect] if you're building something for production.
-
-### Keyboard
-Most browsers have [basic support for keyboard events][keyboard-support]. To
-capture keyboard events, setup a `subscription`:
-```js
-app.model({
-  namespace: 'input',
-  subscriptions: [
-    function (send) {
-      document.addEventListener(
-        'keypress',
-        (e) => send('input:print', { payload: e.keyCode })
-      )
-    }
-  ],
-  effects: {
-    print: (state) => console.log(`pressed key: ${state.payload}`)
-  }
-})
-```
-
-### WebSockets
-[WebSockets][ws] allow for bidirectional communication between servers and
-browsers:
-```js
-const socket = new document.WebSocket('ws://localhost:8081')
-
-app.model({
-  subscriptions: [
-    function (send) {
-      socket.onerror = (e) => send('app:error', { payload: JSON.stringify(e) })
-      socket.onmessage = (e) => send('app:print', { payload: e.data })
-    }
-  ],
-  effects: {
-    'ws:close': () => socket.close(),
-    'ws:send': (state, event) => socket.send(JSON.stringify(event.payload)),
-    'app:error': (state, event) => console.error(`error: ${event.payload}`),
-    'app:print': (state, event) => console.log(`ws: ${event.payload}`)
-  }
-})
-```
-This code does not handle reconnects, server timeouts, exponential backoff and
-queueing data. You might want to use a package from `npm` or [write your
-own][ws-reconnect] if you're building something for production.
-
-### Forms
-Forms and lists are probably the most used concepts on any page. Together with
-links they comprise most of what can be done on web pages.
-```js
-const choo = require('choo')
-const http = require('choo/http')
-const app = choo()
-
-function view (params, state, send) {
-  return choo.view`
-    <form onsubmit=${onSubmit}>
-      <fieldset>
-        <label>username</label>
-        <input type="text" name="username" autofocus>
-      </fieldset>
-      <fieldset>
-        <label>password</label>
-        <input type="password" name="password">
-      </fieldset>
-      <input type="submit" value="Submit">
-    </form>
-  `
-
-  function onSubmit (event) {
-    send('login', { data: new FormData(event.target) })
-    event.preventDefault()
-  }
-}
-
-app.model({
-  effects: {
-    login: (action, state, send) => {
-      http.post('/login', { body: action.data }, (err, res, body) => {
-        send('authorize', { payload: body })
-      })
-    }
-  }
-})
-
-app.router((route) => [
-  route('/', view)
-])
-
-app.start()
-```
-
-If you want a form element to be selected when it's loaded, add the
-[`autofocus`][html-input] property.
-```js
-const view = choo.view`
-  <form>
-    <input type="text" autofocus>
-  </form>
-`
-```
-
-### Links
-In HTML links are represented with the `<a href="/some-location">` tag. By
-default `choo` enables a `subscription` for all `a` tags on a page. When a link
-is clicked, the click event is caught, and the value of `href` is passed into
-the router causing a state change. If you want to disable this behavior, set
-`app.start({ href: false })`.
-```js
-const nav = choo.view`
-  <a href="/">home</a>
-  <a href="/first-link">first link</a>
-  <a href="/second-link">second link</a>
-`
-```
-
-### Rendering in Node
-Sometimes it's necessary to render code inside of Node; for serving hyper fast
-first requests, testing or other purposes. Applications that are capable of
-being rendered in both Node and the browser are called
-_[isomorphic][isomorphic]_.
-
-Rendering in Node is slightly different than in the browser. First off, to
-maintain performance all calls to `subscriptions`, `effects`, and `reducers`
-are disabled. That means you need to know what the state of your application is
-going to be _before_ you render it - no cheating!
-
-Secondly, the `send()` method inside `router` and `view` has been disabled. If
-you call it your program will crash. Disabling all these things means that your
-program will render [`O(n)`][big-o], which is super neat. Off to [10.000
-QPS][qps] we go!
-
-To render in Node call the `.toString()` method instead of `.start()`. The
-first argument is the path that should be rendered, the second is the state:
-```js
-const http = require('http')
-const client = require('./client')  // path to client entry point
-http.createServer(function (req, res) {
-  const html = client.toString('/', { message: 'hello server!' })
-  res.setHeader('Content-Type', 'text/html; charset=utf-8')
-  res.end(html)
-})
-```
-
-In order to make our `choo` app call `app.start()` in the browser and be
-`require()`-able in Node, we check if [`module.parent`][module-parent] exists:
-```js
-const choo = require('choo')
-const app = choo()
-
-app.router((route) => [
-  route('/', (params, state, send) => choo.view`
-    <h1>${state.message}</h1>
-  `)
-])
-
-if (module.parent) module.exports = app
-else document.body.appendChild(app.start())
-```
-
-#### Rehydration
-Now that your application is successfully rendering in Node, the next step would
-be to make it load a JavaScript bundle once has loaded the HTML. To do this we
-will use a technique called _rehydration_.
-
-_Rehydration_ is when you take the static, server-rendered version of your
-application (static HTML, _dehydrated_ because it has no logic) and _rehydrate_
-it by booting up the JS and attaching event handlers on the DOM to make it
-dynamic again. It's like restoring flavor to cup noodles by adding hot water.
-
-Because we're using something called `morphdom` under the hood, all we need is
-point at an `id` at the root of the application. The syntax for this is
-slightly different from what we've seen so far, because we're _updating_ a
-dehydrated DOM nodes to make them dynamic, rather than a new DOM tree and
-attaching it to the DOM.
-```js
-const choo = require('choo')
-const app = choo()
-
-app.router((route) => [
-  route('/', (params, state, send) => choo.view`
-    <h1 id="app-root">${state.message}</h1>
-  `)
-])
-
-if (module.parent) module.exports = app
-else app.start('#app-root'))
-```
-
-When the JS is booted on top of the dehydrated application, it will look for
-the `#app-root` id and load on top of it. You can choose any name you like for
-the id, but __make sure it's the same on every possible top level DOM node__,
-or else things might break. Furthermore to ensure things go smoothly, try and
-keep the initial state identical on both the server and the client.
-
-And that's it! If you want to go down the route of mad performance, consider
-make all first request static and caching them using something like [bl][bl],
-[nginx][nginx], [varnish][varnish] or a global CDN.
-
 ## API
-### app = choo()
-Create a new `choo` app
+This section provides documentation on how each function in `choo` works. It's
+intended to be a technical reference. If you're interested in learning choo for
+the first time, consider reading through the [handbook][handbook] or
+[concepts](#concepts) first :sparkles:
+
+### app = choo(opts)
+Initialize a new `choo` app. Takes an optional object of handlers. Handlers can
+be:
+- __onError(err, state, createSend):__ called when an `effect` or
+  `subscription` emit an error. If no handler is passed, the default handler
+  will `throw` on each error.
+- __onAction(action, state, name, caller, createSend):__ called when an
+  `action` is fired.
+- __onStateChange(action, state, prev, caller, createSend):__ called after a
+  reducer changes the `state`.
+
+`createSend()` is a special function that allows the creation of a new named
+`send()` function. The first argument should be a string which is the name, the
+second argument is a boolean `callOnError` which can be set to `true` to call
+the `onError` hook istead of a provided callback. It then returns a
+`send(actionName, data?)` function.
+
+Handlers should be used with care, as they're the most powerful interface into
+the state. For application level code it's generally recommended to delegate to
+actions inside models using the `send()` call, and only shape the actions
+inside the handlers.
 
 ### app.model(obj)
 Create a new model. Models modify data and perform IO. Takes the following
 arguments:
-- __namespace:__ optional namespace that prefixes the keys in `state`,
-  `reducers` and `effects`. Also limits `actions` called by `send()` to
-  in-namespace only.
-- __state:__ object. Key value store of initial values
-- __reducers:__ object. Syncronous functions that modify state. Each function
-  has a signature of `(action, state)`
-- __effects:__ object. Asyncronous functions that perform IO. Each function has
-  a signature of `(action, state, send)` where `send` is a reference to
-  `app.send()`
+- __namespace:__ namespace the model so that it cannot access any properties
+  and handlers in other models
+- __state:__ initial values of `state` inside the model
+- __reducers:__ synchronous operations that modify state. Triggered by
+  `actions`. Signature of `(actionData, state)`.
+- __effects:__ asynchronous operations that don't modify state directly.
+  Triggered by `actions`, can call `actions`. Signature of `(actionData, state,
+  send, done)`
+- __subscriptions:__ asynchronous read-only operations that don't modify state
+  directly. Can call `actions`. Signature of `(state, send, done)`.
 
-### choo.view\`html\`
-Tagged template string HTML builder. See
-[`yo-yo`](https://github.com/maxogden/yo-yo) for full documentation. Views
-should be passed to `app.router()`
+#### send()
+Send a new action to the models with optional data attached. Namespaced models
+can be accessed by prefixing the name with the namespace separated with a `:`,
+e.g. `namespace:name`.
 
-### app.router(params, state, send)
-Creates a new router. See
+#### done()
+When an `effect` or `subscription` is done executing, or encounters an error,
+it should call the final `done(err)` callback. If an `effect` was called by
+another `effect` it will call the callback of the caller. When an error
+propegates all the way to the top, the `onError` handler will be called,
+registered in `barracks(handlers)`. If no callback is registered, errors will
+`throw`.
+
+### app.router((route) => [routes])
+Creates a new router. Takes a function that exposes a single `route` function,
+and that expects a tree of `routes` to be returned. See
 [`sheet-router`](https://github.com/yoshuawuyts/sheet-router) for full
-documentation. Registered views have a signature of `(params, state, send)`,
-where `params` is URI partials.
+documentation. Registered views have a signature of `(state, prev, send)`,
+where `state` is the current `state`, `prev` is the last state, `state.params`
+is URI partials and `send()` can be called to trigger actions.
 
-### html = app.toString(route, state)
+### html = app.toString(route, state?)
 Render the application to a string of HTML. Useful for rendering on the server.
-First argument is a path that's passed to the router. Second argument is the
-state object. When calling `.toString()` instead of `.start()`, all calls to
-`send()` are disabled, and `subscriptions`, `effects` and `reducers` aren't
-loaded. See [rendering in Node](#rendering-in-node) for an in-depth guide.
+First argument is a path that's passed to the router. Second argument is an
+optional state object. When calling `.toString()` instead of `.start()`, all
+calls to `send()` are disabled, and `subscriptions`, `effects` and `reducers`
+aren't loaded.
 
 ### tree = app.start(rootId?, opts)
 Start the application. Returns a tree of DOM nodes that can be mounted using
@@ -677,40 +422,39 @@ following values:
   changes (eg `localhost/#posts/123`). Enabling this option automatically
   disables `opts.history` and `opts.href`.
 
-## Errors
-### Could not find DOM node (#id) to update
-This means that a re-render of the DOM was triggered before the first render
-was done. This is usually the case when `send()` is called inside a
-`subscription` before the DOM is done rendering. Instead try listening for a
-`'DOMContentLoaded'` event:
-```js
-document.addEventListener('DOMContentLoaded', (e) => send('init'))
-```
+### view = choo/html\`html\`
+Tagged template string HTML builder. Built on top of [yo-yo][bel], [bel][bel]
+and [hyperx][hyperx]. To register a view on the `router` it should be wrapped
+in a function with the signature of `(state, prev, send)` where `state` is the
+current `state`, `prev` is the last state, `state.params` is URI partials and
+`send()` can be called to trigger actions.
 
-### send() cannot be called on the server
-This means a `send()` event was triggered in Node. In Node, `reducers`,
-`effects` and `subscriptions` are disabled for performance reasons, so if
-`send()` was called to trigger an action it wouldn't work. Try finding where in
-the DOM tree `send()` is called, and disable it when called from within Node.
+To create listeners for events, create interpolated attributes on elements.
+```js
+const html = require('choo/html')
+html`
+  <button onclick=${(e) => console.log(e)}>click for bananas</button>
+`
+```
+Example listeners include: `onclick`, `onsubmit`, `oninput`, `onkeydown`,
+`onkeyup`. When creating listeners always remember to call `e.preventDefault()`
+on the event so it doesn't bubble up and do stuff like refreshing the full page
+or the like.
+
+To trigger lifecycle events on any part of a view, set the `onload=${(el) =>
+{}}` and `onunload=${() => {}}` attributes. These parameters are useful when
+creating self-contained widgets that take care of their own state and lifecycle
+(e.g. a maps widget) or to trigger animations. Most elements shouldn't have a
+need for these hooks though.
 
 ## FAQ
-### Why did you build this?
-`choo` is nothing but a formalization of how I've been building my applications
-for the past year. I originally used `virtual-dom` with `virtual-app` and
-`wayfarer` where now it's `yo-yo` with `send-action` and `sheet-router`. The
-main benefit of using `choo` over these technologies separately is that it
-becomes easier for teams to pick up and gather around. The code base for `choo`
-itself is super petite (`~200` LOC) and mostly acts to enforce structure around
-some excellent npm packages. This is my take on modular frameworks; I hope
-you'll find it pleasant.
-
 ### Why is it called choo?
 Because I thought it sounded cute. All these programs talk about being
-"performant", "rigid", "robust" - I like programming to be light, fun and
+_"performant"_, _"rigid"_, _"robust"_ - I like programming to be light, fun and
 non-scary. `choo` embraces that.
 
 Also imagine telling some business people you chose to rewrite something
-critical to the company using the `choo` framework.
+critical to the company using `choo`.
 :steam_locomotive::train::train::train:
 
 ### Why is it a framework, and not a library?
@@ -718,7 +462,13 @@ I love small libraries that do one thing well, but when working in a team,
 having an undocumented combination of packages often isn't great. `choo()` is a
 small set of packages that work well together, wrapped in an an architectural
 pattern. This means you get all the benefits of small packages, but get to be
-productive right from the start.
+productive right from the start without needing to plough through layers of
+boilerplate.
+
+### Is it called choo, choo.js or...?
+It's called "choo", though we're fine if you call it "choo-choo" or
+"chugga-chugga-choo-choo" too. The only time "choo.js" is tolerated is if /
+when you shimmy like you're a locomotive.
 
 ### How does choo compare to X?
 Ah, so this is where I get to rant. `choo` (_chugga-chugga-chugga-choo-choo!_)
@@ -763,9 +513,16 @@ give you my opinions directly. Ready?  Here goes:
   provides framework lock in, and additionally doesn't have a clean enough
   architecture. I appreciate what it does, but don't think it's the answer.
 
+### Why can't send() be called on the server?
+In Node, `reducers`, `effects` and `subscriptions` are disabled for performance
+reasons, so if `send()` was called to trigger an action it wouldn't work. Try
+finding where in the DOM tree `send()` is called, and disable it when called
+from within Node.
+
 ### Which packages was choo built on?
-- __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo)
-- __models:__ [`send-action`](https://github.com/sethvincent/send-action),
+- __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo),
+  [`bel`](https://github.com/shama/bel)
+- __models:__ [`barracks`](https://github.com/yoshuawuyts/barracks),
   [`xtend`](https://github.com/raynos/xtend)
 - __routes:__ [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
 - __http:__ [`xhr`](https://github.com/Raynos/xhr)
@@ -777,13 +534,6 @@ with DOM nodes][morphdom-bench], and it has the added benefit of working with
 _any_ library that produces valid DOM nodes. So to put a long answer short:
 we're using something even better.
 
-### What packages do you recommend to pair with choo?
-- [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
-  humans
-- [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
-  browserify
-- [pull-stream](https://github.com/pull-stream/pull-stream) - minimal streams
-
 ### How can I optimize choo?
 `choo` really shines when coupled with `browserify` transforms. They can do
 things like reduce file size, prune dependencies and clean up boilerplate code.
@@ -791,7 +541,11 @@ Consider running some of the following:
 - [unassertify](https://github.com/twada/unassertify) - remove `assert()`
   statements which reduces file size. Use as a `--global` transform
 - [es2020](https://github.com/yoshuawuyts/es2020) - backport `const`,
-  `fat-arrows` and `template strings` to older browsers
+  `fat-arrows` and `template strings` to older browsers. Should be run as a
+  `--global` transform
+- [yo-yoify](https://github.com/shama/yo-yoify) - replace the internal `hyperx`
+  dependency with `document.createElement` calls; greatly speeds up performance
+  too
 - [uglifyify](https://github.com/hughsk/uglifyify) - minify your code using
   UglifyJS2. Use as a `--global` transform
 - [bulkify](https://www.npmjs.com/package/bulkify) - transform inline
@@ -816,6 +570,7 @@ Generally for production builds you'll want to run:
 ```sh
 $ NODE_ENV=production browserify \
   -t envify \
+  -g yo-yoify \
   -g unassertify \
   -g es2020 \
   -g uglifyify \
@@ -841,20 +596,22 @@ Sure.
 $ npm install choo
 ```
 
-## Contributing
-Browser tests can be run with the right credentials via the `npm run test:browser`
-command.  This will be run automatically when `npm version` is executed.
-
-You may skip the tests by providing `SKIP_TEST=true` when running the version
-command.
-
 ## See Also
+- [choo-handbook](https://github.com/yoshuawuyts/choo-handbook) - the little
+  `choo` guide
 - [budo](https://github.com/mattdesl/budo) - quick prototyping tool for
   `browserify`
 - [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
 - [yo-yo](https://github.com/maxogden/yo-yo) - tiny library for modular UI
 - [bel](https://github.com/shama/bel) - composable DOM elements using template
   strings
+- [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
+  humans
+- [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
+  `browserify`
+- [pull-stream](https://github.com/pull-stream/pull-stream) - minimal streams
+- [es2020](https://github.com/yoshuawuyts/es2020) - because in hindsight we
+  don't need most of ES6
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
@@ -878,3 +635,8 @@ command.
 [sheet-router]: https://github.com/yoshuawuyts/sheet-router
 [html-input]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
 [inu]: https://github.com/ahdinosaur/inu
+[yo-yo]: https://github.com/maxogden/yo-yo
+[bel]: https://github.com/shama/bel
+[hyperx]: https://github.com/substack/hyperx
+[budo]: https://github.com/mattdesl/budo
+[es2020]: https://github.com/yoshuawuyts/es2020

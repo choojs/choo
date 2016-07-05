@@ -1,16 +1,16 @@
-const choo = require('../../../')
+const html = require('../../../html')
 
 const emailList = require('../elements/email-list')
 const pathname = require('../elements/pathname')
 const nav = require('../elements/nav')
 
-module.exports = function (params, state, send) {
-  return choo.view`
+module.exports = function (state, prev, send) {
+  return html`
     <main class="mw5 mw7-ns center cf">
-      ${pathname(params, state, send)}
-      ${nav(params, state, send)}
+      ${pathname(state, prev, send)}
+      ${nav(state, prev, send)}
       <section class="fl mt4 w-80 db">
-        ${emailList(params, state, send)}
+        ${emailList(state, prev, send)}
       </section>
     </main>
   `

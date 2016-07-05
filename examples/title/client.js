@@ -1,4 +1,5 @@
 const choo = require('../../')
+const html = require('../../html')
 
 const app = choo()
 app.model({
@@ -7,15 +8,15 @@ app.model({
     title: 'my demo app'
   },
   reducers: {
-    update: (action, state) => ({ title: action.payload })
+    update: (data, state) => ({ title: data.payload })
   },
   effects: {
-    update: (action, state, send) => (document.title = action.payload)
+    update: (data, state, send) => (document.title = data.payload)
   }
 })
 
-const mainView = (params, state, send) => {
-  return choo.view`
+const mainView = (state, prev, send) => {
+  return html`
     <main class="app">
       <h1>${state.input.title}</h1>
       <label>Set the title</label>

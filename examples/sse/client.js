@@ -1,4 +1,5 @@
 const choo = require('../../')
+const html = require('../../html')
 
 const app = choo()
 app.model(createModel())
@@ -10,7 +11,7 @@ const tree = app.start()
 document.body.appendChild(tree)
 
 function mainView (params, state, send) {
-  return choo.view`
+  return html`
     <div>${state.logger.msg}</div>
   `
 }
@@ -34,13 +35,13 @@ function createModel () {
       }
     ],
     reducers: {
-      'print': (action, state) => {
-        return ({ msg: state.msg + ' ' + action.payload })
+      'print': (data, state) => {
+        return ({ msg: state.msg + ' ' + data.payload })
       }
     },
     effects: {
       close: () => stream.close(),
-      error: (action, state) => console.error(`error: ${action.payload}`)
+      error: (data, state) => console.error(`error: ${data.payload}`)
     }
   }
 }
