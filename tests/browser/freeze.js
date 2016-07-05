@@ -25,7 +25,7 @@ test('freeze (default)', function (t) {
 
 test('noFreeze', function (t) {
   t.plan(2)
-  const app = choo({noFreeze: true})
+  const app = choo({freeze: false})
 
   app.model({
     state: {
