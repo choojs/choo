@@ -423,7 +423,7 @@ following values:
   disables `opts.history` and `opts.href`.
 
 ### view = choo/html\`html\`
-Tagged template string HTML builder. Built on top of [yo-yo][bel], [bel][bel]
+Tagged template string HTML builder. Built on top of [yo-yo][yo-yo], [bel][bel]
 and [hyperx][hyperx]. To register a view on the `router` it should be wrapped
 in a function with the signature of `(state, prev, send)` where `state` is the
 current `state`, `prev` is the last state, `state.params` is URI partials and
@@ -442,7 +442,7 @@ on the event so it doesn't bubble up and do stuff like refreshing the full page
 or the like.
 
 To trigger lifecycle events on any part of a view, set the `onload=${(el) =>
-{}}` and `onunload=${() => {}}` attributes. These parameters are useful when
+{}}` and `onunload=${(el) => {}}` attributes. These parameters are useful when
 creating self-contained widgets that take care of their own state and lifecycle
 (e.g. a maps widget) or to trigger animations. Most elements shouldn't have a
 need for these hooks though.
