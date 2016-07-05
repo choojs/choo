@@ -6,16 +6,18 @@
   "scripts": {
     "start": "NODE_ENV=development node server.js"
   },
-  "browserify": {
-    "transform": [
-      "sheetify/transform"
-    ]
-  },
   "author": "Yoshua Wuyts <i@yoshuawuyts.com>",
   "license": "ISC",
   "dependencies": {
     "css-wipe": "^4.2.1",
     "dateformat": "^1.0.12",
     "tachyons": "^4.0.0-beta.33"
+  },
+  "devDependencies": {
+    "bankai": "^2.0.5",
+    "browserify": "^13.0.1",
+    "insert-css": "^0.2.0",
+    "server-router": "^2.1.0",
+    "sheetify": "^5.0.3"
   }
 }

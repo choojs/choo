@@ -1,14 +1,14 @@
 const assert = require('assert')
-const choo = require('../../../')
+const html = require('../../../html')
 
-module.exports = function (params, state, send) {
+module.exports = function (state, prev, send) {
   const serverMessage = state.message.server
   const clientMessage = state.message.client
 
   assert.equal(typeof serverMessage, 'string', 'server should be a string')
   assert.equal(typeof clientMessage, 'string', 'client should be a string')
 
-  return choo.view`
+  return html`
     <section id="app-root">
       <h1>server message: ${serverMessage}</h1>
       <h1>client message: ${clientMessage}</h1>

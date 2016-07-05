@@ -10,34 +10,43 @@ const ERROR_TIMEOUT = 1000
 module.exports = {
   namespace: 'app',
   state: {
-    error: [],
-    errorTimeDone: null,
+    errors: [],
+    errorTimeDone: 0,
     triggerTime: null
   },
   reducers: {
-    error: function (action, state) {
-      const now = Date.now()
-      const timeDone = state.errorTimeDone
-      const newTimestamp = (timeDone && timeDone >= now)
-        ? timeDone + ERROR_TIMEOUT
-        : now + ERROR_TIMEOUT
-
+    setError: function (data, state) {
       return {
-        error: state.error.concat(action.payload),
-        errorTimeDone: newTimestamp
+        errors: state.errors.concat(data.message),
+        errorTimeDone: data.errorTimeDone
       }
     },
-    'error:delete': function (action, state) {
-      state.error.shift()
-      return { error: state.error }
+    'delError': function (data, state) {
+      state.errors.shift()
+      return { errors: state.errors }
     }
   },
   effects: {
-    error: function (action, state, send) {
-      const timeout = state.errorTimeDone - Date.now()
-      setTimeout(function () {
-        send('app:error:delete')
-      }, timeout)
+    error: function (err, state, send, done) {
+      const timeDone = state.errorTimeDone
+      const now = Date.now()
+
+      const timeStamp = (timeDone && timeDone >= now)
+        ? timeDone + ERROR_TIMEOUT
+        : now + ERROR_TIMEOUT
+
+      const timeout = timeStamp - now
+
+      const errAction = {
+        message: err.message,
+        errorTimeDone: timeStamp
+      }
+      send('app:setError', errAction, function (err) {
+        if (err) return done(err)
+        setTimeout(function () {
+          send('app:delError', done)
+        }, timeout)
+      })
     }
   }
 }

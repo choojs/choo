@@ -1,6 +1,7 @@
-const choo = require('../../../')
+const html = require('../../../html')
 
-module.exports = function (params, state, send) {
+module.exports = function (state, prev, send) {
+  const params = state.params
   const mailbox = params.mailbox
   const message = params.message
 
@@ -8,7 +9,7 @@ module.exports = function (params, state, send) {
     return String(msg.id) === message
   })[0]
 
-  return choo.view`
+  return html`
     <div>
       ${email ? createEmail(email) : 'error: no email found'}
     </div
@@ -16,7 +17,7 @@ module.exports = function (params, state, send) {
 }
 
 function createEmail (message) {
-  return choo.view`
+  return html`
     <div class="mail">
       <dl>
         <dt>From</dt>

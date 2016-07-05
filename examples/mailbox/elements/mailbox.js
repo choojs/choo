@@ -1,8 +1,9 @@
 const dateformat = require('dateformat')
-const choo = require('../../../')
+const html = require('../../../html')
 
 module.exports = function () {
-  return function (params, state, send) {
+  return function (state, prev, send) {
+    const params = state.params
     const mailbox = params.mailbox
     const message = params.message
     const messages = state[mailbox].messages
@@ -12,7 +13,7 @@ module.exports = function () {
         return String(msg.id) === message
       })[0]
 
-      return choo.view`
+      return html`
         <section class="fl mt4 w-80 db">
           <div>
             ${createHeader()}
@@ -26,7 +27,7 @@ module.exports = function () {
         </section>
       `
     } else {
-      return choo.view`
+      return html`
         <section class="fl mt4 w-80 db">
           ${createHeader()}
           ${messages.map(function (msg) {
@@ -39,7 +40,7 @@ module.exports = function () {
 }
 
 function createHeader () {
-  return choo.view`
+  return html`
     <div class="db cf w-100">
       <div class="fl mb3 w-25 mt0 b">Date</th>
       <div class="fl mb3 w-25 mt0 b">Subject</th>
@@ -50,7 +51,7 @@ function createHeader () {
 }
 
 function createMessage (message, mailbox) {
-  return choo.view`
+  return html`
     <div class="db cf w-100">
       <a href="${'/' + mailbox + '/' + message.id}">
         <div class="fl mb3 w-25 f6 link">
@@ -65,7 +66,7 @@ function createMessage (message, mailbox) {
 }
 
 function createEmail (message) {
-  return choo.view`
+  return html`
     <div class="mail">
       <dl>
         <dt>From</dt>
