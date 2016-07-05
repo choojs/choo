@@ -121,16 +121,16 @@ const app = choo()
 app.model({
   state: { title: 'Not quite set yet' },
   reducers: {
-    update: (data, state) => ({ title: data.value })
+    update: (data, state) => ({ title: data })
   }
 })
 
-const mainView = (params, state, send) => html`
+const mainView = (state, prev, send) => html`
   <main>
     <h1>Title: ${state.title}</h1>
     <input
       type="text"
-      oninput=${(e) => send('update', { value: e.target.value })}>
+      oninput=${(e) => send('update', e.target.value)}>
   </main>
 `
 
@@ -142,19 +142,21 @@ const tree = app.start()
 document.body.appendChild(tree)
 ```
 
-And to run it, save it as `client.js` and run with [budo][budo] and
-[es2020][es2020]:
+To run it, save it as `client.js` and run with [budo][budo] and
+[es2020][es2020]. These tools are convenient but any [browserify][browserify]
+based tool should do:
 ```sh
 $ budo 'client.js' -p 8080 --open -- -t es2020
 ```
 
-And to save to static files for deployment, open a new terminal and do:
+And to save the output to files so it can be deployed, open a new terminal and
+do:
 ```bash
 $ mkdir -p 'dist/'
 $ curl 'localhost:8080' > 'dist/index.html'
 $ curl 'localhost:8080/bundle.js' > 'dist/bundle.js'
 ```
-All just a couple of shell commands and `.js` files, no grandiose boilerplate
+All using a couple of shell commands and `.js` files, no grandiose boilerplate
 needed.
 
 ## Philosophy
@@ -189,7 +191,7 @@ sources of data. `effects` react to changes, perform an `action` and can then
 post the results. `reducers` take data, modify it, and update the internal
 `state`.
 
-Communication of data is done using objects called `actions`. Each `action`
+Communication of data is done using something called `actions`. Each `action`
 consists of a unique `actionName` and an optional payload of `data`, which can
 be any value.
 
@@ -232,14 +234,14 @@ namespaced or not. Namespacing means that only state within the model can be
 accessed. Models can still trigger actions on other models, though it's
 recommended to keep that to a minimum.
 
-So say we have a `todos` namespace, an `add` reducer and a `todos` model.
+So say we have a `myTodos` namespace, an `add` reducer and a `todos` model.
 Outside the model they're called by `send('todos:add')` and
 `state.todos.todos`. Inside the namespaced model they're called by
 `send('todos:add')` and `state.todos`. An example namespaced model:
 ```js
 const app = choo()
 app.model({
-  namespace: 'todos',
+  namespace: 'myTodos',
   state: { todos: [] },
   reducers: {
     add: (data, state) => ({ todos: state.todos.concat(data.payload) })
@@ -274,6 +276,18 @@ A typical `effect` flow looks like:
 4. When the async call is done, either a success or error action is emitted
 5. A reducer catches the action and updates the state
 
+Examples of effects include: performing
+[xhr](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) requests
+(server requests), calling multiple `reducers`, persisting state to
+[localstorage][localstorage].
+
+When an `effect` is done executing, it should call the `done(err, res)`
+callback. This callback used to communicate when an `effect` is done, handle
+possible errors and send values back to the caller. You'll probably notice when
+applications become more complex, that composing multiple namespaced models
+using higher level effects becomes real powerful - without becoming
+complicated.
+
 ### Subscriptions
 Subscriptions are a way of receiving data from a source. For example when
 listening for events from a server using `SSE` or `Websockets` for a
@@ -285,13 +299,17 @@ const app = choo()
 app.model({
   namespace: 'app',
   subscriptions: [
-    (send) => setInterval(() => send('app:print', { payload: 'dog?' }), 1000)
+    (send, done) => {
+      setInterval(() => send('app:print', { payload: 'dog?' }), 1000)
+    }
   ],
   effects: {
     print: (data, state) => console.log(data.payload)
   }
 })
 ```
+If a `subscription` runs into an error, it can call `done(err)` to signal the
+error to the error hook.
 
 ### Router
 The `router` manages which `views` are rendered at any given time. It also
@@ -315,9 +333,9 @@ figure out how views relate to each other.
 Under the hood `choo` uses [sheet-router][sheet-router]. Internally the
 currently rendered route is kept in `state.app.location`. If you want to modify
 the location programmatically the `reducer` for the location can be called
-using `send('app:location', { location: href })`. This will not work from
-within namespaced `models`, and usage should preferably be kept to a minimum.
-Changing views all over the place tends to lead to messiness.
+using `send('location:setLocation', { location: href })`. This will not work
+from within namespaced `models`, and usage should preferably be kept to a
+minimum. Changing views all over the place tends to lead to messiness.
 
 ### Views
 Views are pure functions that return a DOM tree for the router to render. They’re passed the current state, and any time the state changes they’re run again with the new state.
@@ -325,11 +343,13 @@ Views are pure functions that return a DOM tree for the router to render. They�
 Views are also passed the `send` function, which they can use to dispatch actions that can update the state. For example, the DOM tree can have an `onclick` handler that dispatches an `add` action.
 
 ```javascript
-const view = (params, state, send) => {
+const view = (state, prev, send) => {
   return html`
     <div>
       <h1>Total todos: ${state.todos.length}</h1>
-      <button onclick=${(e) => send('add', { payload: {title: 'demo'})}>Add</button>
+      <button onclick=${(e) => send('add', {title: 'demo'})}>
+        Add
+      </button>
     </div>`
 }
 ```
@@ -370,33 +390,35 @@ arguments:
   and handlers in other models
 - __state:__ initial values of `state` inside the model
 - __reducers:__ synchronous operations that modify state. Triggered by
-  `actions`. Signature of `(actionData, state)`.
+  `actions`. Signature of `(data, state)`.
 - __effects:__ asynchronous operations that don't modify state directly.
-  Triggered by `actions`, can call `actions`. Signature of `(actionData, state,
+  Triggered by `actions`, can call `actions`. Signature of `(data, state,
   send, done)`
 - __subscriptions:__ asynchronous read-only operations that don't modify state
   directly. Can call `actions`. Signature of `(state, send, done)`.
 
-#### send()
+#### send(actionName, data?)
 Send a new action to the models with optional data attached. Namespaced models
 can be accessed by prefixing the name with the namespace separated with a `:`,
 e.g. `namespace:name`.
 
-#### done()
+#### done(err?, res?)
 When an `effect` or `subscription` is done executing, or encounters an error,
-it should call the final `done(err)` callback. If an `effect` was called by
-another `effect` it will call the callback of the caller. When an error
+it should call the final `done(err, res)` callback. If an `effect` was called
+by another `effect` it will call the callback of the caller. When an error
 propegates all the way to the top, the `onError` handler will be called,
-registered in `barracks(handlers)`. If no callback is registered, errors will
+registered in `choo(handlers)`. If no callback is registered, errors will
 `throw`.
 
-### app.router((route) => [routes])
+### app.router(defaultRoute?, (route) => [routes])
 Creates a new router. Takes a function that exposes a single `route` function,
 and that expects a tree of `routes` to be returned. See
 [`sheet-router`](https://github.com/yoshuawuyts/sheet-router) for full
 documentation. Registered views have a signature of `(state, prev, send)`,
 where `state` is the current `state`, `prev` is the last state, `state.params`
-is URI partials and `send()` can be called to trigger actions.
+is URI partials and `send()` can be called to trigger actions. If
+`defaultRoute` is passed in, that will be called if no paths match. If no
+`defaultRoute` is specified it will throw instead.
 
 ### html = app.toString(route, state?)
 Render the application to a string of HTML. Useful for rendering on the server.
@@ -412,8 +434,8 @@ first argument, the tree will diff against the selected node rather than be
 returned. This is useful for [rehydration](#rehydration). Opts can contain the
 following values:
 - __opts.history:__ default: `true`. Enable a `subscription` to the browser
-  history API. e.g. updates the internal `state.location` state whenever the
-  browser "forward" and "backward" buttons are pressed.
+  history API. e.g. updates the internal `location.href` state whenever the
+  browsers "forward" and "backward" buttons are pressed.
 - __opts.href:__ default: `true`. Handle all relative `<a
   href="<location>"></a>` clicks and update internal `state.location`
   accordingly.
@@ -422,8 +444,8 @@ following values:
   changes (eg `localhost/#posts/123`). Enabling this option automatically
   disables `opts.history` and `opts.href`.
 
-### view = choo/html\`html\`
-Tagged template string HTML builder. Built on top of [yo-yo][bel], [bel][bel]
+### view = require('choo/html')\`html\`
+Tagged template string HTML builder. Built on top of [yo-yo][yo-yo], [bel][bel]
 and [hyperx][hyperx]. To register a view on the `router` it should be wrapped
 in a function with the signature of `(state, prev, send)` where `state` is the
 current `state`, `prev` is the last state, `state.params` is URI partials and
@@ -437,12 +459,13 @@ html`
 `
 ```
 Example listeners include: `onclick`, `onsubmit`, `oninput`, `onkeydown`,
-`onkeyup`. When creating listeners always remember to call `e.preventDefault()`
-on the event so it doesn't bubble up and do stuff like refreshing the full page
-or the like.
+`onkeyup`. A full list can be found [at the yo-yo
+repo](https://github.com/maxogden/yo-yo/blob/master/update-events.js). When
+creating listeners always remember to call `e.preventDefault()` on the event so
+it doesn't bubble up and do stuff like refreshing the full page or the like.
 
 To trigger lifecycle events on any part of a view, set the `onload=${(el) =>
-{}}` and `onunload=${() => {}}` attributes. These parameters are useful when
+{}}` and `onunload=${() => {el}}` attributes. These parameters are useful when
 creating self-contained widgets that take care of their own state and lifecycle
 (e.g. a maps widget) or to trigger animations. Most elements shouldn't have a
 need for these hooks though.
@@ -640,3 +663,6 @@ $ npm install choo
 [hyperx]: https://github.com/substack/hyperx
 [budo]: https://github.com/mattdesl/budo
 [es2020]: https://github.com/yoshuawuyts/es2020
+[browserify]: https://github.com/substack/browserify
+[localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+[handbook]: https://github.com/yoshuawuyts/choo-handbook
