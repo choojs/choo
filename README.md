@@ -98,14 +98,16 @@
 - __very cute:__ choo choo!
 
 ## Demos
-- [Input example](examples/title/)
-  ([requirebin](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186))
-- [HTTP effects example](https://fork-fang.hyperdev.space/)
-  ([hyperdev](https://hyperdev.com/#!/project/fork-fang))
-- [Mailbox routing example](examples/mailbox/)
-  (@examples directory)
-- [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
-  ([github](https://github.com/shuhei/todomvc-choo))
+- :truck: [Input example](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186)
+  ([repo](examples/title/))
+- :water_buffalo: [HTTP effects example](https://hyperdev.com/#!/project/fork-fang)
+  ([repo](https://fork-fang.hyperdev.space/))
+- :mailbox: [Mailbox routing](examples/mailbox/)
+- :ok_hand: [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
+  ([repo](https://github.com/shuhei/todomvc-choo))
+- :fire: [Choo-firebase](https://github.com/mw222rs/choo-firebase)
+- :seedling: [Grow](https://grow.static.land/)
+  ([repo](https://github.com/sethvincent/grow))
 
 _note: If you've built something cool using `choo` or are using it in
 production, we'd love to hear from you!_
