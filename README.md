@@ -397,7 +397,7 @@ arguments:
   Triggered by `actions`, can call `actions`. Signature of `(data, state,
   send, done)`
 - __subscriptions:__ asynchronous read-only operations that don't modify state
-  directly. Can call `actions`. Signature of `(state, send, done)`.
+  directly. Can call `actions`. Signature of `(send, done)`.
 
 #### send(actionName, data?)
 Send a new action to the models with optional data attached. Namespaced models
