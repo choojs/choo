@@ -624,6 +624,8 @@ $ npm install choo
 ## See Also
 - [choo-handbook](https://github.com/yoshuawuyts/choo-handbook) - the little
   `choo` guide
+- [awesome-choo](https://github.com/YerkoPalma/awesome-choo) - Awesome things
+  related with choo framework
 - [budo](https://github.com/mattdesl/budo) - quick prototyping tool for
   `browserify`
 - [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
