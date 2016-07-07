@@ -302,7 +302,11 @@ app.model({
   namespace: 'app',
   subscriptions: [
     (send, done) => {
-      setInterval(() => send('app:print', { payload: 'dog?' }), 1000)
+      setInterval(() => {
+        send('app:print', { payload: 'dog?', myOtherValue: 1000 }, (err) => {
+          if (err) return done(err)
+        })
+      }, 1000)
     }
   ],
   effects: {
@@ -399,10 +403,12 @@ arguments:
 - __subscriptions:__ asynchronous read-only operations that don't modify state
   directly. Can call `actions`. Signature of `(send, done)`.
 
-#### send(actionName, data?)
+#### send(actionName, data?[,callback])
 Send a new action to the models with optional data attached. Namespaced models
 can be accessed by prefixing the name with the namespace separated with a `:`,
 e.g. `namespace:name`.
+
+When sending data from inside a `model` it expects exactly three arguments: the name of the action you're calling, the data you want to send, and finally a callback to handle errors through the global `onError()` hook. So if you want to send two values, you'd have to either send an array or object containing them.
 
 #### done(err?, res?)
 When an `effect` or `subscription` is done executing, or encounters an error,
