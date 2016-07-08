@@ -236,17 +236,17 @@ namespaced or not. Namespacing means that only state within the model can be
 accessed. Models can still trigger actions on other models, though it's
 recommended to keep that to a minimum.
 
-So say we have a `myTodos` namespace, an `add` reducer and a `todos` model.
+So say we have a `todos` namespace, an `add` reducer and a `todos` model.
 Outside the model they're called by `send('todos:add')` and
-`state.todos.todos`. Inside the namespaced model they're called by
-`send('todos:add')` and `state.todos`. An example namespaced model:
+`state.todos.items`. Inside the namespaced model they're called by
+`send('todos:add')` and `state.items`. An example namespaced model:
 ```js
 const app = choo()
 app.model({
-  namespace: 'myTodos',
-  state: { todos: [] },
+  namespace: 'todos',
+  state: { items: [] },
   reducers: {
-    add: (data, state) => ({ todos: state.todos.concat(data.payload) })
+    add: (data, state) => ({ todos: state.items.concat(data.payload) })
   }
 })
 ```
