@@ -148,7 +148,7 @@ To run it, save it as `client.js` and run with [budo][budo] and
 [es2020][es2020]. These tools are convenient but any [browserify][browserify]
 based tool should do:
 ```sh
-$ budo 'client.js' -p 8080 --open -- -t es2020
+$ budo client.js -p 8080 --open -- -t es2020
 ```
 
 And to save the output to files so it can be deployed, open a new terminal and
