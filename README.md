@@ -43,11 +43,6 @@
     <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square"
       alt="Standard" />
   </a>
-  <!-- IRC -->
-  <a href="https://webchat.freenode.net/?channels=choo">
-    <img src="https://img.shields.io/badge/irc-freenode-blue.svg?style=flat-square"
-      alt="IRC - Freenode" />
-  </a>
 </div>
 
 <div align="center">
@@ -55,11 +50,15 @@
     <a href="https://github.com/yoshuawuyts/choo-handbook">
       Handbook
     </a>
-    <span>|</span>
-    Packages
-    <span>|</span>
+    <span> | </span>
+      Packages
+    <span> | </span>
     <a href="https://github.com/yoshuawuyts/choo/blob/master/.github/CONTRIBUTING.md">
       Contributing
+    </a>
+    <span> | </span>
+    <a href="https://webchat.freenode.net/?channels=choo">
+      Chat
     </a>
   </h3>
 </div>
