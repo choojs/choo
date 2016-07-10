@@ -246,7 +246,7 @@ app.model({
   namespace: 'todos',
   state: { items: [] },
   reducers: {
-    add: (data, state) => ({ todos: state.items.concat(data.payload) })
+    add: (data, state) => ({ items: state.items.concat(data.payload) })
   }
 })
 ```
