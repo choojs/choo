@@ -80,6 +80,7 @@
   <li><a href="#example">Example</a></li>
   <li><a href="#philosophy">Philosophy</a></li>
   <li><a href="#concepts">Concepts</a></li>
+  <li><a href="#badges">Badges</a></li>
   <li><a href="#api">API</a></li>
   <li><a href="#faq">FAQ</a></li>
   <li><a href="#installation">Installation</a></li>
@@ -360,6 +361,15 @@ const view = (state, prev, send) => {
 }
 ```
 In this example, when the `Add` button is clicked, the view will dispatch an `add` action that the model’s `add` reducer will receive. [As seen above](#models), the reducer will add an item to the state’s `todos` array. The state change will cause this view to be run again with the new state, and the resulting DOM tree will be used to [efficiently patch the DOM](#does-choo-use-a-virtual-dom).
+
+## Badges
+Using `choo` in a project? Show off which version you've used using a badge:
+
+
+[![built with choo v3](https://img.shields.io/badge/built%20with%20choo-v3-ffc3e4.svg?style=flat-square)](https://github.com/yoshuawuyts/choo)
+```md
+[![built with choo v3](https://img.shields.io/badge/built%20with%20choo-v3-ffc3e4.svg?style=flat-square)](https://github.com/yoshuawuyts/choo)
+```
 
 ## API
 This section provides documentation on how each function in `choo` works. It's
