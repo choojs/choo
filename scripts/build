@@ -1,0 +1,44 @@
+#!/bin/sh
+
+dirname=$(dirname "$(readlink -f "$0")")
+
+browserify="$dirname/../node_modules/.bin/browserify"
+uglify="$dirname/../node_modules/.bin/uglifyjs"
+
+usage () {
+  printf "Usage: build-umd <argument>\n"
+}
+
+build_dev () {
+  mkdir -p dist/
+  NODE_ENV=development "$browserify" index.js \
+    --standalone=choo \
+    -t envify \
+    > dist/choo.js
+}
+
+build_min () {
+  mkdir -p dist/
+  NODE_ENV=production "$browserify" index.js \
+    --standalone=choo \
+    -t envify \
+    -g unassertify \
+    -g uglifyify \
+    | "$uglify" \
+    > dist/choo.min.js
+}
+
+# parse CLI flags
+while true; do
+  case "$1" in
+    -h|--help) usage && exit 1 ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+case "$1" in
+  d|dev) shift; build_dev "$@" ;;
+  m|min) shift; build_min "$@" ;;
+  *) shift; build_min "$@" ;;
+esac

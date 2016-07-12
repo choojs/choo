@@ -4,14 +4,17 @@
   "description": "A 5kb framework for creating sturdy frontend applications",
   "main": "index.js",
   "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev -i xhr",
-    "test:electron": "browserify tests/**/*.js -t es2020 -p proxyquire-universal | tape-run",
-    "test:cov": "browserify tests/**/*.js -t es2020 -p proxyquire-universal -p tape-istanbul/plugin | tape-run | tape-istanbul && istanbul report",
-    "test:server": "standard && npm run deps && NODE_ENV=test node tests/server/*",
-    "test:browser": "standard && npm run deps && NODE_ENV=test zuul tests/browser/*",
-    "test:browser:local": "standard && npm run deps && NODE_ENV=test zuul --local 8080 -- tests/browser/*",
+    "deps": "./scripts/test deps",
+    "test:electron": "./scripts/test electron",
+    "test:cov": "./scripts/test cov",
+    "test:server": "./scripts/test server",
+    "test:browser": "./scripts/test browser",
+    "test:browser-local": "./scripts/test browser-local",
     "preversion": "if [ ! -z $SKIP_TEST ]; then npm run test:browser; fi",
-    "test": "npm run test:electron"
+    "test": "npm run test:electron",
+    "build:dev": "./scripts/build dev",
+    "build:min": "./scripts/build min",
+    "prepublish": "npm run build:dev && npm run build:min"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
@@ -21,6 +24,11 @@
     "minimal",
     "composable",
     "tiny"
+  ],
+  "files": [
+    "index.js",
+    "http.js",
+    "dist"
   ],
   "license": "MIT",
   "dependencies": {
@@ -40,6 +48,7 @@
     "browserify-istanbul": "^2.0.0",
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.5.1",
+    "envify": "^3.4.1",
     "es2020": "^1.0.1",
     "geval": "~2.1.1",
     "insert-css": "^0.2.0",
@@ -56,6 +65,9 @@
     "tape": "^4.5.1",
     "tape-istanbul": "~1.0.2",
     "tape-run": "~2.1.4",
+    "uglifyify": "^3.0.2",
+    "uglifyjs": "^2.4.10",
+    "unassertify": "^2.0.3",
     "yo-yoify": "^3.1.0",
     "zuul": "toddself/zuul"
   }
