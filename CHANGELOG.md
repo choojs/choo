@@ -1,3 +1,14 @@
+## `3.1.0`
+And another patch down. This time around it's mostly maintenance and a bit of
+perf:
+- The addition of the [nanoraf](https://github.com/yoshuawuyts/nanoraf)
+  dependency prevents bursts of DOM updates thrashing application performance,
+  quite possibly making choo amongst the fastest frameworks out there.
+- We now ship standalone `UMD` bundles on each release, available through
+  [https://npmcdn.com/choo](https://npmcdn.com/choo). The goal of this is to
+  support sites like codepen and the like; __this should not be used for
+  production__.
+
 ## `3.0.0`
 Woooh, happy third birthday `choo` - _thanks dad_. You're all grown up now;
 look at how far you've come in the last month. You've grown... tinier? But yet
