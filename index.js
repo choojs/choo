@@ -124,7 +124,7 @@ function choo (opts) {
       }
 
       function wrap (child, route) {
-        const send = createSend(route, true)
+        const send = createSend('view: ' + route, true)
         return function chooWrap (params, state) {
           const nwPrev = prev
           const nwState = prev = xtend(state, { params: params })

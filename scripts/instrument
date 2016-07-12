@@ -48,7 +48,9 @@ run_discify () {
 getopt -T > /dev/null
 if [ "$?" -eq 4 ]; then
   args="$(getopt --long help discify minified --options hmdg -- "$*")"
-else args="$(getopt h "$*")"; fi
+else
+  args="$(getopt h "$*")";
+fi
 [ ! $? -eq 0 ] && { usage && exit 2; }
 eval set -- "$args"
 
