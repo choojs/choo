@@ -14,6 +14,8 @@ build_dev () {
   NODE_ENV=development "$browserify" index.js \
     --standalone=choo \
     -t envify \
+    -g yo-yoify \
+    -g es2020 \
     > dist/choo.js
 }
 
@@ -23,7 +25,12 @@ build_min () {
     --standalone=choo \
     -t envify \
     -g unassertify \
+    -g yo-yoify \
+    -g es2020 \
     -g uglifyify \
+    -t envify \
+    -p bundle-collapser/plugin \
+    | uglifyjs \
     | "$uglify" \
     > dist/choo.min.js
 }
