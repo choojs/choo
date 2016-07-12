@@ -15,7 +15,7 @@ test('hooks', function (t) {
       t.deepEqual(action, {foo: 'bar'}, 'onAction: action data')
       t.equal(state.clicks, 0, 'onAction: current state: 0 clicks')
       t.equal(name, 'click', 'onAction: action name')
-      t.equal(caller, '/', 'onAction: caller name')
+      t.equal(caller, 'view: /', 'onAction: caller name')
       t.equal(typeof createSend, 'function', 'onAction: createSend fn')
     },
     onStateChange: function (action, state, prev, createSend) {
