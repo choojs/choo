@@ -28,16 +28,6 @@ build_min () {
     > dist/choo.min.js
 }
 
-# set CLI flags
-getopt -T > /dev/null
-if [ "$?" -eq 4 ]; then
-  args="$(getopt --long help dev min --options hdm -- "$*")"
-else
-  args="$(getopt h "$*")";
-fi
-[ ! $? -eq 0 ] && { usage && exit 2; }
-eval set -- "$args"
-
 # parse CLI flags
 while true; do
   case "$1" in

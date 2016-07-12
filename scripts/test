@@ -1,0 +1,85 @@
+#!/bin/sh
+
+# setting exit because we're linting and need to exit on failure
+set -e
+
+dirname=$(dirname "$(readlink -f "$0")")
+
+dependency_check="$dirname/../node_modules/.bin/dependency-check"
+tape_istanbul="$dirname/../node_modules/.bin/tape-istanbul"
+browserify="$dirname/../node_modules/.bin/browserify"
+standard="$dirname/../node_modules/.bin/standard"
+tape_run="$dirname/../node_modules/.bin/tape-run"
+istanbul="$dirname/../node_modules/.bin/istanbul"
+zuul="$dirname/../node_modules/.bin/zuul"
+
+usage () {
+  printf "Usage: test\n"
+}
+
+lint () {
+  "$standard"
+}
+
+test_electron () {
+  check_deps
+  lint
+  "$browserify" tests/**/*.js \
+    -t es2020 \
+    -p proxyquire-universal \
+      | "$tape_run"
+}
+
+test_cov () {
+  check_deps
+  lint
+  "$browserify" tests/**/*.js \
+    -t es2020 \
+    -p proxyquire-universal \
+    -p tape-istanbul/plugin \
+      | "$tape_run" \
+      | "$tape_istanbul" \
+      && "$istanbul" report
+}
+
+test_server () {
+  lint
+  standard
+  check_deps
+  NODE_ENV=test node tests/server/*
+}
+
+test_browser () {
+  NODE_ENV=test "$zuul" tests/browser/*
+}
+
+test_browser_local () {
+  lint
+  check_deps
+  NODE_ENV=test "$zuul" --local 8080 -- tests/browser/*
+}
+
+check_deps () {
+  "$dependency_check" . --entry 'index.js'
+  "$dependency_check" . --entry 'index.js' --extra --no-dev \
+    -i xhr
+}
+
+# set CLI flags
+# parse CLI flags
+while true; do
+  case "$1" in
+    -h|--help) usage && exit 1 ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+case "$1" in
+  e|electron) shift; test_electron "$@" && exit ;;
+  b|browser) shift; test_browser "$@" && exit ;;
+  l|browser-local) shift; test_browser_local "$@" && exit ;;
+  s|server) shift; test_server "$@" && exit ;;
+  c|cov) shift; test_cov "$@" && exit ;;
+  d|deps) shift; check_deps "$@" && exit ;;
+esac
