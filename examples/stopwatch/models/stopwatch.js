@@ -1,4 +1,3 @@
-const xtend = require('xtend')
 const raf = require('raf')
 
 module.exports = {
@@ -9,11 +8,11 @@ module.exports = {
     laps: []
   },
   reducers: {
-    start: (data, state) => xtend(state, { start: true, startTime: Date.now() - state.elapsed }),
-    stop: (data, state) => xtend(state, { start: false }),
-    update: (data, state) => xtend(state, { elapsed: data }),
-    reset: (data, state) => xtend(state, { startTime: Date.now(), elapsed: 0, laps: [] }),
-    add: (data, state) => xtend(state, { laps: state.laps.concat(data) })
+    start: (data, state) => ({ start: true, startTime: Date.now() - state.elapsed }),
+    stop: (data, state) => ({ start: false }),
+    update: (data, state) => ({ elapsed: data }),
+    reset: (data, state) => ({ startTime: Date.now(), elapsed: 0, laps: [] }),
+    add: (data, state) => ({ laps: state.laps.concat(data) })
   },
   effects: {
     now: (data, state, send, done) => {

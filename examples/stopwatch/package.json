@@ -11,8 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "budo": "^8.3.0",
-    "raf": "^3.2.0",
-    "xtend": "^4.0.1"
+    "raf": "^3.2.0"
   },
   "devDependencies": {
     "es2020": "^1.1.7"
