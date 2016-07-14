@@ -13,13 +13,13 @@
                   count: 0
               },
               reducers: {
-                increment: (action, state) => ({count: state.count + 1}),
-                decrement: (action, state) => ({count: state.count - 1})
+                increment: (data, state) => ({count: state.count + 1}),
+                decrement: (data, state) => ({count: state.count - 1})
               }
             })
 
-            const mainView = (params, state, send) => {
-              return choo.view`
+            const mainView = (state, prev, send) => {
+              return html`
                 <main class="app">
                   <h1>Counter example</h1>
                   <div>
