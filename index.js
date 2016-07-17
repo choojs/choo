@@ -47,7 +47,7 @@ function choo (opts) {
 
     function createSend () {
       return function send () {
-        assert.fail('choo: send() cannot be called from Node')
+        assert.ok(false, 'choo: send() cannot be called from Node')
       }
     }
   }
