@@ -100,8 +100,8 @@
 ## Demos
 - :truck: [Input example](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186)
   ([repo](examples/title/))
-- :water_buffalo: [HTTP effects example](https://hyperdev.com/#!/project/fork-fang)
-  ([repo](https://fork-fang.hyperdev.space/))
+- :water_buffalo: [HTTP effects example](https://fork-fang.hyperdev.space/)
+  ([repo](https://hyperdev.com/#!/project/fork-fang))
 - :mailbox: [Mailbox routing](examples/mailbox/)
 - :ok_hand: [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
   ([repo](https://github.com/shuhei/todomvc-choo))
