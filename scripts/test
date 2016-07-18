@@ -3,43 +3,33 @@
 # setting exit because we're linting and need to exit on failure
 set -e
 
-dirname=$(dirname "$(readlink -f "$0")")
-
-dependency_check="$dirname/../node_modules/.bin/dependency-check"
-tape_istanbul="$dirname/../node_modules/.bin/tape-istanbul"
-browserify="$dirname/../node_modules/.bin/browserify"
-standard="$dirname/../node_modules/.bin/standard"
-tape_run="$dirname/../node_modules/.bin/tape-run"
-istanbul="$dirname/../node_modules/.bin/istanbul"
-zuul="$dirname/../node_modules/.bin/zuul"
-
 usage () {
   printf "Usage: test\n"
 }
 
 lint () {
-  "$standard"
+  standard
 }
 
 test_electron () {
   check_deps
   lint
-  "$browserify" tests/**/*.js \
+  browserify tests/**/*.js \
     -t es2020 \
     -p proxyquire-universal \
-      | "$tape_run"
+      | tape-run
 }
 
 test_cov () {
   check_deps
   lint
-  "$browserify" tests/**/*.js \
+  browserify tests/**/*.js \
     -t es2020 \
     -p proxyquire-universal \
     -p tape-istanbul/plugin \
-      | "$tape_run" \
-      | "$tape_istanbul" \
-      && "$istanbul" report
+      | tape-run \
+      | tape-istanbul \
+      && istanbul report
 }
 
 test_server () {
@@ -50,18 +40,18 @@ test_server () {
 }
 
 test_browser () {
-  NODE_ENV=test "$zuul" tests/browser/*
+  NODE_ENV=test zuul tests/browser/*
 }
 
 test_browser_local () {
   lint
   check_deps
-  NODE_ENV=test "$zuul" --local 8080 -- tests/browser/*
+  NODE_ENV=test zuul --local 8080 -- tests/browser/*
 }
 
 check_deps () {
-  "$dependency_check" . --entry 'index.js'
-  "$dependency_check" . --entry 'index.js' --extra --no-dev \
+  dependency-check . --entry 'index.js'
+  dependency-check . --entry 'index.js' --extra --no-dev \
     -i xhr
 }
 
