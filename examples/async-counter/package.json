@@ -1,0 +1,16 @@
+{
+  "name": "cancellable-counter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "scripts": {
+    "start": "budo client.js -p 8080"
+  },
+  "keywords": [],
+  "author": "Juan Soto <juan@juansoto.me>",
+  "license": "ISC",
+  "dependencies": {
+    "budo": "^8.3.0",
+    "plur": "^2.1.2"
+  }
+}
