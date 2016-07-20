@@ -1,13 +1,5 @@
 #!/bin/sh
 
-dirname=$(dirname "$(readlink -f "$0")")
-
-browserify="$dirname/../node_modules/.bin/browserify"
-uglify="$dirname/../node_modules/.bin/uglifyjs"
-pretty_bytes="$dirname/../node_modules/.bin/pretty-bytes"
-gzip_size="$dirname/../node_modules/.bin/gzip-size"
-discify="$dirname/../node_modules/.bin/discify"
-
 usage () {
 cat << USAGE
 script/test-size
@@ -24,45 +16,45 @@ gzip () {
   if [ $? -eq 0 ]; then
     zopfli "$1" -i1000 -c | wc -c
   else
-    "$gzip_size" < "$1"
+    gzip-size < "$1"
   fi
 }
 
 gzip_size () {
   mkdir -p tmp/
-  "$browserify" index.js \
+  browserify index.js \
     -g unassertify \
     -g yo-yoify \
     -g es2020 \
     -g uglifyify \
     -p bundle-collapser/plugin \
-    | "$uglify" \
+    | uglifyjs \
     > tmp/bundle.min.js
 
-    gzip tmp/bundle.min.js | "$pretty_bytes"
+    gzip tmp/bundle.min.js | pretty-bytes
     rm -rf tmp/
 }
 
 min_size () {
-  "$browserify" index.js \
+  browserify index.js \
     -g unassertify \
     -g yo-yoify \
     -g es2020 \
     -g uglifyify \
     -p bundle-collapser/plugin \
-    | "$uglify" \
+    | uglifyjs \
     | wc -c \
-    | "$pretty_bytes"
+    | pretty-bytes
 }
 
 run_discify () {
-  "$browserify" index.js --full-paths \
+  browserify index.js --full-paths \
     -g unassertify \
     -g yo-yoify \
     -g es2020 \
     -g uglifyify \
-    | "$uglify" \
-    | "$discify" --open
+    | uglifyjs \
+    | discify --open
 }
 
 # set CLI flags
