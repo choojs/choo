@@ -14,7 +14,10 @@
     "test": "npm run test:electron",
     "build:dev": "./scripts/build dev",
     "build:min": "./scripts/build min",
-    "prepublish": "npm run build:dev && npm run build:min"
+    "prepublish": "npm run build:dev && npm run build:min",
+    "instrument:discify": "./scripts/instrument discify",
+    "instrument:minified": "./scripts/instrument minified",
+    "instrument:gzip": "./scripts/instrument gzip"
   },
   "repository": "yoshuawuyts/choo",
   "keywords": [
