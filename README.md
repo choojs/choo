@@ -98,7 +98,7 @@
 - __very cute:__ choo choo!
 
 ## Demos
-- :truck: [Input example](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186)
+- :truck: [Input example](http://requirebin.com/?gist=229bceda0334cf30e3044d5f5c600960)
   ([repo](examples/title/))
 - :water_buffalo: [HTTP effects example](https://fork-fang.hyperdev.space/)
   ([repo](https://hyperdev.com/#!/project/fork-fang))
