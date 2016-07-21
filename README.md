@@ -382,7 +382,35 @@ const view = (state, prev, send) => {
     </div>`
 }
 ```
-In this example, when the `Add` button is clicked, the view will dispatch an `add` action that the model’s `add` reducer will receive. [As seen above](#models), the reducer will add an item to the state’s `todos` array. The state change will cause this view to be run again with the new state, and the resulting DOM tree will be used to [efficiently patch the DOM](#does-choo-use-a-virtual-dom).
+In this example, when the `Add` button is clicked, the view will dispatch an
+`add` action that the model’s `add` reducer will receive. [As seen
+above](#models), the reducer will add an item to the state’s `todos` array. The
+state change will cause this view to be run again with the new state, and the
+resulting DOM tree will be used to [efficiently patch the
+DOM](#does-choo-use-a-virtual-dom).
+
+### Plugins
+Sometimes it's necessary to change the way `choo` itself works. For example to
+report whenever an action is triggered, handle errors globally or perist state
+somewhere. This is done through something called `plugins`. Plugins are objects
+that contain `hook` functions and are passed to `app.use()`:
+
+```js
+const log = require('choo-log')
+const choo = require('choo')
+const app = choo()
+
+app.use(log())
+
+const tree = app.start()
+document.body.appendChild(tree)
+```
+
+Generally people using `choo` shouldn't be too worried about the specifics of
+`plugins`, as the internal API is (unfortunatly by necessecity) quite complex.
+After all they're the most powerful way to modify a `choo` appliction. If you
+want to learn more about creating your own `plugins`, and which `hooks` are
+available, head on over to [app.use()](#appusehooks).
 
 ## Badges
 Using `choo` in a project? Show off which version you've used using a badge:
@@ -400,26 +428,8 @@ the first time, consider reading through the [handbook][handbook] or
 [concepts](#concepts) first :sparkles:
 
 ### app = choo(opts)
-Initialize a new `choo` app. Takes an optional object of handlers. Handlers can
-be:
-- __onError(err, state, createSend):__ called when an `effect` or
-  `subscription` emit an error. If no handler is passed, the default handler
-  will `throw` on each error.
-- __onAction(action, state, name, caller, createSend):__ called when an
-  `action` is fired.
-- __onStateChange(action, state, prev, caller, createSend):__ called after a
-  reducer changes the `state`.
-
-`createSend()` is a special function that allows the creation of a new named
-`send()` function. The first argument should be a string which is the name, the
-second argument is a boolean `callOnError` which can be set to `true` to call
-the `onError` hook istead of a provided callback. It then returns a
-`send(actionName, data?)` function.
-
-Handlers should be used with care, as they're the most powerful interface into
-the state. For application level code it's generally recommended to delegate to
-actions inside models using the `send()` call, and only shape the actions
-inside the handlers.
+Initialize a new `choo` app. Takes an optional object of handlers that is
+passed to [app.use()](#appusehooks).
 
 ### app.model(obj)
 Create a new model. Models modify data and perform IO. Takes the following
@@ -459,6 +469,32 @@ where `state` is the current `state`, `prev` is the last state, `state.params`
 is URI partials and `send()` can be called to trigger actions. If
 `defaultRoute` is passed in, that will be called if no paths match. If no
 `defaultRoute` is specified it will throw instead.
+
+### app.use(hooks)
+Register an object of hooks on the application. This is useful to extend the
+way `choo` works, adding custom behavior and listeners. Generally returning
+objects of `hooks` is done by returning them from functions (which we call
+`plugins` throughout the documentation).
+
+There are several `hooks` that are picked up by `choo`:
+- __onError(err, state, createSend):__ called when an `effect` or
+  `subscription` emit an error. If no handler is passed, the default handler
+  will `throw` on each error.
+- __onAction(action, state, name, caller, createSend):__ called when an
+  `action` is fired.
+- __onStateChange(action, state, prev, caller, createSend):__ called after a
+  reducer changes the `state`.
+
+`createSend()` is a special function that allows the creation of a new named
+`send()` function. The first argument should be a string which is the name, the
+second argument is a boolean `callOnError` which can be set to `true` to call
+the `onError` hook istead of a provided callback. It then returns a
+`send(actionName, data?)` function.
+
+Hooks should be used with care, as they're the most powerful interface into
+the state. For application level code it's generally recommended to delegate to
+actions inside models using the `send()` call, and only shape the actions
+inside the hooks.
 
 ### html = app.toString(route, state?)
 Render the application to a string of HTML. Useful for rendering on the server.
