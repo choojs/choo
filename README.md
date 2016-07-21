@@ -408,9 +408,15 @@ document.body.appendChild(tree)
 
 Generally people using `choo` shouldn't be too worried about the specifics of
 `plugins`, as the internal API is (unfortunatly by necessecity) quite complex.
-After all they're the most powerful way to modify a `choo` appliction. If you
-want to learn more about creating your own `plugins`, and which `hooks` are
-available, head on over to [app.use()](#appusehooks).
+After all they're the most powerful way to modify a `choo` appliction.
+
+__:warning: Warning :warning:: plugins should only be used as a last resort.
+It creates peer dependencies which makes upgrading versions and switching
+frameworks a lot harder. Please exhaust all other options before using
+plugins.__
+
+If you want to learn more about creating your own `plugins`, and which `hooks`
+are available, head on over to [app.use()](#appusehooks).
 
 ## Badges
 Using `choo` in a project? Show off which version you've used using a badge:
@@ -484,6 +490,11 @@ There are several `hooks` that are picked up by `choo`:
   `action` is fired.
 - __onStateChange(action, state, prev, caller, createSend):__ called after a
   reducer changes the `state`.
+
+__:warning: Warning :warning:: plugins should only be used as a last resort.
+It creates peer dependencies which makes upgrading versions and switching
+frameworks a lot harder. Please exhaust all other options before using
+plugins.__
 
 `createSend()` is a special function that allows the creation of a new named
 `send()` function. The first argument should be a string which is the name, the
