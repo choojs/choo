@@ -283,6 +283,27 @@ Examples of effects include: performing
 (server requests), calling multiple `reducers`, persisting state to
 [localstorage][localstorage].
 
+```js
+const http = require('choo/http')
+const choo = require('choo')
+const app = choo()
+app.model({
+  namespace: 'todos',
+  state: { items: [] },
+  effects: {
+    addAndSave: (data, state, send, done) => {
+      http.post('/todo', {body: data.payload, json: true}, (err, res, body) => {
+        data.payload.id = body.id
+        send('todos:add', data, done)
+      })
+    }
+  },
+  reducers: {
+    add: (data, state) => ({ items: state.items.concat(data.payload) })
+  }
+})
+```
+
 When an `effect` is done executing, it should call the `done(err, res)`
 callback. This callback used to communicate when an `effect` is done, handle
 possible errors and send values back to the caller. You'll probably notice when
