@@ -156,7 +156,7 @@ do:
 ```bash
 $ mkdir -p 'dist/'
 $ curl 'localhost:8080' > 'dist/index.html'
-$ curl 'localhost:8080/bundle.js' > 'dist/bundle.js'
+$ curl 'localhost:8080/client.js' > 'dist/client.js'
 ```
 All using a couple of shell commands and `.js` files, no grandiose boilerplate
 needed.
