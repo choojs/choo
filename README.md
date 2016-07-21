@@ -100,8 +100,8 @@
 ## Demos
 - :truck: [Input example](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186)
   ([repo](examples/title/))
-- :water_buffalo: [HTTP effects example](https://hyperdev.com/#!/project/fork-fang)
-  ([repo](https://fork-fang.hyperdev.space/))
+- :water_buffalo: [HTTP effects example](https://fork-fang.hyperdev.space/)
+  ([repo](https://hyperdev.com/#!/project/fork-fang))
 - :mailbox: [Mailbox routing](examples/mailbox/)
 - :ok_hand: [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
   ([repo](https://github.com/shuhei/todomvc-choo))
@@ -282,6 +282,27 @@ Examples of effects include: performing
 [xhr](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) requests
 (server requests), calling multiple `reducers`, persisting state to
 [localstorage][localstorage].
+
+```js
+const http = require('choo/http')
+const choo = require('choo')
+const app = choo()
+app.model({
+  namespace: 'todos',
+  state: { items: [] },
+  effects: {
+    addAndSave: (data, state, send, done) => {
+      http.post('/todo', {body: data.payload, json: true}, (err, res, body) => {
+        data.payload.id = body.id
+        send('todos:add', data, done)
+      })
+    }
+  },
+  reducers: {
+    add: (data, state) => ({ items: state.items.concat(data.payload) })
+  }
+})
+```
 
 When an `effect` is done executing, it should call the `done(err, res)`
 callback. This callback used to communicate when an `effect` is done, handle

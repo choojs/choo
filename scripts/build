@@ -1,10 +1,5 @@
 #!/bin/sh
 
-dirname=$(dirname "$(readlink -f "$0")")
-
-browserify="$dirname/../node_modules/.bin/browserify"
-uglify="$dirname/../node_modules/.bin/uglifyjs"
-
 usage () {
   printf "Usage: build-umd <argument>\n"
 }
@@ -21,7 +16,7 @@ gzip () {
 
 build_dev () {
   mkdir -p dist/
-  NODE_ENV=development "$browserify" index.js \
+  NODE_ENV=development browserify index.js \
     --standalone=choo \
     -t envify \
     -g yo-yoify \
@@ -31,7 +26,7 @@ build_dev () {
 
 build_min () {
   mkdir -p dist/
-  NODE_ENV=production "$browserify" index.js \
+  NODE_ENV=production browserify index.js \
     --standalone=choo \
     -t envify \
     -g unassertify \
@@ -41,7 +36,6 @@ build_min () {
     -t envify \
     -p bundle-collapser/plugin \
     | uglifyjs \
-    | "$uglify" \
     > dist/choo.min.js
 }
 
