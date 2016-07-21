@@ -4,7 +4,7 @@ const choo = require('../../')
 const view = require('../../html')
 
 test('hooks', function (t) {
-  t.plan(9)
+  t.plan(11)
 
   const app = choo({
     onError: function (err) {
@@ -20,6 +20,10 @@ test('hooks', function (t) {
     },
     onStateChange: function (action, state, prev, createSend) {
       t.deepEqual(action, {foo: 'bar'}, 'onState: action data')
+      t.deepEqual(state.clicks, 1, 'onState: new state: 1 clicks')
+      t.deepEqual(prev.clicks, 0, 'onState: prev state: 0 clicks')
+    },
+    onRender: function (state, createSend) {
       t.deepEqual(state.clicks, 1, 'onState: new state: 1 clicks')
       t.deepEqual(prev.clicks, 0, 'onState: prev state: 0 clicks')
     }

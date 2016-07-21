@@ -89,6 +89,7 @@ function choo (opts) {
 
     if (!_frame) {
       _frame = nanoraf(function (state, prev) {
+        if (opts.onRender) opts.onRender(state, createSend)
         const newTree = _router(state.location.pathname, state, prev)
         _rootNode = yo.update(_rootNode, newTree)
       })

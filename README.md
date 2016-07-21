@@ -406,10 +406,12 @@ Initialize a new `choo` app. Takes an optional object of hooks. Hooks can be:
 - __onError(err, state, createSend):__ called when an `effect` or
   `subscription` emit an error. If no hook is passed, the default hook
   will `throw` on each error.
-- __onAction(action, state, name, caller, createSend):__ called when an
+- __onAction(data, state, name, caller, createSend):__ called when an
   `action` is fired.
-- __onStateChange(action, state, prev, caller, createSend):__ called after a
+- __onStateChange(data, state, prev, caller, createSend):__ called after a
   reducer changes the `state`.
+- __onRender(state, createSend):__ called whenever a render occurs. Useful to
+  debug which state was flushed into the DOM / keep tabs on FPS
 
 `createSend()` is a special function that allows the creation of a new named
 `send()` function. The first argument should be a string which is the name, the
