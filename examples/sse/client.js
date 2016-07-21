@@ -40,8 +40,14 @@ function createModel () {
       }
     },
     effects: {
-      close: () => stream.close(),
-      error: (data, state) => console.error(`error: ${data.payload}`)
+      close: (data, state, send, done) => {
+        stream.close()
+        done()
+      },
+      error: (data, state, send, done) => {
+        console.error(`error: ${data.payload}`
+        done()
+      }
     }
   }
 }

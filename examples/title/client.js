@@ -11,7 +11,10 @@ app.model({
     update: (data, state) => ({ title: data.payload })
   },
   effects: {
-    update: (data, state, send) => (document.title = data.payload)
+    update: (data, state, send, done) => {
+      document.title = data.payload
+      done()
+    }
   }
 })
 
