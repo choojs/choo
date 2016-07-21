@@ -51,7 +51,9 @@
       Handbook
     </a>
     <span> | </span>
-      Packages
+      <a href="https://github.com/YerkoPalma/awesome-choo">
+        Ecosystem
+      </a>
     <span> | </span>
     <a href="https://github.com/yoshuawuyts/choo/blob/master/.github/CONTRIBUTING.md">
       Contributing
