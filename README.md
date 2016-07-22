@@ -338,7 +338,7 @@ app.model({
 })
 ```
 If a `subscription` runs into an error, it can call `done(err)` to signal the
-error to the error hook.
+error to the `onError` hook.
 
 ### Router
 The `router` manages which `views` are rendered at any given time. It also
@@ -367,9 +367,13 @@ from within namespaced `models`, and usage should preferably be kept to a
 minimum. Changing views all over the place tends to lead to messiness.
 
 ### Views
-Views are pure functions that return a DOM tree for the router to render. They’re passed the current state, and any time the state changes they’re run again with the new state.
+Views are pure functions that return a DOM tree for the router to render.
+They’re passed the current state, and any time the state changes they’re run
+again with the new state.
 
-Views are also passed the `send` function, which they can use to dispatch actions that can update the state. For example, the DOM tree can have an `onclick` handler that dispatches an `add` action.
+Views are also passed the `send` function, which they can use to dispatch
+actions that can update the state. For example, the DOM tree can have an
+`onclick` handler that dispatches an `add` action.
 
 ```javascript
 const view = (state, prev, send) => {
@@ -400,15 +404,16 @@ the first time, consider reading through the [handbook][handbook] or
 [concepts](#concepts) first :sparkles:
 
 ### app = choo(opts)
-Initialize a new `choo` app. Takes an optional object of handlers. Handlers can
-be:
+Initialize a new `choo` app. Takes an optional object of hooks. Hooks can be:
 - __onError(err, state, createSend):__ called when an `effect` or
-  `subscription` emit an error. If no handler is passed, the default handler
+  `subscription` emit an error. If no hook is passed, the default hook
   will `throw` on each error.
-- __onAction(action, state, name, caller, createSend):__ called when an
+- __onAction(data, state, name, caller, createSend):__ called when an
   `action` is fired.
-- __onStateChange(action, state, prev, caller, createSend):__ called after a
+- __onStateChange(data, state, prev, caller, createSend):__ called after a
   reducer changes the `state`.
+- __onRender(state, createSend):__ called whenever a render occurs. Useful to
+  debug which state was flushed into the DOM / keep tabs on FPS
 
 `createSend()` is a special function that allows the creation of a new named
 `send()` function. The first argument should be a string which is the name, the
@@ -416,10 +421,10 @@ second argument is a boolean `callOnError` which can be set to `true` to call
 the `onError` hook istead of a provided callback. It then returns a
 `send(actionName, data?)` function.
 
-Handlers should be used with care, as they're the most powerful interface into
-the state. For application level code it's generally recommended to delegate to
+Hooks should be used with care, as they're the most powerful interface into the
+state. For application level code it's generally recommended to delegate to
 actions inside models using the `send()` call, and only shape the actions
-inside the handlers.
+inside the hooks.
 
 ### app.model(obj)
 Create a new model. Models modify data and perform IO. Takes the following
@@ -440,13 +445,17 @@ Send a new action to the models with optional data attached. Namespaced models
 can be accessed by prefixing the name with the namespace separated with a `:`,
 e.g. `namespace:name`.
 
-When sending data from inside a `model` it expects exactly three arguments: the name of the action you're calling, the data you want to send, and finally a callback to handle errors through the global `onError()` hook. So if you want to send two values, you'd have to either send an array or object containing them.
+When sending data from inside a `model` it expects exactly three arguments: the
+name of the action you're calling, the data you want to send, and finally a
+callback to handle errors through the global `onError()` hook. So if you want
+to send two values, you'd have to either send an array or object containing
+them.
 
 #### done(err?, res?)
 When an `effect` or `subscription` is done executing, or encounters an error,
 it should call the final `done(err, res)` callback. If an `effect` was called
 by another `effect` it will call the callback of the caller. When an error
-propegates all the way to the top, the `onError` handler will be called,
+propegates all the way to the top, the `onError` hook will be called,
 registered in `choo(handlers)`. If no callback is registered, errors will
 `throw`.
 
