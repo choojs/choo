@@ -22,7 +22,7 @@ app.model({
 })
 
 const mainView = (state, prev, send) => {
-  const count = state.counter;
+  const count = state.counter
 
   return html`
     <main class="app">
