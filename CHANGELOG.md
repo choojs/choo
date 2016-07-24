@@ -1,3 +1,14 @@
+## `3.2.0`
+Wooh, `plugins` are a first class citizen now thanks to the `.use()` API. It's
+a multiplexed version of the old `app = choo(hooks)`. It should enable
+attaching multiple hooks onto the same API, which is useful to create re-usable
+extensions to `choo`. They should be used with care though, and be as generic
+as possible, but the docs should provide enough backdrop for that. Anyway,
+have fun with plugins! :tada:
+
+### changes
+- added `app.use()`
+
 ## `3.1.0`
 And another patch down. This time around it's mostly maintenance and a bit of
 perf:
