@@ -45,7 +45,7 @@ function createModel () {
         done()
       },
       error: (data, state, send, done) => {
-        console.error(`error: ${data.payload}`
+        console.error(`error: ${data.payload}`)
         done()
       }
     }

@@ -66,10 +66,10 @@ while true; do
 done
 
 case "$1" in
-  e|electron) shift; test_electron "$@" && exit ;;
-  b|browser) shift; test_browser "$@" && exit ;;
-  l|browser-local) shift; test_browser_local "$@" && exit ;;
-  s|server) shift; test_server "$@" && exit ;;
-  c|cov) shift; test_cov "$@" && exit ;;
-  d|deps) shift; check_deps "$@" && exit ;;
+  e|electron) shift; test_electron "$@";;
+  b|browser) shift; test_browser "$@";;
+  l|browser-local) shift; test_browser_local "$@";;
+  s|server) shift; test_server "$@";;
+  c|cov) shift; test_cov "$@";;
+  d|deps) shift; check_deps "$@";;
 esac
