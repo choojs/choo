@@ -18,17 +18,21 @@ module.exports = choo
 function choo (opts) {
   opts = opts || {}
 
-  const _store = start._store = barracks(xtend(opts, { onStateChange: render }))
+  const _store = start._store = barracks()
   var _router = start._router = null
   var _defaultRoute = null
   var _rootNode = null
   var _routes = null
   var _frame = null
 
+  _store.use({ onStateChange: render })
+  _store.use(opts)
+
   start.toString = toString
   start.router = router
   start.model = model
   start.start = start
+  start.use = use
 
   return start
 
@@ -83,10 +87,6 @@ function choo (opts) {
   // update the DOM after every state mutation
   // (obj, obj, obj, str, fn) -> null
   function render (data, state, prev, name, createSend) {
-    if (opts.onStateChange) {
-      opts.onStateChange(data, state, prev, name, createSend)
-    }
-
     if (!_frame) {
       _frame = nanoraf(function (state, prev) {
         const newTree = _router(state.location.pathname, state, prev)
@@ -107,6 +107,13 @@ function choo (opts) {
   // (str?, obj) -> null
   function model (model) {
     _store.model(model)
+  }
+
+  // register a plugin
+  // (obj) -> null
+  function use (hooks) {
+    assert.equal(typeof hooks, 'object', 'choo.use: hooks should be an object')
+    _store.use(hooks)
   }
 
   // create a new router with a custom `createRoute()` function
