@@ -116,7 +116,7 @@ production, we'd love to hear from you!_
 
 ## Example
 Let's create an input box that changes the content of a textbox in real time.
-[Click here to see the app running](http://requirebin.com/?gist=e589473373b3100a6ace29f7bbee3186).
+[Click here to see the app running](http://requirebin.com/?gist=229bceda0334cf30e3044d5f5c600960).
 ```js
 const choo = require('choo')
 const html = require('choo/html')
