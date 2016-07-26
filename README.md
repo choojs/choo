@@ -206,14 +206,35 @@ efficiently rendered on the screen.
 In turn when the `views` are rendered, the `user` can interact with elements by
 clicking on them, triggering `actions` which then flow back into the
 application logic. This is the _unidirectional_ architecture of `choo`.
+
 ```txt
- ┌─────────────────┐
- │  Subscriptions ─┤     User ───┐
- └─ Effects  ◀─────┤             ▼
- ┌─ Reducers ◀─────┴──Actions── DOM ◀┐
- │                                   │
- └▶ Router ─────State ───▶ Views ────┘
++----------+     changes trigger       +-------+
+|          |<-------------------------<|       |
+|  Router  |                           | State |     initialize
+|          |                     +---->|       |<-----------------+
++----------+              modify |     +-------+                  |
+  v                              |                                |
+  | renders  +-------------------|--------------------------------|----+
+  v          | Model             |                                |    |
++---------+  |                   ^      call    call              ^    |
+|         |  | Subscriptions  Reducers <----+  +----> Effects  Initial |
+|  Views  |  |       v                      |  |        v      States  |
+|         |  |       |                      |  |        |              |
++---------+  +-------|----------------------|--|--------|--------------+
+  v                  |                      ^  ^        |
+  | update           |     emit           +---------+   | asynchronously
+  v                  +------------------->|         |   | emit
++---------+                               | Actions |<--+
+|   DOM   |>----------------------------->|         |
++---------+ bound event handlers dispatch +---------+
+  v     ^                                   |     |
+  |     |                                   |     |
+  v     ^                            +--------+ +----------+
++---------+                          | Unique | | Optional |
+| People! |                          | Names  | | Payloads |
++---------+                          +--------+ +----------+
 ```
+
 - __user:__ 🙆
 - __DOM:__ the [Document Object Model][dom] is what is currently displayed in
   your browser
