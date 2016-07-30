@@ -526,12 +526,9 @@ optional state object. When calling `.toString()` instead of `.start()`, all
 calls to `send()` are disabled, and `subscriptions`, `effects` and `reducers`
 aren't loaded.
 
-### tree = app.start(rootId?, opts)
+### tree = app.start(opts)
 Start the application. Returns a tree of DOM nodes that can be mounted using
-`document.body.appendChild()`. If a valid `id` selector is passed in as the
-first argument, the tree will diff against the selected node rather than be
-returned. This is useful for [rehydration](https://github.com/yoshuawuyts/choo-handbook/blob/master/rendering-in-node.md#rehydration). Opts can contain the
-following values:
+`document.body.appendChild()`. Opts can contain the following values:
 - __opts.history:__ default: `true`. Enable a `subscription` to the browser
   history API. e.g. updates the internal `location.href` state whenever the
   browsers "forward" and "backward" buttons are pressed.
