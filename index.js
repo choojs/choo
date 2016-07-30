@@ -1,7 +1,6 @@
 const history = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
-const onReady = require('document-ready')
 const href = require('sheet-router/href')
 const hash = require('sheet-router/hash')
 const hashMatch = require('hash-match')
@@ -59,10 +58,6 @@ function choo (opts) {
   // start the application
   // (str?, obj?) -> DOMNode
   function start (selector, startOpts) {
-    if (!startOpts && typeof selector !== 'string') {
-      startOpts = selector
-      selector = null
-    }
     startOpts = startOpts || {}
 
     _store.model(appInit(startOpts))
@@ -70,18 +65,9 @@ function choo (opts) {
     _router = start._router = createRouter(_defaultRoute, _routes, createSend)
     const state = _store.state({state: {}})
 
-    if (!selector) {
-      const tree = _router(state.location.pathname, state)
-      _rootNode = tree
-      return tree
-    } else {
-      onReady(function onReady () {
-        const oldTree = document.querySelector(selector)
-        assert.ok(oldTree, 'could not query selector: ' + selector)
-        const newTree = _router(state.location.pathname, state)
-        _rootNode = yo.update(oldTree, newTree)
-      })
-    }
+    const tree = _router(state.location.pathname, state)
+    _rootNode = tree
+    return tree
   }
 
   // update the DOM after every state mutation
