@@ -1,8 +1,9 @@
 const history = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
-const href = require('sheet-router/href')
 const hash = require('sheet-router/hash')
+const href = require('sheet-router/href')
+const walk = require('sheet-router/walk')
 const hashMatch = require('hash-match')
 const barracks = require('barracks')
 const nanoraf = require('nanoraf')
@@ -106,24 +107,18 @@ function choo (opts) {
   // (str?, obj, fn?) -> null
   function createRouter (defaultRoute, routes, createSend) {
     var prev = {}
-    return sheetRouter(defaultRoute, routes, createRoute)
 
-    function createRoute (routeFn) {
-      return function (route, inline, child) {
-        if (typeof inline === 'function') {
-          inline = wrap(inline, route)
-        }
-        return routeFn(route, inline, child)
-      }
+    const router = sheetRouter(defaultRoute, routes)
+    walk(router, wrap)
+    return router
 
-      function wrap (child, route) {
-        const send = createSend('view: ' + route, true)
-        return function chooWrap (params, state) {
-          const nwPrev = prev
-          const nwState = prev = xtend(state, { params: params })
-          if (opts.freeze !== false) Object.freeze(nwState)
-          return child(nwState, nwPrev, send)
-        }
+    function wrap (route, handler) {
+      const send = createSend('view: ' + route, true)
+      return function chooWrap (params, state) {
+        const nwPrev = prev
+        const nwState = prev = xtend(state, { params: params })
+        if (opts.freeze !== false) Object.freeze(nwState)
+        return handler(nwState, nwPrev, send)
       }
     }
   }
