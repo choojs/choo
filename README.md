@@ -55,6 +55,10 @@
         Ecosystem
       </a>
     <span> | </span>
+      <a href="https://github.com/trainyard/choo-cli">
+        CLI
+      </a>
+    <span> | </span>
     <a href="https://github.com/yoshuawuyts/choo/blob/master/.github/CONTRIBUTING.md">
       Contributing
     </a>
