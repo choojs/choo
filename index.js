@@ -1,9 +1,9 @@
-const history = require('sheet-router/history')
+const createLocation = require('sheet-router/create-location')
+const onHistoryChange = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
-const href = require('sheet-router/href')
-const hash = require('sheet-router/hash')
-const hashMatch = require('hash-match')
+const onHref = require('sheet-router/href')
+const walk = require('sheet-router/walk')
 const barracks = require('barracks')
 const nanoraf = require('nanoraf')
 const assert = require('assert')
@@ -60,7 +60,7 @@ function choo (opts) {
   function start (selector, startOpts) {
     startOpts = startOpts || {}
 
-    _store.model(appInit(startOpts))
+    _store.model(createLocationModel(startOpts))
     const createSend = _store.start(startOpts)
     _router = start._router = createRouter(_defaultRoute, _routes, createSend)
     const state = _store.state({state: {}})
@@ -106,67 +106,67 @@ function choo (opts) {
   // (str?, obj, fn?) -> null
   function createRouter (defaultRoute, routes, createSend) {
     var prev = {}
-    return sheetRouter(defaultRoute, routes, createRoute)
 
-    function createRoute (routeFn) {
-      return function (route, inline, child) {
-        if (typeof inline === 'function') {
-          inline = wrap(inline, route)
-        }
-        return routeFn(route, inline, child)
-      }
+    const router = sheetRouter(defaultRoute, routes, { thunk: false })
+    walk(router, wrap)
+    return router
 
-      function wrap (child, route) {
-        const send = createSend('view: ' + route, true)
-        return function chooWrap (params, state) {
+    function wrap (route, handler) {
+      const send = createSend('view: ' + route, true)
+      return function chooWrap (params) {
+        return function (state) {
           const nwPrev = prev
           const nwState = prev = xtend(state, { params: params })
           if (opts.freeze !== false) Object.freeze(nwState)
-          return child(nwState, nwPrev, send)
+          return handler(nwState, nwPrev, send)
         }
       }
     }
   }
 }
 
-// initial application state model
+// application location model
 // obj -> obj
-function appInit (opts) {
-  const loc = document.location
-  const state = { pathname: (opts.hash) ? hashMatch(loc.hash) : loc.href }
-  const reducers = {
-    setLocation: function setLocation (data, state) {
-      return { pathname: data.location.replace(/#.*/, '') }
-    }
-  }
-  // if hash routing explicitly enabled, subscribe to it
-  const subs = {}
-  if (opts.hash === true) {
-    pushLocationSub(function (navigate) {
-      hash(function (fragment) {
-        navigate(hashMatch(fragment))
-      })
-    }, 'handleHash', subs)
-  } else {
-    if (opts.history !== false) pushLocationSub(history, 'handleHistory', subs)
-    if (opts.href !== false) pushLocationSub(href, 'handleHref', subs)
-  }
-
+function createLocationModel (opts) {
   return {
     namespace: 'location',
-    subscriptions: subs,
-    reducers: reducers,
-    state: state
+    state: createLocation(null, document.location),
+    subscriptions: createSubscriptions(opts),
+    effects: { set: setLocation },
+    reducers: { update: update }
   }
 
-  // create a new subscription that modifies
-  // 'app:location' and push it to be loaded
-  // (fn, obj) -> null
-  function pushLocationSub (cb, key, model) {
-    model[key] = function (send, done) {
-      cb(function navigate (pathname) {
-        send('location:setLocation', { location: pathname }, done)
-      })
+  function update (location, state) {
+    return location
+  }
+
+  function setLocation (patch, state, send, done) {
+    const location = createLocation(state, patch)
+    if (opts.history !== false && location.href !== state.href) {
+      window.history.pushState({}, null, location.href)
     }
+    send('location:update', location, done)
+  }
+
+  function createSubscriptions (opts) {
+    const subs = {}
+
+    if (opts.history !== false) {
+      subs.handleHistory = function (send, done) {
+        onHistoryChange(function navigate (pathname) {
+          send('location:set', { pathname: pathname }, done)
+        })
+      }
+    }
+
+    if (opts.href !== false) {
+      subs.handleHref = function (send, done) {
+        onHref(function navigate (pathname) {
+          send('location:set', { pathname: pathname }, done)
+        })
+      }
+    }
+
+    return subs
   }
 }
