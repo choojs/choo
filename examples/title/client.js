@@ -18,7 +18,14 @@ app.model({
   }
 })
 
-const mainView = (state, prev, send) => {
+app.router(route => [
+  route('/', mainView)
+])
+
+const tree = app.start()
+document.body.appendChild(tree)
+
+function mainView (state, prev, send) {
   return html`
     <main class="app">
       <h1>${state.input.title}</h1>
@@ -30,10 +37,3 @@ const mainView = (state, prev, send) => {
     </main>
   `
 }
-
-app.router((route) => [
-  route('/', mainView)
-])
-
-const tree = app.start()
-document.body.appendChild(tree)
