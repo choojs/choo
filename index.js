@@ -1,5 +1,5 @@
+const createLocation = require('sheet-router/create-location')
 const onHistoryChange = require('sheet-router/history')
-const onHashChange = require('sheet-router/hash')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
 const onHref = require('sheet-router/href')
@@ -131,22 +131,11 @@ function choo (opts) {
 // application location model
 // obj -> obj
 function createLocationModel (opts) {
-  const state = createLocation(null, document.location)
-
-  // allow listening to hash changes
-  // allow listening to browser back / forward buttons
-  // allow listening to anchor tag clicks
   const subs = {}
   if (opts.history !== false) {
     subs.handleHistory = function (send, done) {
       onHistoryChange(function navigate (pathname) {
         send('location:set', { pathname: pathname }, done)
-      })
-    }
-
-    subs.handleHash = function (send, done) {
-      onHashChange(function navigate (hashname) {
-        send('location:set', { hash: hashname }, done)
       })
     }
   }
@@ -159,74 +148,23 @@ function createLocationModel (opts) {
     }
   }
 
-  const effects = {
-    set: function setLocation (patch, state, send, done) {
-      const location = createLocation(state, patch)
-
-      if (opts.history !== false && location.href !== state.href) {
-        window.history.pushState({}, null, location.href)
-      }
-
-      send('location:update', location, done)
-    }
-  }
-
-  const reducers = {
-    update: function (location, state) {
-      return location
-    }
-  }
-
   return {
     namespace: 'location',
+    state: createLocation(null, document.location),
     subscriptions: subs,
-    reducers: reducers,
-    effects: effects,
-    state: state
-  }
-}
-
-// takes an initial representation of the location state
-// and then synchronize a mutation across all fields
-// (obj, str|obj?) -> obj
-function createLocation (state, patch) {
-  if (!state) {
-    const newLoc = {
-      pathname: patch.pathname,
-      hash: patch.hash,
-      search: patch.search
-    }
-    newLoc.href = createHref(newLoc)
-    return newLoc
-  } else if (typeof patch === 'string') {
-    const newLoc = parseUrl(patch)
-    newLoc.href = createHref(newLoc)
-    return newLoc
-  } else {
-    const newLoc = xtend(state, patch)
-    newLoc.href = createHref(newLoc)
-    return newLoc
-  }
-
-  // compute a href similar to node's href
-  // (obj) -> str
-  function createHref (location) {
-    var ret = location.pathname
-    if (location.hash) ret += (location.hash)
-    if (location.search) ret += (location.search)
-    return ret
-  }
-
-  // parse a URL into a kv object inside the browser
-  // str -> obj
-  function parseUrl (url) {
-    const a = document.createElement('a')
-    a.href = url
-
-    return {
-      href: a.pathname,
-      search: a.search,
-      hash: a.hash
+    reducers: {
+      update: function (location, state) {
+        return location
+      }
+    },
+    effects: {
+      set: function setLocation (patch, state, send, done) {
+        const location = createLocation(state, patch)
+        if (opts.history !== false && location.href !== state.href) {
+          window.history.pushState({}, null, location.href)
+        }
+        send('location:update', location, done)
+      }
     }
   }
 }
