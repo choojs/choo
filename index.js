@@ -107,17 +107,19 @@ function choo (opts) {
   function createRouter (defaultRoute, routes, createSend) {
     var prev = {}
 
-    const router = sheetRouter(defaultRoute, routes)
+    const router = sheetRouter(defaultRoute, routes, { thunk: false })
     walk(router, wrap)
     return router
 
     function wrap (route, handler) {
       const send = createSend('view: ' + route, true)
-      return function chooWrap (params, state) {
-        const nwPrev = prev
-        const nwState = prev = xtend(state, { params: params })
-        if (opts.freeze !== false) Object.freeze(nwState)
-        return handler(nwState, nwPrev, send)
+      return function chooWrap (params) {
+        return function (state) {
+          const nwPrev = prev
+          const nwState = prev = xtend(state, { params: params })
+          if (opts.freeze !== false) Object.freeze(nwState)
+          return handler(nwState, nwPrev, send)
+        }
       }
     }
   }
