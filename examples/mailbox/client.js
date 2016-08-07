@@ -9,11 +9,11 @@ app.model(require('./models/inbox'))
 app.model(require('./models/spam'))
 app.model(require('./models/sent'))
 
-app.router((route) => [
-  route('/', require('./views/empty')),
-  route('/:mailbox', require('./views/mailbox'), [
-    route('/:message', require('./views/email'))
-  ])
+app.router([
+  ['/', require('./views/empty')],
+  ['/:mailbox', require('./views/mailbox'), [
+    ['/:message', require('./views/email')]
+  ]]
 ])
 
 const tree = app.start()
