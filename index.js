@@ -1,14 +1,12 @@
-const createLocation = require('sheet-router/create-location')
-const onHistoryChange = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
-const document = require('global/document')
-const onHref = require('sheet-router/href')
 const walk = require('sheet-router/walk')
 const barracks = require('barracks')
 const nanoraf = require('nanoraf')
 const assert = require('assert')
 const xtend = require('xtend')
 const yo = require('yo-yo')
+
+const createLocationModel = require('./location-model')
 
 module.exports = choo
 
@@ -70,18 +68,6 @@ function choo (opts) {
     return tree
   }
 
-  // update the DOM after every state mutation
-  // (obj, obj, obj, str, fn) -> null
-  function render (data, state, prev, name, createSend) {
-    if (!_frame) {
-      _frame = nanoraf(function (state, prev) {
-        const newTree = _router(state.location.pathname, state, prev)
-        _rootNode = yo.update(_rootNode, newTree)
-      })
-    }
-    _frame(state, prev)
-  }
-
   // register all routes on the router
   // (str?, [fn|[fn]]) -> obj
   function router (defaultRoute, routes) {
@@ -100,6 +86,18 @@ function choo (opts) {
   function use (hooks) {
     assert.equal(typeof hooks, 'object', 'choo.use: hooks should be an object')
     _store.use(hooks)
+  }
+  //
+  // update the DOM after every state mutation
+  // (obj, obj, obj, str, fn) -> null
+  function render (data, state, prev, name, createSend) {
+    if (!_frame) {
+      _frame = nanoraf(function (state, prev) {
+        const newTree = _router(state.location.pathname, state, prev)
+        _rootNode = yo.update(_rootNode, newTree)
+      })
+    }
+    _frame(state, prev)
   }
 
   // create a new router with a custom `createRoute()` function
@@ -125,48 +123,3 @@ function choo (opts) {
   }
 }
 
-// application location model
-// obj -> obj
-function createLocationModel (opts) {
-  return {
-    namespace: 'location',
-    state: createLocation(null, document.location),
-    subscriptions: createSubscriptions(opts),
-    effects: { set: setLocation },
-    reducers: { update: update }
-  }
-
-  function update (location, state) {
-    return location
-  }
-
-  function setLocation (patch, state, send, done) {
-    const location = createLocation(state, patch)
-    if (opts.history !== false && location.href !== state.href) {
-      window.history.pushState({}, null, location.href)
-    }
-    send('location:update', location, done)
-  }
-
-  function createSubscriptions (opts) {
-    const subs = {}
-
-    if (opts.history !== false) {
-      subs.handleHistory = function (send, done) {
-        onHistoryChange(function navigate (pathname) {
-          send('location:set', { pathname: pathname }, done)
-        })
-      }
-    }
-
-    if (opts.href !== false) {
-      subs.handleHref = function (send, done) {
-        onHref(function navigate (pathname) {
-          send('location:set', { pathname: pathname }, done)
-        })
-      }
-    }
-
-    return subs
-  }
-}
