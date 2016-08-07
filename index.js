@@ -54,12 +54,10 @@ function choo (opts) {
   }
 
   // start the application
-  // (str?, obj?) -> DOMNode
-  function start (selector, startOpts) {
-    startOpts = startOpts || {}
-
-    _store.model(createLocationModel(startOpts))
-    const createSend = _store.start(startOpts)
+  // (null) -> DOMNode
+  function start () {
+    _store.model(createLocationModel(opts))
+    const createSend = _store.start(opts)
     _router = start._router = createRouter(_defaultRoute, _routes, createSend)
     const state = _store.state({state: {}})
 
