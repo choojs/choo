@@ -620,7 +620,7 @@ give you my opinions directly. Ready?  Here goes:
   neat.
 - __cycle:__ `cycle`'s pretty good - unlike most frameworks it lays out a clear
   architecture which helps with reasoning about it. That said, it's built on
-  `virtual-dom` and `RxJS` which are a bit heavy for my taste. `choo` works
+  `virtual-dom` and `xstream` which are a bit heavy for my taste. `choo` works
   pretty well for FRP style programming, but something like [inu][inu] might be
   an interesting alternative.
 - __vue:__ like `cycle`, `vue` is pretty good. But it also uses tech that
