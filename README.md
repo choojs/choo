@@ -114,6 +114,7 @@
 - :fire: [Choo-firebase](https://github.com/mw222rs/choo-firebase)
 - :seedling: [Grow](https://grow.static.land/)
   ([repo](https://github.com/sethvincent/grow))
+- :newspaper: [Hacker News Reader](https://hackernews-choo.surge.sh/) ([repo](https://github.com/kvnneff/hackernews-choo))
 
 _note: If you've built something cool using `choo` or are using it in
 production, we'd love to hear from you!_
