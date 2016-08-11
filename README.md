@@ -298,7 +298,7 @@ app.model({
   state: { items: [] },
   effects: {
     addAndSave: (data, state, send, done) => {
-      http.post('/todo', {body: data.payload, json: true}, (err, res, body) => {
+      http.post('/todo', {json: data.payload}, (err, res, body) => {
         data.payload.id = body.id
         send('todos:add', data, done)
       })
