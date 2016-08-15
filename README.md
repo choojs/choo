@@ -411,8 +411,8 @@ document.body.appendChild(tree)
 ```
 
 Generally people using `choo` shouldn't be too worried about the specifics of
-`plugins`, as the internal API is (unfortunatly by nesessity) quite complex.
-After all they're the most powerful way to modify a `choo` appliction.
+`plugins`, as the internal API is (unfortunately by necessity) quite complex.
+After all they're the most powerful way to modify a `choo` application.
 
 __:warning: Warning :warning:: plugins should only be used as a last resort.
 It creates peer dependencies which makes upgrading versions and switching
