@@ -297,15 +297,16 @@ app.model({
   namespace: 'todos',
   state: { items: [] },
   effects: {
-    addAndSave: (data, state, send, done) => {
-      http.post('/todo', {json: data.payload}, (err, res, body) => {
-        data.payload.id = body.id
-        send('todos:add', data, done)
+    fetch: (data, state, send, done) => {
+      http('/todos', (err, res, body) => {
+        send('todos:receive', body, done)
       })
     }
   },
   reducers: {
-    add: (data, state) => ({ items: state.items.concat(data.payload) })
+    receive: (data, state) => {
+      return { items: data }
+    }
   }
 })
 ```
