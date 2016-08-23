@@ -365,7 +365,7 @@ entry point of the application also becomes a site map, making it easier to
 figure out how views relate to each other.
 
 Under the hood `choo` uses [sheet-router][sheet-router]. Internally the
-currently rendered route is kept in `state.app.location`. If you want to modify
+currently rendered route is kept in `state.location`. If you want to modify
 the location programmatically the `reducer` for the location can be called
 using `send('location:setLocation', { location: href })`. This will not work
 from within namespaced `models`, and usage should preferably be kept to a
