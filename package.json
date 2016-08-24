@@ -67,7 +67,7 @@
     "proxyquireify": "~3.2.0",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.0",
-    "standard": "^7.1.0",
+    "standard": "^8.0.0",
     "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1",
     "tape-istanbul": "~1.0.2",
