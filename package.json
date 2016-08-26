@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "append-child": "~1.0.0",
-    "bankai": "^2.0.2",
+    "bankai": "^3.1.0",
     "browserify": "^13.0.1",
     "browserify-istanbul": "^2.0.0",
     "bundle-collapser": "^1.2.1",
