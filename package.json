@@ -61,7 +61,7 @@
     "insert-css": "^0.2.0",
     "istanbul": "^0.4.4",
     "min-document": "~2.18.0",
-    "pretty-bytes-cli": "^1.0.0",
+    "pretty-bytes-cli": "^2.0.0",
     "proxyquire": "~1.7.10",
     "proxyquire-universal": "~1.0.8",
     "proxyquireify": "~3.2.0",
