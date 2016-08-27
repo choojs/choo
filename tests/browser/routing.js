@@ -20,11 +20,11 @@ test('routing', function (t) {
         user: null
       },
       reducers: {
-        set: (action, state) => ({user: action.id})
+        set: (data, state) => ({user: data.id})
       },
       effects: {
-        open: function (action, state, send, done) {
-          t.deepEqual(action, {id: 1})
+        open: function (data, state, send, done) {
+          t.deepEqual(data, {id: 1})
           send('set', {id: 1}, function (err) {
             if (err) return done(err)
             history.broadcast('https://foo.com/users/1')
@@ -74,10 +74,10 @@ test('routing', function (t) {
         user: null
       },
       reducers: {
-        set: (action, state) => ({user: action.id})
+        set: (data, state) => ({user: data.id})
       },
       effects: {
-        open: function (action, state, send, done) {
+        open: function (data, state, send, done) {
           send('set', {id: 1}, function (err) {
             if (err) return done(err)
             hash.broadcast('#users/1')
