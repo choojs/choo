@@ -54,6 +54,7 @@ check_deps () {
   dependency-check . --entry 'index.js' --extra --no-dev \
     -i xhr \
     -i document-ready \
+    -i on-ready \
     -i global \
     -i hash-match
 }

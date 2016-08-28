@@ -1,29 +1,37 @@
 const test = require('tape')
 const onReady = require('document-ready')
 const append = require('append-child')
+const mount = require('../../mount')
 const choo = require('../../')
-const view = require('../../html')
+const html = require('../../html')
 
 test('rehydration', function (t) {
   t.plan(2)
 
   const app = choo()
 
-  app.router((route) => [
-    route('/', function (state, prev, send) {
-      return view`<div id="app-root" onclick=${() => send('test')}>Hello world!</span>`
-    })
-  ])
+  const node = html`
+    <section id="app-root">
+      <div id="app-root">Hello squirrel!</span>
+    </section>
+  `
 
-  var node = document.createElement('div')
-  node.innerHTML = app.toString('/')
-  node = node.childNodes[0]
-  t.on('end', append(node))
+  app.router(['/', function (state, prev, send) {
+    return html`
+      <section id="app-root">
+        <div onclick=${() => send('test')}>Hello world!</span>
+      </section>
+    `
+  }])
 
-  app.start('#app-root')
+  append(node)
+
+  const tree = app.start()
+  mount('#app-root', tree)
 
   onReady(function () {
-    t.equal(node.innerHTML, 'Hello world!', 'same content')
-    t.equal(typeof node.onclick, 'function', 'attaches dom listeners')
+    const newNode = document.querySelector('#app-root')
+    t.equal(newNode.innerHTML, 'Hello world!', 'same as it ever was')
+    t.equal(typeof newNode.onclick, 'function', 'attaches dom listeners')
   })
 })

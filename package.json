@@ -41,6 +41,7 @@
     "global": "^4.3.0",
     "hash-match": "^1.0.2",
     "nanoraf": "^2.1.1",
+    "on-ready": "0.0.1",
     "sheet-router": "^3.1.0",
     "xhr": "^2.2.0",
     "xtend": "^4.0.1",
