@@ -31,7 +31,8 @@ test('rehydration', function (t) {
 
   onReady(function () {
     const newNode = document.querySelector('#app-root')
-    t.equal(newNode.innerHTML, 'Hello world!', 'same as it ever was')
-    t.equal(typeof newNode.onclick, 'function', 'attaches dom listeners')
+    const el = newNode.children[0]
+    t.equal(el.innerHTML, 'Hello world!', 'same as it ever was')
+    t.equal(typeof el.onclick, 'function', 'attaches dom listeners')
   })
 })
