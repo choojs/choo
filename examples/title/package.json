@@ -4,12 +4,13 @@
   "description": "",
   "main": "client.js",
   "scripts": {
-    "start": "budo client.js -p 8080"
+    "start": "bankai start --entry=client.js -p 8080 --open"
   },
   "keywords": [],
   "author": "Yoshua Wuyts <i@yoshuawuyts.com>",
   "license": "ISC",
-  "dependencies": {
-    "budo": "^8.3.0"
+  "dependencies": {},
+  "devDependencies": {
+    "bankai": "^3.2.0"
   }
 }
