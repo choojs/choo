@@ -113,6 +113,10 @@ function choo (opts) {
   // (obj) -> null
   function use (hooks) {
     assert.equal(typeof hooks, 'object', 'choo.use: hooks should be an object')
+    if (hooks && hooks.onStart) {
+      assert.equal(typeof hooks.onStart, 'function', 'choo.onStart: onStart hook must be a function')
+      hooks.onStart()
+    }
     _store.use(hooks)
   }
 

@@ -497,6 +497,9 @@ There are several `hooks` that are picked up by `choo`:
   `action` is fired.
 - __onStateChange(data, state, prev, caller, createSend):__ called after a
   reducer changes the `state`.
+- __onStart():__ called on `choo.start` _before_ the app is appended to the DOM,
+  and also with no access to the model state. This hook is intended for
+  initialize of some third party libraries.
 
 __:warning: Warning :warning:: plugins should only be used as a last resort.
 It creates peer dependencies which makes upgrading versions and switching
