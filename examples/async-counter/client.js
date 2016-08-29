@@ -21,7 +21,7 @@ app.model({
   }
 })
 
-const mainView = (state, prev, send) => {
+function mainView (state, prev, send) {
   const count = state.counter
 
   return html`
@@ -36,9 +36,7 @@ const mainView = (state, prev, send) => {
   `
 }
 
-app.router((route) => [
-  route('/', mainView)
-])
+app.router([ '/', mainView ])
 
 const tree = app.start()
 document.body.appendChild(tree)

@@ -4,13 +4,13 @@
   "description": "",
   "main": "client.js",
   "scripts": {
-    "start": "budo client.js -p 8080 -- -t es2020"
+    "start": "bankai start --entry=client.js -p 8080"
   },
   "keywords": [],
   "author": "traducer <traducer21@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "budo": "^8.3.0",
+    "bankai": "^3.2.0",
     "raf": "^3.2.0"
   },
   "devDependencies": {
