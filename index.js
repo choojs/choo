@@ -1,9 +1,9 @@
 const createLocation = require('sheet-router/create-location')
 const onHistoryChange = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
-const document = require('global/document')
 const onHref = require('sheet-router/href')
 const walk = require('sheet-router/walk')
+const mutate = require('xtend/mutable')
 const barracks = require('barracks')
 const nanoraf = require('nanoraf')
 const assert = require('assert')
@@ -19,7 +19,7 @@ function choo (opts) {
 
   const _store = start._store = barracks()
   var _router = start._router = null
-  var _defaultRoute = null
+  var _routerOpts = null
   var _rootNode = null
   var _routes = null
   var _frame = null
@@ -44,7 +44,7 @@ function choo (opts) {
     _store.start({ subscriptions: false, reducers: false, effects: false })
 
     const state = _store.state({ state: serverState })
-    const router = createRouter(_defaultRoute, _routes, createSend)
+    const router = createRouter(_routerOpts, _routes, createSend)
     const tree = router(route, state)
     return tree.outerHTML || tree.toString()
 
@@ -57,12 +57,10 @@ function choo (opts) {
 
   // start the application
   // (str?, obj?) -> DOMNode
-  function start (selector, startOpts) {
-    startOpts = startOpts || {}
-
-    _store.model(createLocationModel(startOpts))
-    const createSend = _store.start(startOpts)
-    _router = start._router = createRouter(_defaultRoute, _routes, createSend)
+  function start () {
+    _store.model(createLocationModel(opts))
+    const createSend = _store.start(opts)
+    _router = start._router = createRouter(_routerOpts, _routes, createSend)
     const state = _store.state({state: {}})
 
     const tree = _router(state.location.pathname, state)
@@ -85,7 +83,7 @@ function choo (opts) {
   // register all routes on the router
   // (str?, [fn|[fn]]) -> obj
   function router (defaultRoute, routes) {
-    _defaultRoute = defaultRoute
+    _routerOpts = defaultRoute
     _routes = routes
   }
 
@@ -103,12 +101,17 @@ function choo (opts) {
   }
 
   // create a new router with a custom `createRoute()` function
-  // (str?, obj, fn?) -> null
-  function createRouter (defaultRoute, routes, createSend) {
+  // (str?, obj) -> null
+  function createRouter (routerOpts, routes, createSend) {
     var prev = {}
-
-    const router = sheetRouter(defaultRoute, routes, { thunk: false })
+    if (!routes) {
+      routes = routerOpts
+      routerOpts = {}
+    }
+    routerOpts = mutate({ thunk: 'match' }, routerOpts)
+    const router = sheetRouter(routerOpts, routes)
     walk(router, wrap)
+
     return router
 
     function wrap (route, handler) {
@@ -130,22 +133,24 @@ function choo (opts) {
 function createLocationModel (opts) {
   return {
     namespace: 'location',
-    state: createLocation(null, document.location),
+    state: createLocation(),
     subscriptions: createSubscriptions(opts),
     effects: { set: setLocation },
-    reducers: { update: update }
+    reducers: { update: updateLocation }
   }
 
-  function update (location, state) {
+  function updateLocation (location, state) {
     return location
   }
 
+  // set a new location e.g. "/foo/bar#baz?beep=boop"
+  // (str, obj, fn, fn) -> null
   function setLocation (patch, state, send, done) {
-    const location = createLocation(state, patch)
-    if (opts.history !== false && location.href !== state.href) {
-      window.history.pushState({}, null, location.href)
+    const newLocation = createLocation(state, patch)
+    if (opts.history !== false && newLocation.href !== state.href) {
+      window.history.pushState({}, null, newLocation.href)
     }
-    send('location:update', location, done)
+    send('location:update', newLocation, done)
   }
 
   function createSubscriptions (opts) {

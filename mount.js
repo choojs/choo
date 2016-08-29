@@ -1,5 +1,5 @@
 // mount.js
-const onReady = require('on-ready')
+const documentReady = require('document-ready')
 const assert = require('assert')
 const yo = require('yo-yo')
 
@@ -9,12 +9,13 @@ function mount (selector, tree) {
   assert.equal(typeof selector, 'string')
   assert.equal(typeof tree, 'object')
 
-  onReady(function onReady () {
+  documentReady(function onReady () {
     const oldTree = document.querySelector(selector)
     assert.ok(oldTree, 'could not query selector: ' + selector)
     const newNode = yo.update(oldTree, tree)
-    assert.equal(newNode, tree, 'choo/mount: the node ' + newNode +
-      ' is not equal to ' + tree + ', choo cannot begin diffing.' +
+    assert.equal(newNode, oldTree, 'choo/mount: The DOM node: \n' +
+      newNode.outerHTML + '\n is not equal to \n' + oldTree.outerHTML +
+      'choo cannot begin diffing.' +
       ' Make sure the same initial tree is rendered in the browser' +
       ' as on the server. Check out the choo handbook for more information')
   })

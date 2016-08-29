@@ -1,7 +1,8 @@
-const test = require('tape')
 const append = require('append-child')
+const test = require('tape')
+
 const choo = require('../../')
-const view = require('../../html')
+const html = require('../../html')
 
 test('state is immutable', function (t) {
   t.plan(4)
@@ -46,13 +47,15 @@ test('state is immutable', function (t) {
     (send) => send('test:triggers-reducers')
   ]
 
-  app.router((route) => [
-    route('/', function (state, prev, send) {
+  app.router([
+    ['/', function (state, prev, send) {
       ++loop
       asserts[loop] && asserts[loop](state.test)
       setTimeout(() => triggers[loop] && triggers[loop](send), 5)
-      return view`<div><span class="test">${state.foo}:${state.beep}</span></div>`
-    })
+      return html`
+        <div><span class="test">${state.foo}:${state.beep}</span></div>
+      `
+    }]
   ])
 
   const tree = app.start()
