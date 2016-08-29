@@ -124,8 +124,8 @@ production, we'd love to hear from you!_
 Let's create an input box that changes the content of a textbox in real time.
 [Click here to see the app running](http://requirebin.com/?gist=229bceda0334cf30e3044d5f5c600960).
 ```js
-const choo = require('choo')
 const html = require('choo/html')
+const choo = require('choo')
 const app = choo()
 
 app.model({
@@ -135,18 +135,18 @@ app.model({
   }
 })
 
-const mainView = (state, prev, send) => html`
-  <main>
-    <h1>Title: ${state.title}</h1>
-    <input
-      type="text"
-      oninput=${(e) => send('update', e.target.value)}>
-  </main>
-`
+function mainView (state, prev, send) {
+  return html`
+    <main>
+      <h1>Title: ${state.title}</h1>
+      <input
+        type="text"
+        oninput=${(e) => send('update', e.target.value)}>
+    </main>
+  `
+}
 
-app.router((route) => [
-  route('/', mainView)
-])
+app.router(['/', mainView])
 
 const tree = app.start()
 document.body.appendChild(tree)
