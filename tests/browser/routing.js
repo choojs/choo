@@ -27,16 +27,16 @@ test('routing', function (t) {
           t.deepEqual(action, {id: 1})
           send('set', {id: 1}, function (err) {
             if (err) return done(err)
-            history.broadcast('https://foo.com/users/1')
+            history.broadcast('/users/1')
           })
         }
       }
     })
 
-    app.router('/users', (route) => [
-      route('/users', parentView, [
-        route('/:user', childView)
-      ])
+    app.router({ default: '/users' }, [
+      ['/users', parentView, [
+        ['/:user', childView]
+      ]]
     ])
 
     const tree = app.start()
@@ -59,74 +59,76 @@ test('routing', function (t) {
     }
   })
 
-  t.test('hash', function (t) {
-    t.plan(1)
+  // t.test('hash', function (t) {
+  //   t.plan(1)
 
-    const hash = Event()
-    const choo = proxyquire('../..', {
-      'sheet-router/hash': hash.listen
-    })
+  //   resetLocation()
+  //   const hash = Event()
+  //   const choo = proxyquire('../..', {
+  //     'sheet-router/hash': hash.listen
+  //   })
 
-    const app = choo()
+  //   const app = choo({hash: true})
 
-    app.model({
-      state: {
-        user: null
-      },
-      reducers: {
-        set: (action, state) => ({user: action.id})
-      },
-      effects: {
-        open: function (action, state, send, done) {
-          send('set', {id: 1}, function (err) {
-            if (err) return done(err)
-            hash.broadcast('#users/1')
-          })
-        }
-      }
-    })
+  //   app.model({
+  //     state: {
+  //       user: null
+  //     },
+  //     reducers: {
+  //       set: (action, state) => ({user: action.id})
+  //     },
+  //     effects: {
+  //       open: function (action, state, send, done) {
+  //         send('set', {id: 1}, function (err) {
+  //           if (err) return done(err)
+  //           hash.broadcast('#users/1')
+  //         })
+  //       }
+  //     }
+  //   })
 
-    app.router('/users', (route) => [
-      route('/users', parentView, [
-        route('/:user', childView)
-      ])
-    ])
+  //   app.router({ default: '/users' }, [
+  //     ['/users', parentView, [
+  //       ['/:user', childView]
+  //     ]]
+  //   ])
 
-    const tree = app.start({hash: true})
-    t.on('end', append(tree))
+  //   const tree = app.start()
+  //   t.on('end', append(tree))
 
-    tree.onclick()
+  //   tree.onclick()
 
-    function parentView (state, prev, send) {
-      return view`
-        <button onclick=${() => send('open', {id: 1})}>
-          Open
-        </button>
-      `
-    }
+  //   function parentView (state, prev, send) {
+  //     return view`
+  //       <button onclick=${() => send('open', {id: 1})}>
+  //         Open
+  //       </button>
+  //     `
+  //   }
 
-    function childView (state, prev, send) {
-      t.equal(state.user, 1)
-      return view`<button>${state.user}</button>`
-    }
-  })
+  //   function childView (state, prev, send) {
+  //     t.equal(state.user, 1)
+  //     return view`<p>${state.user}</p>`
+  //   }
+  // })
 
   t.test('disabling history', function (t) {
     t.plan(1)
 
+    resetLocation()
     const choo = proxyquire('../..', {
       'sheet-router/history': () => t.fail('history listener attached')
     })
 
-    const app = choo()
+    const app = choo({ history: false })
 
-    app.router('/', (route) => [
-      route('/', function () {
+    app.router('/', [
+      ['/', function () {
         t.pass('rendered')
-      })
+      }]
     ])
 
-    app.start({history: false})
+    app.start()
   })
 
   t.test('disabling href', function (t) {
@@ -136,15 +138,9 @@ test('routing', function (t) {
       'sheet-router/href': () => t.fail('href listener attached')
     })
 
-    const app = choo()
-
-    app.router('/', (route) => [
-      route('/', function () {
-        t.pass('rendered')
-      })
-    ])
-
-    app.start({href: false})
+    const app = choo({ href: false })
+    app.router(['/', () => t.pass('rendered')])
+    app.start()
   })
 
   t.test('viewless nesting', function (t) {
@@ -153,14 +149,18 @@ test('routing', function (t) {
     const choo = require('../..')
     const app = choo()
 
-    app.router('/users/123', (route) => [
-      route('/users', [
-        route('/:user', function (state) {
+    app.router({ default: '/users/123' }, [
+      ['/users', [
+        ['/:user', function (state) {
           t.deepEqual(state.params, {user: '123'})
-        })
-      ])
+        }]
+      ]]
     ])
 
     app.start()
   })
 })
+
+function resetLocation () {
+  window.history.pushState({}, null, '/')
+}
