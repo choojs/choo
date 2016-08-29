@@ -40,16 +40,14 @@ test('hooks', function (t) {
   })
 
   var sent = false
-  app.router((route) => [
-    route('/', function (state, prev, send) {
-      if (!sent) {
-        send('click', {foo: 'bar'})
-        send('explodes')
-      }
-      sent = true
-      return view`<span></span>`
-    })
-  ])
+  app.router(['/', function (state, prev, send) {
+    if (!sent) {
+      send('click', {foo: 'bar'})
+      send('explodes')
+    }
+    sent = true
+    return view`<span></span>`
+  }])
 
   const tree = app.start()
   t.on('end', append(tree))

@@ -31,9 +31,6 @@ const mainView = (state, prev, send) => {
   `
 }
 
-app.router((route) => [
-  route('/', mainView)
-])
-
+app.router(['/', mainView])
 const tree = app.start()
 document.body.appendChild(tree)
