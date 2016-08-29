@@ -83,10 +83,7 @@ test('server', function (t) {
     t.plan(1)
 
     const app = choo()
-    app.router(['/', function (state, prev, send) {
-      send('hey!')
-    }])
-
+    app.router(['/', (state, prev, send) => send('hey!')])
     t.throws(app.toString.bind(null), /route must be a string/)
   })
 
@@ -94,10 +91,7 @@ test('server', function (t) {
     t.plan(1)
 
     const app = choo()
-    app.router(['/', function (state, prev, send) {
-      send('hey!')
-    }])
-
+    app.router(['/', (state, prev, send) => send('hey!')])
     const msg = /send\(\) cannot be called/
     t.throws(app.toString.bind(null, '/', { message: 'nyan!' }), msg)
   })
