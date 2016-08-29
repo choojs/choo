@@ -3,14 +3,12 @@ const html = require('../../html')
 
 const app = choo()
 app.model(createModel())
-app.router((route) => [
-  route('/', mainView)
-])
+app.router(['/', mainView])
 
 const tree = app.start()
 document.body.appendChild(tree)
 
-function mainView (params, state, send) {
+function mainView (state, prev, send) {
   return html`
     <div>${state.logger.msg}</div>
   `
@@ -24,13 +22,13 @@ function createModel () {
       msg: ''
     },
     subscriptions: [
-      function (send) {
+      function (send, done) {
         stream.onerror = (e) => {
-          send('logger:error', { payload: JSON.stringify(e) })
+          send('logger:error', { payload: JSON.stringify(e) }, done)
         }
         stream.onmessage = (e) => {
           const msg = JSON.parse(e.data).message
-          send('logger:print', { payload: msg })
+          send('logger:print', { payload: msg }, done)
         }
       }
     ],
