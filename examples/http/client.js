@@ -4,6 +4,7 @@ const mainView = require('./views/main')
 
 const app = choo({
   onError: function (err, state, createSend) {
+    console.trace()
     console.groupCollapsed(`Error: ${err.message}`)
     console.error(err)
     console.groupEnd()
@@ -26,9 +27,7 @@ const app = choo({
 app.model(require('./models/error'))
 app.model(require('./models/api'))
 
-app.router((route) => [
-  route('/', mainView)
-])
+app.router(['/', mainView])
 
 const tree = app.start()
 document.body.appendChild(tree)
