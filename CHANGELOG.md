@@ -16,7 +16,7 @@ perf:
   dependency prevents bursts of DOM updates thrashing application performance,
   quite possibly making choo amongst the fastest frameworks out there.
 - We now ship standalone `UMD` bundles on each release, available through
-  [https://npmcdn.com/choo](https://npmcdn.com/choo). The goal of this is to
+  [https://unpkg.com/choo](https://unpkg.com/choo). The goal of this is to
   support sites like codepen and the like; __this should not be used for
   production__.
 
