@@ -839,6 +839,6 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [hyperx]: https://github.com/substack/hyperx
 [budo]: https://github.com/mattdesl/budo
 [es2020]: https://github.com/yoshuawuyts/es2020
-[browserify]: https://github.com/substack/browserify
+[browserify]: https://github.com/substack/node-browserify
 [localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 [handbook]: https://github.com/yoshuawuyts/choo-handbook
