@@ -40,5 +40,12 @@ app.router((route) => [
   route('/', mainView)
 ])
 
+app.use({
+  onStart: () => {
+    console.log('Ready to go!')
+  }
+})
+
 const tree = app.start()
+
 document.body.appendChild(tree)
