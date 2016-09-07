@@ -555,8 +555,9 @@ html`
 Example listeners include: `onclick`, `onsubmit`, `oninput`, `onkeydown`,
 `onkeyup`. A full list can be found [at the yo-yo
 repo](https://github.com/maxogden/yo-yo/blob/master/update-events.js). When
-creating listeners always remember to call `e.preventDefault()` on the event so
-it doesn't bubble up and do stuff like refreshing the full page or the like.
+creating listeners always remember to call `e.preventDefault()` and
+`e.stopPropagation()` on the event so it doesn't bubble up and do stuff like
+refreshing the full page or the like.
 
 To trigger lifecycle events on any part of a view, set the `onload=${(el) =>
 {}}` and `onunload=${() => {el}}` attributes. These parameters are useful when
@@ -839,6 +840,6 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [hyperx]: https://github.com/substack/hyperx
 [budo]: https://github.com/mattdesl/budo
 [es2020]: https://github.com/yoshuawuyts/es2020
-[browserify]: https://github.com/substack/browserify
+[browserify]: https://github.com/substack/node-browserify
 [localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 [handbook]: https://github.com/yoshuawuyts/choo-handbook
