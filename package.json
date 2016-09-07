@@ -36,7 +36,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "barracks": "^8.1.1",
+    "barracks": "^8.3.1",
     "document-ready": "~1.0.2",
     "global": "^4.3.0",
     "hash-match": "^1.0.2",

@@ -400,7 +400,7 @@ DOM](#does-choo-use-a-virtual-dom).
 Sometimes it's necessary to change the way `choo` itself works. For example to
 report whenever an action is triggered, handle errors globally or perist state
 somewhere. This is done through something called `plugins`. Plugins are objects
-that contain `hook` functions and are passed to `app.use()`:
+that contain `hook` and `wrap` functions and are passed to `app.use()`:
 
 ```js
 const log = require('choo-log')
@@ -423,7 +423,7 @@ frameworks a lot harder. Please exhaust all other options before using
 plugins.__
 
 If you want to learn more about creating your own `plugins`, and which `hooks`
-are available, head on over to [app.use()](#appusehooks).
+and `wrappers` are available, head on over to [app.use()](#appusehooks).
 
 ## Badges
 Using `choo` in a project? Show off which version you've used using a badge:
@@ -489,7 +489,7 @@ way `choo` works, adding custom behavior and listeners. Generally returning
 objects of `hooks` is done by returning them from functions (which we call
 `plugins` throughout the documentation).
 
-There are several `hooks` that are picked up by `choo`:
+There are several `hooks` and `wrappers` that are picked up by `choo`:
 - __onError(err, state, createSend):__ called when an `effect` or
   `subscription` emit an error. If no handler is passed, the default handler
   will `throw` on each error.
@@ -497,6 +497,11 @@ There are several `hooks` that are picked up by `choo`:
   `action` is fired.
 - __onStateChange(data, state, prev, caller, createSend):__ called after a
   reducer changes the `state`.
+- __wrapSubscriptions(fn):__ wraps a `subscription` to add custom behavior
+- __wrapReducers(fn):__ wraps a `reducer` to add custom behavior
+- __wrapEffects(fn):__ wraps an `effect` to add custom behavior
+- __wrapInitialState(fn):__ mutate the complete initial `state` to add custom
+  behavior - useful to mutate the state before starting up
 
 __:warning: Warning :warning:: plugins should only be used as a last resort.
 It creates peer dependencies which makes upgrading versions and switching
