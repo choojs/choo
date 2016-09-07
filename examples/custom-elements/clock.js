@@ -14,8 +14,7 @@ class liveClock extends window.HTMLElement {
 
   getTime () {
     const time = new Date()
-    let hours = time.getHours()
-
+    const hours = time.getHours()
     const isAM = this.twelve && hours < 13
     const isPM = this.twelve && hours > 12
 
