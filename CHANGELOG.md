@@ -1,3 +1,12 @@
+## `3.3.0`
+Yay, `plugins` now support `wrappers` which is a segway onto HMR, time travel
+and other cool plugins. These changes have come through in barracks `v8.3.0`
+and a lil fix in `v8.3.1`. This is a lil patch before `4.0.0` comes through,
+but should be super valuable. Wooh!
+
+### changes
+- updated barracks to `v8.3.1`
+
 ## `3.2.0`
 Wooh, `plugins` are a first class citizen now thanks to the `.use()` API. It's
 a multiplexed version of the old `app = choo(hooks)`. It should enable
