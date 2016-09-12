@@ -105,17 +105,18 @@
 - __very cute:__ choo choo!
 
 ## Demos
-- :truck: [Input example](http://requirebin.com/?gist=229bceda0334cf30e3044d5f5c600960)
+     
+- &#128666; [Input example](http://requirebin.com/?gist=229bceda0334cf30e3044d5f5c600960)
   ([repo](examples/title/))
-- :water_buffalo: [HTTP effects example](https://fork-fang.hyperdev.space/)
+- &#128003; [HTTP effects example](https://fork-fang.hyperdev.space/)
   ([repo](https://hyperdev.com/#!/project/fork-fang))
-- :mailbox: [Mailbox routing](examples/mailbox/)
-- :ok_hand: [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
+- &#128235; [Mailbox routing](examples/mailbox/)
+- &#128076; [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
   ([repo](https://github.com/shuhei/todomvc-choo))
-- :fire: [Choo-firebase](https://github.com/mw222rs/choo-firebase)
-- :seedling: [Grow](https://grow.static.land/)
+- &#128293; [Choo-firebase](https://github.com/mw222rs/choo-firebase)
+- &#127793; [Grow](https://grow.static.land/)
   ([repo](https://github.com/sethvincent/grow))
-- :newspaper: [Hacker News Reader](https://hackernews-choo.surge.sh/) ([repo](https://github.com/kvnneff/hackernews-choo))
+- &#128240; [Hacker News Reader](https://hackernews-choo.surge.sh/) ([repo](https://github.com/kvnneff/hackernews-choo))
 
 _note: If you've built something cool using `choo` or are using it in
 production, we'd love to hear from you!_
