@@ -112,7 +112,7 @@
 - :mailbox: [Mailbox routing](examples/mailbox/)
 - :ok_hand: [TodoMVC](http://shuheikagawa.com/todomvc-choo/)
   ([repo](https://github.com/shuhei/todomvc-choo))
-- :fire: [Choo-firebase](https://github.com/mw222rs/choo-firebase)
+- :fire: [Choo-firebase](https://github.com/fyrkant/choo-firebase)
 - :seedling: [Grow](https://grow.static.land/)
   ([repo](https://github.com/sethvincent/grow))
 - :newspaper: [Hacker News Reader](https://hackernews-choo.surge.sh/) ([repo](https://github.com/kvnneff/hackernews-choo))
