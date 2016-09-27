@@ -47,7 +47,7 @@
 
 <div align="center">
   <h3>
-    <a href="https://github.com/yoshuawuyts/choo-handbook">
+    <a href="https://yoshuawuyts.gitbooks.io/choo/content">
       Handbook
     </a>
     <span> | </span>
