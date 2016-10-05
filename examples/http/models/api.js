@@ -6,13 +6,13 @@ module.exports = {
     title: 'Button pushing machine 3000'
   },
   reducers: {
-    set: (data, state) => ({ 'title': data })
+    set: (state, data) => ({ 'title': data })
   },
   effects: {
-    good: function (data, state, send, done) {
+    good: function (state, data, send, done) {
       request('/good', send, done)
     },
-    bad: (data, state, send, done) => request('/bad', send, done)
+    bad: (state, data, send, done) => request('/bad', send, done)
   }
 }
 

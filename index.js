@@ -70,7 +70,7 @@ function choo (opts) {
 
   // update the DOM after every state mutation
   // (obj, obj, obj, str, fn) -> null
-  function render (data, state, prev, name, createSend) {
+  function render (state, data, prev, name, createSend) {
     if (!_frame) {
       _frame = nanoraf(function (state, prev) {
         const newTree = _router(state.location.pathname, state, prev)
