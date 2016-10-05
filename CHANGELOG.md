@@ -1,3 +1,35 @@
+## `4.0.0` The routing patch
+Another month, another set of breaking changes. Kidding (not kidding) - the
+last month has been mad, all sorts of people have flocked to choo and people
+seem to be using to build a wide variety of things. Amazing!
+
+But with wide uptake, we also get a larger flow of feedback - and one of the
+most prominent thing we've heard is that routing was a bit off. So `4.0.0` is
+all about the routing, trying to make it so that whatever routing you're into
+we support - while secretly sneaking in some performance upgrades. Enjoy!
+
+### upgrade guide
+- [choo-handbook/upgrading/4.0.0]()
+
+### changes
+- slim down server side rendering API |
+  [issue](https://github.com/yoshuawuyts/choo/issues/191) |
+  [pull-request](https://github.com/yoshuawuyts/choo/pull/203)
+- update router API to be lisp-like | [issue]() | [pull-request]()
+- update `router` to use thunking |
+  [issue](https://github.com/yoshuawuyts/sheet-router/issues/17) |
+  [pull-request](https://github.com/yoshuawuyts/sheet-router/pull/34)
+- support inline anchor links |
+  [issue](https://github.com/yoshuawuyts/choo/issues/65)
+- allow bypassing of link clicks in `sheet-router` |
+  [issue](https://github.com/yoshuawuyts/sheet-router/issues/15) |
+  [pull-request](https://github.com/yoshuawuyts/sheet-router/pull/27)
+- update router API to handle hashes by default
+- update `location` state to expose `search` parameters (query strings) |
+  [issue](https://github.com/yoshuawuyts/sheet-router/issues/31)
+- swap `state` and `data` argument order |
+  [issue](https://github.com/yoshuawuyts/choo/issues/179)
+
 ## `3.3.0`
 Yay, `plugins` now support `wrappers` which is a segway onto HMR, time travel
 and other cool plugins. These changes have come through in barracks `v8.3.0`
