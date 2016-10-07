@@ -490,9 +490,9 @@ There are several `hooks` that are picked up by `choo`:
 - __onError(err, state, createSend):__ called when an `effect` or
   `subscription` emit an error. If no handler is passed, the default handler
   will `throw` on each error.
-- __onAction(action, state, name, caller, createSend):__ called when an
+- __onAction(state, data, name, caller, createSend):__ called when an
   `action` is fired.
-- __onStateChange(action, state, prev, caller, createSend):__ called after a
+- __onStateChange(state, data, prev, caller, createSend):__ called after a
   reducer changes the `state`.
 
 __:warning: Warning :warning:: plugins should only be used as a last resort.
