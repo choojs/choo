@@ -17,16 +17,16 @@ test('state is immutable', function (t) {
     state: state,
     namespace: 'test',
     reducers: {
-      'no-reducer-mutate': (data, state) => {
+      'no-reducer-mutate': (state, data) => {
         return {}
       },
-      'mutate-on-return': (data, state) => {
+      'mutate-on-return': (state, data) => {
         delete data.type
         return data
       }
     },
     effects: {
-      'triggers-reducers': (data, state, send, done) => {
+      'triggers-reducers': (state, data, send, done) => {
         send('test:mutate-on-return', {beep: 'barp'}, done)
       }
     }

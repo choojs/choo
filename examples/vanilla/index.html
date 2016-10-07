@@ -12,8 +12,8 @@
         namespace: 'counter',
         state: { count: 0 },
         reducers: {
-          increment: (data, state) => ({count: state.count + 1}),
-          decrement: (data, state) => ({count: state.count - 1})
+          increment: (state, data) => ({count: state.count + 1}),
+          decrement: (state, data) => ({count: state.count - 1})
         }
       })
 

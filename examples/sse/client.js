@@ -33,16 +33,16 @@ function createModel () {
       }
     ],
     reducers: {
-      'print': (data, state) => {
+      'print': (state, data) => {
         return ({ msg: state.msg + ' ' + data.payload })
       }
     },
     effects: {
-      close: (data, state, send, done) => {
+      close: (state, data, send, done) => {
         stream.close()
         done()
       },
-      error: (data, state, send, done) => {
+      error: (state, data, send, done) => {
         console.error(`error: ${data.payload}`)
         done()
       }

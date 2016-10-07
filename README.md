@@ -132,7 +132,7 @@ const app = choo()
 app.model({
   state: { title: 'Not quite set yet' },
   reducers: {
-    update: (data, state) => ({ title: data })
+    update: (state, data) => ({ title: data })
   }
 })
 
@@ -254,7 +254,7 @@ app.model({
   namespace: 'todos',
   state: { items: [] },
   reducers: {
-    add: (data, state) => ({ items: state.items.concat(data.payload) })
+    add: (state, data) => ({ items: state.items.concat(data.payload) })
   }
 })
 ```
@@ -297,9 +297,10 @@ app.model({
   namespace: 'todos',
   state: { items: [] },
   effects: {
-    fetch: (data, state, send, done) => {
-      http('/todos', (err, res, body) => {
-        send('todos:receive', body, done)
+    addAndSave: (state, data, send, done) => {
+      http.post('/todo', {body: data.payload, json: true}, (err, res, body) => {
+        data.payload.id = body.id
+        send('todos:add', data, done)
       })
     }
   },
@@ -338,7 +339,7 @@ app.model({
     }
   ],
   effects: {
-    print: (data, state) => console.log(data.payload)
+    print: (state, data) => console.log(data.payload)
   }
 })
 ```
@@ -449,9 +450,9 @@ arguments:
   and handlers in other models
 - __state:__ initial values of `state` inside the model
 - __reducers:__ synchronous operations that modify state. Triggered by
-  `actions`. Signature of `(data, state)`.
+  `actions`. Signature of `(state, data)`.
 - __effects:__ asynchronous operations that don't modify state directly.
-  Triggered by `actions`, can call `actions`. Signature of `(data, state,
+  Triggered by `actions`, can call `actions`. Signature of `(state, data,
   send, done)`
 - __subscriptions:__ asynchronous read-only operations that don't modify state
   directly. Can call `actions`. Signature of `(send, done)`.
@@ -490,9 +491,9 @@ There are several `hooks` and `wrappers` that are picked up by `choo`:
 - __onError(err, state, createSend):__ called when an `effect` or
   `subscription` emit an error. If no handler is passed, the default handler
   will `throw` on each error.
-- __onAction(data, state, name, caller, createSend):__ called when an
+- __onAction(state, data, name, caller, createSend):__ called when an
   `action` is fired.
-- __onStateChange(data, state, prev, caller, createSend):__ called after a
+- __onStateChange(state, data, prev, caller, createSend):__ called after a
   reducer changes the `state`.
 - __wrapSubscriptions(fn):__ wraps a `subscription` to add custom behavior
 - __wrapReducers(fn):__ wraps a `reducer` to add custom behavior
