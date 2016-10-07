@@ -36,7 +36,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "barracks": "^8.1.1",
+    "barracks": "^9.0.0",
     "document-ready": "~1.0.2",
     "global": "^4.3.0",
     "hash-match": "^1.0.2",
@@ -58,7 +58,7 @@
     "es2020": "^1.0.1",
     "geval": "~2.1.1",
     "gzip-size-cli": "^1.0.0",
-    "insert-css": "^0.2.0",
+    "insert-css": "^1.0.0",
     "istanbul": "^0.4.4",
     "min-document": "~2.18.0",
     "pretty-bytes-cli": "^1.0.0",

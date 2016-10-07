@@ -12,11 +12,14 @@ we support - while secretly sneaking in some performance upgrades. Enjoy!
 - [choo-handbook/upgrading/4.0.0]()
 
 ### changes
-- slim down server side rendering API |
+- :exclamation: slim down server side rendering API |
   [issue](https://github.com/yoshuawuyts/choo/issues/191) |
   [pull-request](https://github.com/yoshuawuyts/choo/pull/203)
-- update router API to be lisp-like | [issue]() | [pull-request]()
-- update `router` to use thunking |
+- :exclamation: update router API to be lisp-like | [issue]() |
+  [pull-request]()
+- :exclamation: swap `state` and `data` argument order |
+  [issue](https://github.com/yoshuawuyts/choo/issues/179)
+- update `router` to use memoization |
   [issue](https://github.com/yoshuawuyts/sheet-router/issues/17) |
   [pull-request](https://github.com/yoshuawuyts/sheet-router/pull/34)
 - support inline anchor links |
@@ -27,8 +30,6 @@ we support - while secretly sneaking in some performance upgrades. Enjoy!
 - update router API to handle hashes by default
 - update `location` state to expose `search` parameters (query strings) |
   [issue](https://github.com/yoshuawuyts/sheet-router/issues/31)
-- swap `state` and `data` argument order |
-  [issue](https://github.com/yoshuawuyts/choo/issues/179)
 
 ## `3.2.0`
 Wooh, `plugins` are a first class citizen now thanks to the `.use()` API. It's

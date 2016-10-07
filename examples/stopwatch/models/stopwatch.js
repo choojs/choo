@@ -8,14 +8,14 @@ module.exports = {
     laps: []
   },
   reducers: {
-    start: (data, state) => ({ start: true, startTime: Date.now() - state.elapsed }),
-    stop: (data, state) => ({ start: false }),
-    update: (data, state) => ({ elapsed: data }),
-    reset: (data, state) => ({ startTime: Date.now(), elapsed: 0, laps: [] }),
-    add: (data, state) => ({ laps: state.laps.concat(data) })
+    start: (state, data) => ({ start: true, startTime: Date.now() - state.elapsed }),
+    stop: (state, data) => ({ start: false }),
+    update: (state, data) => ({ elapsed: data }),
+    reset: (state, data) => ({ startTime: Date.now(), elapsed: 0, laps: [] }),
+    add: (state, data) => ({ laps: state.laps.concat(data) })
   },
   effects: {
-    now: (data, state, send, done) => {
+    now: (state, data, send, done) => {
       if (state.start) {
         let elapsed = data - state.startTime
         send('update', elapsed, done)
