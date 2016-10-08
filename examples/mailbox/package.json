@@ -9,6 +9,7 @@
   "author": "Yoshua Wuyts <i@yoshuawuyts.com>",
   "license": "ISC",
   "dependencies": {
+    "choo-log": "^1.4.1",
     "css-wipe": "^4.2.1",
     "dateformat": "^1.0.12",
     "pathname-match": "^1.1.3",
