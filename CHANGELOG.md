@@ -19,6 +19,8 @@ we support - while secretly sneaking in some performance upgrades. Enjoy!
   [pull-request]()
 - :exclamation: swap `state` and `data` argument order |
   [issue](https://github.com/yoshuawuyts/choo/issues/179)
+- :exclamation: remove `choo/http`. Use [xhr](https://github.com/naugtur/xhr)
+  instead | [pull-request](https://github.com/yoshuawuyts/choo/pull/269)
 - update `router` to use memoization |
   [issue](https://github.com/yoshuawuyts/sheet-router/issues/17) |
   [pull-request](https://github.com/yoshuawuyts/sheet-router/pull/34)
