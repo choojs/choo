@@ -290,7 +290,7 @@ Examples of effects include: performing [xhr] requests (server requests),
 calling multiple `reducers`, persisting state to [localstorage].
 
 ```js
-const http = require('choo/http')
+const http = require('xhr')
 const choo = require('choo')
 const app = choo()
 app.model({
