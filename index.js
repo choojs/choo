@@ -139,14 +139,16 @@ function createLocationModel (opts) {
     reducers: { update: updateLocation }
   }
 
-  function updateLocation (location, state) {
-    return location
+  // update the location on the state
+  // (obj, obj) -> obj
+  function updateLocation (state, data) {
+    return data
   }
 
   // set a new location e.g. "/foo/bar#baz?beep=boop"
   // (str, obj, fn, fn) -> null
-  function setLocation (patch, state, send, done) {
-    const newLocation = createLocation(state, patch)
+  function setLocation (state, data, send, done) {
+    const newLocation = createLocation(state, data)
     if (opts.history !== false && newLocation.href !== state.href) {
       window.history.pushState({}, null, newLocation.href)
     }
@@ -158,16 +160,16 @@ function createLocationModel (opts) {
 
     if (opts.history !== false) {
       subs.handleHistory = function (send, done) {
-        onHistoryChange(function navigate (pathname) {
-          send('location:set', { pathname: pathname }, done)
+        onHistoryChange(function navigate (href) {
+          send('location:set', href, done)
         })
       }
     }
 
     if (opts.href !== false) {
       subs.handleHref = function (send, done) {
-        onHref(function navigate (pathname) {
-          send('location:set', { pathname: pathname }, done)
+        onHref(function navigate (href) {
+          send('location:set', href, done)
         })
       }
     }
