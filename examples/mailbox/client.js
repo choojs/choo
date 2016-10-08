@@ -1,9 +1,12 @@
-const choo = require('../../')
+const log = require('choo-log')
 const sf = require('sheetify')
+
+const choo = require('../../')
 
 sf('css-wipe/dest/bundle')
 
 const app = choo()
+app.use(log())
 
 app.model(require('./models/inbox'))
 app.model(require('./models/spam'))
