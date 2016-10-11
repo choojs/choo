@@ -119,7 +119,12 @@ function choo (opts) {
       return function chooWrap (params) {
         return function (state) {
           const nwPrev = prev
-          const nwState = prev = xtend(state, { params: params })
+          prev = state
+
+          // TODO(yw): find a way to wrap handlers so params shows up in state
+          const nwState = xtend(state)
+          nwState.location = xtend(nwPrev.location, { params: params })
+
           if (opts.freeze !== false) Object.freeze(nwState)
           return handler(nwState, nwPrev, send)
         }
@@ -133,25 +138,40 @@ function choo (opts) {
 function createLocationModel (opts) {
   return {
     namespace: 'location',
-    state: createLocation(),
+    state: mutate(createLocation(), { params: {} }),
     subscriptions: createSubscriptions(opts),
-    effects: { set: setLocation },
+    effects: { set: setLocation, touch: touchLocation },
     reducers: { update: updateLocation }
   }
 
   // update the location on the state
+  // try and jump to an anchor on the page if it exists
   // (obj, obj) -> obj
   function updateLocation (state, data) {
+    if (opts.history !== false && data.hash && data.hash !== state.hash) {
+      const el = document.querySelector(data.hash)
+      if (el) el.scrollIntoView(true)
+    }
     return data
+  }
+
+  // update internal location only
+  // (str, obj, fn, fn) -> null
+  function touchLocation (state, data, send, done) {
+    const newLocation = createLocation(state, data)
+    send('location:update', newLocation, done)
   }
 
   // set a new location e.g. "/foo/bar#baz?beep=boop"
   // (str, obj, fn, fn) -> null
   function setLocation (state, data, send, done) {
     const newLocation = createLocation(state, data)
+
+    // update url bar if it changed
     if (opts.history !== false && newLocation.href !== state.href) {
       window.history.pushState({}, null, newLocation.href)
     }
+
     send('location:update', newLocation, done)
   }
 
@@ -161,15 +181,15 @@ function createLocationModel (opts) {
     if (opts.history !== false) {
       subs.handleHistory = function (send, done) {
         onHistoryChange(function navigate (href) {
-          send('location:set', href, done)
+          send('location:touch', href, done)
         })
       }
     }
 
     if (opts.href !== false) {
       subs.handleHref = function (send, done) {
-        onHref(function navigate (href) {
-          send('location:set', href, done)
+        onHref(function navigate (location) {
+          send('location:set', location, done)
         })
       }
     }
