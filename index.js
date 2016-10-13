@@ -2,7 +2,6 @@ const createLocation = require('sheet-router/create-location')
 const onHistoryChange = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const onHref = require('sheet-router/href')
-const onHash = require('sheet-router/hash')
 const walk = require('sheet-router/walk')
 const mutate = require('xtend/mutable')
 const barracks = require('barracks')
@@ -191,14 +190,6 @@ function createLocationModel (opts) {
     if (opts.href !== false) {
       subs.handleHref = function (send, done) {
         onHref(function navigate (location) {
-          send('location:set', location, done)
-        })
-      }
-    }
-
-    if (opts.hash !== false) {
-      subs.handleHash = function (send, done) {
-        onHash(function navigate (location) {
           send('location:set', location, done)
         })
       }
