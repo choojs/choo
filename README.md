@@ -152,9 +152,8 @@ const tree = app.start()
 document.body.appendChild(tree)
 ```
 
-To run it, save it as `client.js` and run with [budo][budo] and
-[es2020][es2020]. These tools are convenient but any [browserify][browserify]
-based tool should do:
+To run it, save it as `client.js` and run with [budo] and [es2020]. These tools
+are convenient but any [browserify] based tool should do:
 ```sh
 $ budo client.js -p 8080 --open -- -t es2020
 ```
@@ -206,7 +205,7 @@ consists of a unique `actionName` and an optional payload of `data`, which can
 be any value.
 
 When a `reducer` modifies `state`, the `router` is called, which in turn calls
-`views`. `views` take `state` and return [DOM][dom] nodes which are then
+`views`. `views` take `state` and return [DOM] nodes which are then
 efficiently rendered on the screen.
 
 In turn when the `views` are rendered, the `user` can interact with elements by
@@ -221,7 +220,7 @@ application logic. This is the _unidirectional_ architecture of `choo`.
  └▶ Router ─────State ───▶ Views ────┘
 ```
 - __user:__ 🙆
-- __DOM:__ the [Document Object Model][dom] is what is currently displayed in
+- __DOM:__ the [Document Object Model][DOM] is what is currently displayed in
   your browser
 - __actions:__ a named event with optional properties attached. Used to call
   `effects` and `reducers` that have been registered in `models`
@@ -286,10 +285,8 @@ A typical `effect` flow looks like:
 4. When the async call is done, either a success or error action is emitted
 5. A reducer catches the action and updates the state
 
-Examples of effects include: performing
-[xhr](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) requests
-(server requests), calling multiple `reducers`, persisting state to
-[localstorage][localstorage].
+Examples of effects include: performing [xhr] requests (server requests),
+calling multiple `reducers`, persisting state to [localstorage].
 
 ```js
 const http = require('choo/http')
@@ -366,7 +363,7 @@ Routes on the `router` are passed in as a nested array. This means that the
 entry point of the application also becomes a site map, making it easier to
 figure out how views relate to each other.
 
-Under the hood `choo` uses [sheet-router][sheet-router]. Internally the
+Under the hood `choo` uses [sheet-router]. Internally the
 currently rendered route is kept in `state.location`. If you want to modify
 the location programmatically the `reducer` for the location can be called
 using `send('location:setLocation', { location: href })`. This will not work
@@ -437,7 +434,7 @@ Using `choo` in a project? Show off which version you've used using a badge:
 ## API
 This section provides documentation on how each function in `choo` works. It's
 intended to be a technical reference. If you're interested in learning choo for
-the first time, consider reading through the [handbook][handbook] or
+the first time, consider reading through the [handbook] or
 [concepts](#concepts) first :sparkles:
 
 ### app = choo(opts)
@@ -475,8 +472,7 @@ registered in `choo(handlers)`. If no callback is registered, errors will
 
 ### app.router(defaultRoute?, (route) => [routes])
 Creates a new router. Takes a function that exposes a single `route` function,
-and that expects a tree of `routes` to be returned. See
-[`sheet-router`](https://github.com/yoshuawuyts/sheet-router) for full
+and that expects a tree of `routes` to be returned. See [sheet-router] for full
 documentation. Registered views have a signature of `(state, prev, send)`,
 where `state` is the current `state`, `prev` is the last state, `state.params`
 is URI partials and `send()` can be called to trigger actions. If
@@ -544,8 +540,8 @@ following values:
   disables `opts.history` and `opts.href`.
 
 ### view = require('choo/html')\`html\`
-Tagged template string HTML builder. Built on top of [yo-yo][yo-yo], [bel][bel]
-and [hyperx][hyperx]. To register a view on the `router` it should be wrapped
+Tagged template string HTML builder. Built on top of [yo-yo], [bel], and
+[hyperx]. To register a view on the `router` it should be wrapped
 in a function with the signature of `(state, prev, send)` where `state` is the
 current `state`, `prev` is the last state, `state.params` is URI partials and
 `send()` can be called to trigger actions.
@@ -630,7 +626,7 @@ give you my opinions directly. Ready?  Here goes:
 - __cycle:__ `cycle`'s pretty good - unlike most frameworks it lays out a clear
   architecture which helps with reasoning about it. That said, it's built on
   `virtual-dom` and `xstream` which are a bit heavy for my taste. `choo` works
-  pretty well for FRP style programming, but something like [inu][inu] might be
+  pretty well for FRP style programming, but something like [inu] might be
   an interesting alternative.
 - __vue:__ like `cycle`, `vue` is pretty good. But it also uses tech that
   provides framework lock in, and additionally doesn't have a clean enough
@@ -643,11 +639,10 @@ finding where in the DOM tree `send()` is called, and disable it when called
 from within Node.
 
 ### Which packages was choo built on?
-- __views:__ [`yo-yo`](https://github.com/maxogden/yo-yo),
-  [`bel`](https://github.com/shama/bel)
+- __views:__ [`yo-yo`][yo-yo], [`bel`][bel]
 - __models:__ [`barracks`](https://github.com/yoshuawuyts/barracks),
   [`xtend`](https://github.com/raynos/xtend)
-- __routes:__ [`sheet-router`](https://github.com/yoshuawuyts/sheet-router)
+- __routes:__ [`sheet-router`][sheet-router]
 - __http:__ [`xhr`](https://github.com/Raynos/xhr)
 
 ### Does choo use a virtual-dom?
@@ -836,7 +831,7 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [bl]: https://github.com/rvagg/bl
 [varnish]: https://varnish-cache.org
 [nginx]: http://nginx.org/
-[dom]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
+[DOM]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
 [sheet-router]: https://github.com/yoshuawuyts/sheet-router
 [html-input]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
 [inu]: https://github.com/ahdinosaur/inu
@@ -848,3 +843,4 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [browserify]: https://github.com/substack/node-browserify
 [localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 [handbook]: https://github.com/yoshuawuyts/choo-handbook
+[xhr]: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
