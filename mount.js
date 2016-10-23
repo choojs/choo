@@ -12,6 +12,17 @@ function mount (selector, tree) {
   documentReady(function onReady () {
     const oldTree = document.querySelector(selector)
     assert.ok(oldTree, 'could not query selector: ' + selector)
+
+    // copy script tags from the old tree to the new tree so
+    // we can pass a <body> element straight up
+    if (oldTree.nodeName === 'BODY') {
+      oldTree.childNodes.forEach(function (node) {
+        if (node.nodeName === 'SCRIPT') {
+          tree.appendChild(node.cloneNode())
+        }
+      })
+    }
+
     const newNode = yo.update(oldTree, tree)
     assert.equal(newNode, oldTree, 'choo/mount: The DOM node: \n' +
       newNode.outerHTML + '\n is not equal to \n' + oldTree.outerHTML +
