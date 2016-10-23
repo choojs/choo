@@ -268,7 +268,7 @@ that calls a different `action` based on the incoming data).
 In these cases you probably want to have a `model` that doesn't use namespaces,
 and has access to the full application state. Try and keep the logic in these
 `models` to a minimum, and declare as few `reducers` as possible. That way the
-bulk of your logic will safely shielded, with only a few points touching every
+bulk of your logic will be safely shielded, with only a few points touching every
 part of your application.
 
 ### Effects
@@ -314,10 +314,10 @@ app.model({
 ```
 
 When an `effect` is done executing, it should call the `done(err, res)`
-callback. This callback used to communicate when an `effect` is done, handle
-possible errors and send values back to the caller. You'll probably notice when
+callback. This callback is used to communicate when an `effect` is done, handle
+possible errors, and send values back to the caller. You'll probably notice when
 applications become more complex, that composing multiple namespaced models
-using higher level effects becomes real powerful - without becoming
+using higher level effects becomes really powerful - without becoming
 complicated.
 
 ### Subscriptions
