@@ -16,11 +16,12 @@ function mount (selector, tree) {
     // copy script tags from the old tree to the new tree so
     // we can pass a <body> element straight up
     if (oldTree.nodeName === 'BODY') {
-      oldTree.childNodes.forEach(function (node) {
-        if (node.nodeName === 'SCRIPT') {
-          tree.appendChild(node.cloneNode())
+      const children = oldTree.childNodes
+      for (var i = 0; i < children.length; i++) {
+        if (children[i].nodeName === 'SCRIPT') {
+          tree.appendChild(children[i].cloneNode())
         }
-      })
+      }
     }
 
     const newNode = yo.update(oldTree, tree)
