@@ -134,7 +134,12 @@ function choo (opts) {
         const send = createSend('view: ' + route, true)
         return function chooWrap (params, state) {
           const nwPrev = prev
-          const nwState = prev = xtend(state, { params: params })
+          const nwState = prev = xtend(state, {
+            params: params,
+            location: xtend(state.location, {
+              route: route
+            })
+          })
           if (opts.freeze !== false) Object.freeze(nwState)
           return child(nwState, nwPrev, send)
         }
