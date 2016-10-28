@@ -19,7 +19,7 @@ function mount (selector, tree) {
       const children = oldTree.childNodes
       for (var i = 0; i < children.length; i++) {
         if (children[i].nodeName === 'SCRIPT') {
-          tree.appendChild(children[i].cloneNode())
+          tree.appendChild(children[i].cloneNode(true))
         }
       }
     }
