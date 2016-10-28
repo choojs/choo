@@ -63,7 +63,7 @@ function choo (opts) {
     _router = start._router = createRouter(_routerOpts, _routes, createSend)
     const state = _store.state({state: {}})
 
-    const tree = _router(state.location.pathname, state)
+    const tree = _router(state.location.href, state)
     _rootNode = tree
     return tree
   }
@@ -73,7 +73,7 @@ function choo (opts) {
   function render (state, data, prev, name, createSend) {
     if (!_frame) {
       _frame = nanoraf(function (state, prev) {
-        const newTree = _router(state.location.pathname, state, prev)
+        const newTree = _router(state.location.href, state, prev)
         _rootNode = yo.update(_rootNode, newTree)
       })
     }
