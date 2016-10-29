@@ -15,13 +15,13 @@ module.exports = {
     triggerTime: null
   },
   reducers: {
-    setError: function (data, state) {
+    setError: function (state, data) {
       return {
         errors: state.errors.concat(data.message),
         errorTimeDone: data.errorTimeDone
       }
     },
-    'delError': function (data, state) {
+    'delError': function (state, data) {
       state.errors.shift()
       return { errors: state.errors }
     }

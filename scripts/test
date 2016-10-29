@@ -52,7 +52,8 @@ test_browser_local () {
 check_deps () {
   dependency-check . --entry 'index.js'
   dependency-check . --entry 'index.js' --extra --no-dev \
-    -i xhr
+    -i document-ready \
+    -i global
 }
 
 # set CLI flags

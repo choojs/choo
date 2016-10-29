@@ -7,9 +7,7 @@ const app = choo()
 
 app.model(stopwatch)
 
-app.router((route) => [
-  route('/', mainView)
-])
+app.router(['/', mainView])
 
 const tree = app.start()
 document.body.appendChild(tree)

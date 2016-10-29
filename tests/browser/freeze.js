@@ -11,14 +11,12 @@ test('freeze (default)', function (t) {
     }
   })
 
-  app.router((route) => [
-    route('/', function (state, prev, send) {
-      state.foo = ''
-      t.equal(state.foo, 'bar', 'cannot modify property')
-      state.bar = 'baz'
-      t.equal(state.bar, undefined, 'cannot add property')
-    })
-  ])
+  app.router(['/', function (state, prev, send) {
+    state.foo = ''
+    t.equal(state.foo, 'bar', 'cannot modify property')
+    state.bar = 'baz'
+    t.equal(state.bar, undefined, 'cannot add property')
+  }])
 
   app.start()
 })
@@ -33,14 +31,12 @@ test('noFreeze', function (t) {
     }
   })
 
-  app.router((route) => [
-    route('/', function (state, prev, send) {
-      state.foo = ''
-      t.equal(state.foo, '', 'can modify property')
-      state.bar = 'baz'
-      t.equal(state.bar, 'baz', 'can add property')
-    })
-  ])
+  app.router(['/', function (state, prev, send) {
+    state.foo = ''
+    t.equal(state.foo, '', 'can modify property')
+    state.bar = 'baz'
+    t.equal(state.bar, 'baz', 'can add property')
+  }])
 
   app.start()
 })

@@ -1,7 +1,8 @@
-const test = require('tape')
 const append = require('append-child')
+const test = require('tape')
+
 const choo = require('../../')
-const view = require('../../html')
+const html = require('../../html')
 
 test('state is immutable', function (t) {
   t.plan(4)
@@ -16,16 +17,16 @@ test('state is immutable', function (t) {
     state: state,
     namespace: 'test',
     reducers: {
-      'no-reducer-mutate': (data, state) => {
+      'no-reducer-mutate': (state, data) => {
         return {}
       },
-      'mutate-on-return': (data, state) => {
+      'mutate-on-return': (state, data) => {
         delete data.type
         return data
       }
     },
     effects: {
-      'triggers-reducers': (data, state, send, done) => {
+      'triggers-reducers': (state, data, send, done) => {
         send('test:mutate-on-return', {beep: 'barp'}, done)
       }
     }
@@ -46,13 +47,15 @@ test('state is immutable', function (t) {
     (send) => send('test:triggers-reducers')
   ]
 
-  app.router((route) => [
-    route('/', function (state, prev, send) {
+  app.router([
+    ['/', function (state, prev, send) {
       ++loop
       asserts[loop] && asserts[loop](state.test)
       setTimeout(() => triggers[loop] && triggers[loop](send), 5)
-      return view`<div><span class="test">${state.foo}:${state.beep}</span></div>`
-    })
+      return html`
+        <div><span class="test">${state.foo}:${state.beep}</span></div>
+      `
+    }]
   ])
 
   const tree = app.start()

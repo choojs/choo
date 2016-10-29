@@ -124,29 +124,29 @@ production, we'd love to hear from you!_
 Let's create an input box that changes the content of a textbox in real time.
 [Click here to see the app running](http://requirebin.com/?gist=229bceda0334cf30e3044d5f5c600960).
 ```js
-const choo = require('choo')
 const html = require('choo/html')
+const choo = require('choo')
 const app = choo()
 
 app.model({
   state: { title: 'Not quite set yet' },
   reducers: {
-    update: (data, state) => ({ title: data })
+    update: (state, data) => ({ title: data })
   }
 })
 
-const mainView = (state, prev, send) => html`
-  <main>
-    <h1>Title: ${state.title}</h1>
-    <input
-      type="text"
-      oninput=${(e) => send('update', e.target.value)}>
-  </main>
-`
+function mainView (state, prev, send) {
+  return html`
+    <main>
+      <h1>Title: ${state.title}</h1>
+      <input
+        type="text"
+        oninput=${(e) => send('update', e.target.value)}>
+    </main>
+  `
+}
 
-app.router((route) => [
-  route('/', mainView)
-])
+app.router(['/', mainView])
 
 const tree = app.start()
 document.body.appendChild(tree)
@@ -253,7 +253,7 @@ app.model({
   namespace: 'todos',
   state: { items: [] },
   reducers: {
-    add: (data, state) => ({ items: state.items.concat(data.payload) })
+    add: (state, data) => ({ items: state.items.concat(data.payload) })
   }
 })
 ```
@@ -289,16 +289,17 @@ Examples of effects include: performing [xhr] requests (server requests),
 calling multiple `reducers`, persisting state to [localstorage].
 
 ```js
-const http = require('choo/http')
+const http = require('xhr')
 const choo = require('choo')
 const app = choo()
 app.model({
   namespace: 'todos',
   state: { items: [] },
   effects: {
-    fetch: (data, state, send, done) => {
-      http('/todos', (err, res, body) => {
-        send('todos:receive', body, done)
+    addAndSave: (state, data, send, done) => {
+      http.post('/todo', {body: data.payload, json: true}, (err, res, body) => {
+        data.payload.id = body.id
+        send('todos:add', data, done)
       })
     }
   },
@@ -337,7 +338,7 @@ app.model({
     }
   ],
   effects: {
-    print: (data, state) => console.log(data.payload)
+    print: (state, data) => console.log(data.payload)
   }
 })
 ```
@@ -448,9 +449,9 @@ arguments:
   and handlers in other models
 - __state:__ initial values of `state` inside the model
 - __reducers:__ synchronous operations that modify state. Triggered by
-  `actions`. Signature of `(data, state)`.
+  `actions`. Signature of `(state, data)`.
 - __effects:__ asynchronous operations that don't modify state directly.
-  Triggered by `actions`, can call `actions`. Signature of `(data, state,
+  Triggered by `actions`, can call `actions`. Signature of `(state, data,
   send, done)`
 - __subscriptions:__ asynchronous read-only operations that don't modify state
   directly. Can call `actions`. Signature of `(send, done)`.
@@ -489,9 +490,9 @@ There are several `hooks` and `wrappers` that are picked up by `choo`:
 - __onError(err, state, createSend):__ called when an `effect` or
   `subscription` emit an error. If no handler is passed, the default handler
   will `throw` on each error.
-- __onAction(data, state, name, caller, createSend):__ called when an
+- __onAction(state, data, name, caller, createSend):__ called when an
   `action` is fired.
-- __onStateChange(data, state, prev, caller, createSend):__ called after a
+- __onStateChange(state, data, prev, caller, createSend):__ called after a
   reducer changes the `state`.
 - __wrapSubscriptions(fn):__ wraps a `subscription` to add custom behavior
 - __wrapReducers(fn):__ wraps a `reducer` to add custom behavior
@@ -522,12 +523,9 @@ optional state object. When calling `.toString()` instead of `.start()`, all
 calls to `send()` are disabled, and `subscriptions`, `effects` and `reducers`
 aren't loaded.
 
-### tree = app.start(rootId?, opts)
+### tree = app.start(opts)
 Start the application. Returns a tree of DOM nodes that can be mounted using
-`document.body.appendChild()`. If a valid `id` selector is passed in as the
-first argument, the tree will diff against the selected node rather than be
-returned. This is useful for [rehydration](https://github.com/yoshuawuyts/choo-handbook/blob/master/rendering-in-node.md#rehydration). Opts can contain the
-following values:
+`document.body.appendChild()`. Opts can contain the following values:
 - __opts.history:__ default: `true`. Enable a `subscription` to the browser
   history API. e.g. updates the internal `location.href` state whenever the
   browsers "forward" and "backward" buttons are pressed.
