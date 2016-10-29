@@ -65,7 +65,15 @@ function choo (opts) {
 
     const tree = _router(state.location.href, state)
     _rootNode = tree
+    tree.done = done
+
     return tree
+
+    // allow a 'mount' function to return the new node
+    // html -> null
+    function done (newNode) {
+      _rootNode = newNode
+    }
   }
 
   // update the DOM after every state mutation
