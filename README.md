@@ -152,22 +152,18 @@ const tree = app.start()
 document.body.appendChild(tree)
 ```
 
-To run it, save it as `client.js` and run with [budo][budo] and
-[es2020][es2020]. These tools are convenient but any [browserify][browserify]
-based tool should do:
+To run it, save it as `client.js` and run with [bankai][bankai]. `bankai` is
+convenient but any [browserify][browserify] based tool should do:
 ```sh
-$ budo client.js -p 8080 --open -- -t es2020
-```
+# run and reload on port 8080
+$ bankai client.js -p 8080 --open
 
-And to save the output to files so it can be deployed, open a new terminal and
-do:
-```bash
-$ mkdir -p 'dist/'
-$ curl 'localhost:8080' > 'dist/index.html'
-$ curl 'localhost:8080/client.js' > 'dist/client.js'
+# compile to static files in `./dist/`
+$ bankai build index.js dist/
+
+# deploy to github pages using `tschaub/gh-pages`
+$ gh-pages -d dist/
 ```
-All using a couple of shell commands and `.js` files, no grandiose boilerplate
-needed.
 
 ## Philosophy
 We believe programming should be fun and light, not stern and stressful. It's
@@ -194,47 +190,52 @@ better results and super smiley faces.
 
 ## Concepts
 `choo` cleanly structures internal data flow, so that all pieces of logic can
-be combined into a nice, cohesive machine. Internally all logic lives within
-`models` that contain several properties. `subscriptions` are functions that
-are called at startup and have `send()` passed in, so they act as read-only
-sources of data. `effects` react to changes, perform an `action` and can then
-post the results. `reducers` take data, modify it, and update the internal
-`state`.
+be combined into a nice, cohesive machine. Roughly speaking there are two parts
+to `choo`: the views and the models. Models take care of state and logic, and
+have the `call()` function available to call `actions`. Views are responsible
+for displaying the interface and have the `send()` call available to call
+`actions` to respond to user interactions.
 
-Communication of data is done using something called `actions`. Each `action`
-consists of a unique `actionName` and an optional payload of `data`, which can
-be any value.
+The core abstraction of `choo` is `state`. It is a single object that contains
+values. Using `namespaces` and `reducers` this state is carefully managed in
+logical pieces, updated and modified. Whenever a modification happens, the
+`views` receive a new version of the `state` which they can use to safely
+render a complete new representation of the DOM, which we then use to
+efficiently update the DOM on the screen.
 
-When a `reducer` modifies `state`, the `router` is called, which in turn calls
-`views`. `views` take `state` and return [DOM][dom] nodes which are then
-efficiently rendered on the screen.
+Models are split up in several parts. They have the static `state` and
+`namespace` property available to create an uniquely named piece of inital
+state that can be updated. They also have `reducers`, `effects` and
+`subscriptions` available which we call `actions`.
 
-In turn when the `views` are rendered, the `user` can interact with elements by
-clicking on them, triggering `actions` which then flow back into the
-application logic. This is the _unidirectional_ architecture of `choo`.
+The types of `actions` available in Models perform different roles. `reducers`
+can be called by views or other `actions`, and return an updated version of the
+state that causes the views to re-render. `subscriptions` are called once when
+the DOM loads, and can call other `actions`. `effects` can be called by views
+or other `actions` and can call other `actions`. This is the `choo`
+architecture:
+
 ```txt
  ┌─────────────────┐
  │  Subscriptions ─┤     User ───┐
  └─ Effects  ◀─────┤             ▼
- ┌─ Reducers ◀─────┴──Actions── DOM ◀┐
+ ┌─ Reducers ◀─────┴─────────── DOM ◀┐
  │                                   │
  └▶ Router ─────State ───▶ Views ────┘
 ```
-- __user:__ 🙆
-- __DOM:__ the [Document Object Model][dom] is what is currently displayed in
-  your browser
-- __actions:__ a named event with optional properties attached. Used to call
-  `effects` and `reducers` that have been registered in `models`
-- __model:__ optionally namespaced object containing `subscriptions`,
-  `effects`, `reducers` and initial `state`
-- __subscriptions:__ read-only data sources that emit `actions`
-- __effects:__ asynchronous functions that emit an `action` when done
-- __reducers:__ synchronous functions that modify `state`
-- __state:__ a single object that contains __all__ the values used in your
-  application
-- __router:__ determines which `view` to render
-- __views:__ take `state` and returns a new `DOM tree` that is rendered in the
-  browser
+
+In practice this means we use `reducers` to update our state, `subscriptions`
+to to call other `actions` (such as whenever a key is pressed on the keyboard
+or a websocket event is received) and `effects` to do a thing and then call
+another `action` when done.
+
+`actions` can be called using either `send()` from within views or `call()`
+from inside other `actions`. The difference between `send()` and `call()` is
+that `call()` expects a callback as the last argument, which can be used to
+handle errors and respond to values being returned. `views` are only there to
+show elements, and register things users can interact with, so that's why
+`send()` can only call actions, but not handle errors (there's a `hook`
+available to handle top-level errors called `onError` - but more hooks later).
 
 ### Models
 `models` are objects that contain initial `state`, `subscriptions`, `effects`
@@ -272,54 +273,41 @@ bulk of your logic will safely shielded, with only a few points touching every
 part of your application.
 
 ### Effects
-Side effects are done through `effects` declared in `app.model()`. Unlike
-`reducers` they cannot modify the state by returning objects, but get a
-callback passed which is used to emit `actions` to handle results. Use effects
-every time you don't need to modify the state object directly, but wish to
-respond to an action.
+`effects` are used to do a thing, and call another `action` when the thing is
+done. When the `effect` itself is done (e.g. when the `action` is called is
+also done) it calls the `done()` callback with either an error or a value.
 
-A typical `effect` flow looks like:
-
-1. An action is received
-2. An effect is triggered
-3. The effect performs an async call
-4. When the async call is done, either a success or error action is emitted
-5. A reducer catches the action and updates the state
-
-Examples of effects include: performing
-[xhr](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) requests
-(server requests), calling multiple `reducers`, persisting state to
-[localstorage][localstorage].
+This is an example `effect` that is called once when the application loads and
+calls the `'todos:add'` `reducer` when it receives data from the server:
 
 ```js
-const http = require('xhr')
+const model = require('choo-model')
 const choo = require('choo')
+const http = require('xhr')
 const app = choo()
-app.model({
-  namespace: 'todos',
-  state: { items: [] },
-  effects: {
-    addAndSave: (state, data, send, done) => {
-      http.post('/todo', {body: data.payload, json: true}, (err, res, body) => {
-        data.payload.id = body.id
-        send('todos:add', data, done)
-      })
-    }
-  },
-  reducers: {
-    receive: (data, state) => {
-      return { items: data }
-    }
-  }
+
+const todoModel = model('todos')
+todoModel.state({ todos: [] })
+
+todoModel.reducer('add', (data, state) => {
+  return { todos: data }
+})
+
+todoModel.effect('addAndSave', function (state, data, send, done) {
+  const opts = { body: data.payload, json: true }
+  http.post('/todo', opts, (err, res, body) => {
+    data.payload.id = body.id
+    send('todos:add', data, (err, value) => {
+      if (err) return done(err)
+      done(null, value)
+    })
+  })
+})
+
+todoModel.subscription('called-once-when-the-app-loads', (send, done) => {
+  send('todos:addAndSave', done)
 })
 ```
-
-When an `effect` is done executing, it should call the `done(err, res)`
-callback. This callback used to communicate when an `effect` is done, handle
-possible errors and send values back to the caller. You'll probably notice when
-applications become more complex, that composing multiple namespaced models
-using higher level effects becomes real powerful - without becoming
-complicated.
 
 ### Subscriptions
 Subscriptions are a way of receiving data from a source. For example when
@@ -328,23 +316,23 @@ chat app, or when catching keyboard input for a videogame.
 
 An example subscription that logs `"dog?"` every second:
 ```js
+const model = require('choo-model')
+const choo = require('choo')
+
 const app = choo()
-app.model({
-  namespace: 'app',
-  subscriptions: [
-    (send, done) => {
-      setInterval(() => {
-        send('app:print', { payload: 'dog?', myOtherValue: 1000 }, (err) => {
-          if (err) return done(err)
-        })
-      }, 1000)
-    }
-  ],
-  effects: {
-    print: (state, data) => console.log(data.payload)
-  }
+const appModel = model('app')
+
+appModel.effect('print', (state, data) => console.log(data.payload))
+
+appModel.subscription('callDog', (send, done) => {
+  setInterval(() => {
+    send('app:print', { payload: 'dog?', myOtherValue: 1000 }, (err) => {
+      if (err) return done(err)
+    })
+  }, 1000)
 })
 ```
+
 If a `subscription` runs into an error, it can call `done(err)` to signal the
 error to the error hook.
 
@@ -354,7 +342,7 @@ supports rendering a default `view` if no routes match.
 
 ```js
 const app = choo()
-app.router('/404', (route) => [
+app.router({ default: '/404' }, (route) => [
   route('/', require('./views/empty')),
   route('/404', require('./views/error')),
   route('/:mailbox', require('./views/mailbox'), [
@@ -375,21 +363,27 @@ from within namespaced `models`, and usage should preferably be kept to a
 minimum. Changing views all over the place tends to lead to messiness.
 
 ### Views
-Views are pure functions that return a DOM tree for the router to render. They’re passed the current state, and any time the state changes they’re run again with the new state.
+Views are pure functions that return a DOM tree for the router to render.
+They’re passed the current state, and any time the state changes they’re run
+again with the new state.
 
-Views are also passed the `send` function, which they can use to dispatch actions that can update the state. For example, the DOM tree can have an `onclick` handler that dispatches an `add` action.
+Views are also passed the `send` function, which they can use to dispatch
+actions that can update the state. For example, the DOM tree can have an
+`onclick` handler that dispatches an `add` action.
 
-```javascript
-const view = (state, prev, send) => {
+```js
+function view (state, prev, send) => {
   return html`
     <div>
       <h1>Total todos: ${state.todos.length}</h1>
       <button onclick=${(e) => send('add', {title: 'demo'})}>
         Add
       </button>
-    </div>`
+    </div>
+  `
 }
 ```
+
 In this example, when the `Add` button is clicked, the view will dispatch an
 `add` action that the model’s `add` reducer will receive. [As seen
 above](#models), the reducer will add an item to the state’s `todos` array. The
@@ -843,6 +837,7 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [hyperx]: https://github.com/substack/hyperx
 [budo]: https://github.com/mattdesl/budo
 [es2020]: https://github.com/yoshuawuyts/es2020
+[bankai]: https://github.com/yoshuawuyts/bankai
 [browserify]: https://github.com/substack/node-browserify
 [localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 [handbook]: https://github.com/yoshuawuyts/choo-handbook
