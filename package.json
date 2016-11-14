@@ -58,7 +58,7 @@
     "es2020": "^1.0.1",
     "geval": "~2.1.1",
     "gzip-size-cli": "^1.0.0",
-    "insert-css": "^1.0.0",
+    "insert-css": "^2.0.0",
     "istanbul": "^0.4.4",
     "min-document": "~2.19.0",
     "pretty-bytes-cli": "^2.0.0",
