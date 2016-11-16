@@ -66,7 +66,7 @@
     "proxyquire-universal": "~1.0.8",
     "proxyquireify": "~3.2.0",
     "server-router": "^3.0.0",
-    "sheetify": "^5.1.0",
+    "sheetify": "^6.0.1",
     "standard": "^8.0.0",
     "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1",
