@@ -719,6 +719,7 @@ $ npm install choo
   `choo` guide
 - [awesome-choo](https://github.com/YerkoPalma/awesome-choo) - Awesome things
   related with choo framework
+- [kaktus](https://github.com/kaktus/kaktus) - A new minimalistic web browser
 - [budo](https://github.com/mattdesl/budo) - quick prototyping tool for
   `browserify`
 - [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
