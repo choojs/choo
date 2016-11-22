@@ -342,12 +342,12 @@ supports rendering a default `view` if no routes match.
 
 ```js
 const app = choo()
-app.router({ default: '/404' }, (route) => [
-  route('/', require('./views/empty')),
-  route('/404', require('./views/error')),
-  route('/:mailbox', require('./views/mailbox'), [
-    route('/:message', require('./views/email'))
-  ])
+app.router({ default: '/404' }, [
+  [ '/', require('./views/empty') ],
+  [ '/404', require('./views/error') ],
+  [ '/:mailbox', require('./views/mailbox'), [
+    [ '/:message', require('./views/email') ]
+  ]]
 ])
 ```
 
