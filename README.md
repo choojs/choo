@@ -124,14 +124,16 @@ production, we'd love to hear from you!_
 Let's create an input box that changes the content of a textbox in real time.
 [Click here to see the app running](http://requirebin.com/?gist=229bceda0334cf30e3044d5f5c600960).
 ```js
-const html = require('choo/html')
-const choo = require('choo')
-const app = choo()
+var html = require('choo/html')
+var choo = require('choo')
+var app = choo()
 
 app.model({
   state: { title: 'Not quite set yet' },
   reducers: {
-    update: (state, data) => ({ title: data })
+    update: function (state, data) {
+      return { title: data }
+    }
   }
 })
 
@@ -148,7 +150,7 @@ function mainView (state, prev, send) {
 
 app.router(['/', mainView])
 
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)
 ```
 
@@ -192,28 +194,26 @@ better results and super smiley faces.
 `choo` cleanly structures internal data flow, so that all pieces of logic can
 be combined into a nice, cohesive machine. Roughly speaking there are two parts
 to `choo`: the views and the models. Models take care of state and logic, and
-have the `call()` function available to call `actions`. Views are responsible
-for displaying the interface and have the `send()` call available to call
-`actions` to respond to user interactions.
+views are responsible for displaying the interface and responding to user
+interactions.
 
-The core abstraction of `choo` is `state`. It is a single object that contains
-values. Using `namespaces` and `reducers` this state is carefully managed in
-logical pieces, updated and modified. Whenever a modification happens, the
-`views` receive a new version of the `state` which they can use to safely
-render a complete new representation of the DOM, which we then use to
-efficiently update the DOM on the screen.
 
-Models are split up in several parts. They have the static `state` and
-`namespace` property available to create an uniquely named piece of inital
-state that can be updated. They also have `reducers`, `effects` and
-`subscriptions` available which we call `actions`.
+All of choos state is contained in a single object and whenever it changes the
+views receive a new version of the state which they can use to safely render a
+complete new representation of the DOM. The DOM is efficiently updated using
+DOM diffing/patching.
 
-The types of `actions` available in Models perform different roles. `reducers`
-can be called by views or other `actions`, and return an updated version of the
-state that causes the views to re-render. `subscriptions` are called once when
-the DOM loads, and can call other `actions`. `effects` can be called by views
-or other `actions` and can call other `actions`. This is the `choo`
-architecture:
+The logic in choo exist in three different kinds of actions, each with their
+own role: `effects`, `subscriptions` and `reducers`.
+
+- __Effects__ makes an asynchronous operation and calls another action when
+  it's done.
+
+- __Subscriptions__ (called once when the DOM loads) listens for external input
+  like keyboard or WebSocket events and then calls another action.
+
+- __Reducers__ receives the current state and returns an updated version of the
+  state which is then sent to the views.
 
 ```txt
  ┌─────────────────┐
@@ -223,19 +223,6 @@ architecture:
  │                                   │
  └▶ Router ─────State ───▶ Views ────┘
 ```
-
-In practice this means we use `reducers` to update our state, `subscriptions`
-to to call other `actions` (such as whenever a key is pressed on the keyboard
-or a websocket event is received) and `effects` to do a thing and then call
-another `action` when done.
-
-`actions` can be called using either `send()` from within views or `call()`
-from inside other `actions`. The difference between `send()` and `call()` is
-that `call()` expects a callback as the last argument, which can be used to
-handle errors and respond to values being returned. `views` are only there to
-show elements, and register things users can interact with, so that's why
-`send()` can only call actions, but not handle errors (there's a `hook`
-available to handle top-level errors called `onError` - but more hooks later).
 
 ### Models
 `models` are objects that contain initial `state`, `subscriptions`, `effects`
@@ -250,12 +237,14 @@ Outside the model they're called by `send('todos:add')` and
 `state.todos.items`. Inside the namespaced model they're called by
 `send('todos:add')` and `state.items`. An example namespaced model:
 ```js
-const app = choo()
+var app = choo()
 app.model({
   namespace: 'todos',
   state: { items: [] },
   reducers: {
-    add: (state, data) => ({ items: state.items.concat(data.payload) })
+    add: function (state, data) {
+      return { items: state.items.concat(data.payload) }
+    }
   }
 })
 ```
@@ -273,39 +262,49 @@ bulk of your logic will safely shielded, with only a few points touching every
 part of your application.
 
 ### Effects
-`effects` are used to do a thing, and call another `action` when the thing is
-done. When the `effect` itself is done (e.g. when the `action` is called is
-also done) it calls the `done()` callback with either an error or a value.
+`effects` are similar to `reducers` except instead of modifying the state they
+cause side `effects` by interacting servers, databases, DOM APIs, etc. Often
+they'll call a reducer when they're done to update the state. For instance, you
+may have an effect called getUsers that fetches a list of users from a server
+API using AJAX. Assuming the AJAX request completes successfully, the effect
+can pass off the list of users to a reducer called receiveUsers which simply
+updates the state with that list, separating the concerns of interacting with
+an API from updating the application's state.
 
 This is an example `effect` that is called once when the application loads and
 calls the `'todos:add'` `reducer` when it receives data from the server:
 
 ```js
-const model = require('choo-model')
-const choo = require('choo')
-const http = require('xhr')
-const app = choo()
+var choo = require('choo')
+var http = require('xhr')
+var app = choo()
 
-const todoModel = model('todos')
-todoModel.state({ todos: [] })
-
-todoModel.reducer('add', (data, state) => {
-  return { todos: data }
-})
-
-todoModel.effect('addAndSave', function (state, data, send, done) {
-  const opts = { body: data.payload, json: true }
-  http.post('/todo', opts, (err, res, body) => {
-    data.payload.id = body.id
-    send('todos:add', data, (err, value) => {
-      if (err) return done(err)
-      done(null, value)
-    })
-  })
-})
-
-todoModel.subscription('called-once-when-the-app-loads', (send, done) => {
-  send('todos:addAndSave', done)
+app.model({
+  namespace: 'todos',
+  state: { values: [] },
+  reducers: {
+    add: function (data, state) {
+      return { todos: data }
+    }
+  },
+  effects: {
+    addAndSave: function (state, data, send, done) {
+      var opts = { body: data.payload, json: true }
+      http.post('/todo', opts, (err, res, body) => {
+        if (err) return done(err)
+        data.payload.id = body.id
+        send('todos:add', data, (err, value) => {
+          if (err) return done(err)
+          done(null, value)
+        })
+      })
+    }
+  },
+  subscriptions: {
+    'called-once-when-the-app-loads': function (send, done) {
+      send('todos:addAndSave', done)
+    }
+  }
 })
 ```
 
@@ -316,20 +315,26 @@ chat app, or when catching keyboard input for a videogame.
 
 An example subscription that logs `"dog?"` every second:
 ```js
-const model = require('choo-model')
-const choo = require('choo')
+var choo = require('choo')
 
-const app = choo()
-const appModel = model('app')
-
-appModel.effect('print', (state, data) => console.log(data.payload))
-
-appModel.subscription('callDog', (send, done) => {
-  setInterval(() => {
-    send('app:print', { payload: 'dog?', myOtherValue: 1000 }, (err) => {
-      if (err) return done(err)
-    })
-  }, 1000)
+var app = choo()
+app.model({
+  namespace: 'app',
+  effects: {
+    print: function (state, data) {
+      console.log(data.payload)
+    }
+  },
+  subscriptions: {
+    callDog: function (send, done) {
+      setInterval(function () {
+        var data = { payload: 'dog?', myOtherValue: 1000 }
+        send('app:print', data, function (err) {
+          if (err) return done(err)
+        })
+      }, 1000)
+    }
+  }
 })
 ```
 
@@ -341,13 +346,13 @@ The `router` manages which `views` are rendered at any given time. It also
 supports rendering a default `view` if no routes match.
 
 ```js
-const app = choo()
-app.router({ default: '/404' }, (route) => [
-  route('/', require('./views/empty')),
-  route('/404', require('./views/error')),
-  route('/:mailbox', require('./views/mailbox'), [
-    route('/:message', require('./views/email'))
-  ])
+var app = choo()
+app.router({ default: '/404' }, [
+  [ '/', require('./views/empty') ],
+  [ '/404', require('./views/error') ],
+  [ '/:mailbox', require('./views/mailbox'), [
+    [ '/:message', require('./views/email') ]
+  ]]
 ])
 ```
 
@@ -372,15 +377,17 @@ actions that can update the state. For example, the DOM tree can have an
 `onclick` handler that dispatches an `add` action.
 
 ```js
-function view (state, prev, send) => {
+function view (state, prev, send) {
   return html`
     <div>
       <h1>Total todos: ${state.todos.length}</h1>
-      <button onclick=${(e) => send('add', {title: 'demo'})}>
-        Add
-      </button>
+      <button onclick=${addTodo}>Add</button>
     </div>
   `
+
+  function addTodo (e) {
+    send('add', { title: 'demo' })
+  }
 }
 ```
 
@@ -398,13 +405,13 @@ somewhere. This is done through something called `plugins`. Plugins are objects
 that contain `hook` and `wrap` functions and are passed to `app.use()`:
 
 ```js
-const log = require('choo-log')
-const choo = require('choo')
-const app = choo()
+var log = require('choo-log')
+var choo = require('choo')
+var app = choo()
 
 app.use(log())
 
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)
 ```
 
@@ -544,7 +551,7 @@ current `state`, `prev` is the last state, `state.params` is URI partials and
 
 To create listeners for events, create interpolated attributes on elements.
 ```js
-const html = require('choo/html')
+var html = require('choo/html')
 html`
   <button onclick=${(e) => console.log(e)}>click for bananas</button>
 `
@@ -656,8 +663,8 @@ Consider running some of the following:
 - [unassertify](https://github.com/twada/unassertify) - remove `assert()`
   statements which reduces file size. Use as a `--global` transform
 - [es2020](https://github.com/yoshuawuyts/es2020) - backport `const`,
-  `fat-arrows` and `template strings` to older browsers. Should be run as a
-  `--global` transform
+  `arrow functions` and `template strings` to older browsers. Should be run as
+  a `--global` transform
 - [yo-yoify](https://github.com/shama/yo-yoify) - replace the internal `hyperx`
   dependency with `document.createElement` calls; greatly speeds up performance
   too
