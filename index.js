@@ -157,8 +157,12 @@ function createLocationModel (opts) {
   // (obj, obj) -> obj
   function updateLocation (state, data) {
     if (opts.history !== false && data.hash && data.hash !== state.hash) {
-      const el = document.querySelector(data.hash)
-      if (el) el.scrollIntoView(true)
+      try {
+        const el = document.querySelector(data.hash)
+        if (el) el.scrollIntoView(true)
+      } catch (e) {
+        return data
+      }
     }
     return data
   }
