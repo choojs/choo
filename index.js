@@ -130,8 +130,9 @@ function choo (opts) {
           prev = state
 
           // TODO(yw): find a way to wrap handlers so params shows up in state
-          const nwState = xtend(state)
-          nwState.location = xtend(nwPrev.location, { params: params })
+          const nwState = xtend(state, {
+            location: xtend(state.location, { params: params })
+          })
 
           if (opts.freeze !== false) Object.freeze(nwState)
           return handler(nwState, nwPrev, send)
