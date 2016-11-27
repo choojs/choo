@@ -8,20 +8,20 @@ app.model({
     counter: 0
   },
   reducers: {
-    increment: (data, state) => ({ counter: state.counter + 1 }),
-    decrement: (data, state) => ({ counter: state.counter - 1 })
+    increment: (state, data) => ({ counter: state.counter + 1 }),
+    decrement: (state, data) => ({ counter: state.counter - 1 })
   },
   effects: {
-    incrementAsync: function (data, state, send, done) {
+    incrementAsync: function (state, data, send, done) {
       setTimeout(() => send('increment', done), 1000)
     },
-    decrementAsync: function (data, state, send, done) {
+    decrementAsync: function (state, data, send, done) {
       setTimeout(() => send('decrement', done), 1000)
     }
   }
 })
 
-const mainView = (state, prev, send) => {
+function mainView (state, prev, send) {
   const count = state.counter
 
   return html`
@@ -36,9 +36,7 @@ const mainView = (state, prev, send) => {
   `
 }
 
-app.router((route) => [
-  route('/', mainView)
-])
+app.router([ '/', mainView ])
 
 const tree = app.start()
 document.body.appendChild(tree)

@@ -4,13 +4,13 @@
   "description": "",
   "main": "client.js",
   "scripts": {
-    "start": "budo client.js -p 8080"
+    "start": "bankai start --entry=client -p 8080"
   },
   "keywords": [],
   "author": "Juan Soto <juan@juansoto.me>",
   "license": "ISC",
   "dependencies": {
-    "budo": "^8.3.0",
+    "bankai": "^3.2.0",
     "plur": "^2.1.2"
   }
 }
