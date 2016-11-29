@@ -149,8 +149,19 @@ function appInit (opts) {
   const loc = document.location
   const state = { pathname: (opts.hash) ? hashMatch(loc.hash) : loc.href }
   const reducers = {
-    setLocation: function setLocation (data, state) {
-      return { pathname: data.location.replace(/#.*/, '') }
+    updateHref: function (data, state) {
+      return { pathname: data }
+    }
+  }
+  const effects = {
+    setLocation: function setLocation (data, state, send, done) {
+      const href = data.location.replace(/#.*/, '')
+      if (window.location.pathname !== href) {
+        window.history.pushState({}, null, href)
+        send('location:updateHref', href, done)
+      } else {
+        done()
+      }
     }
   }
   // if hash routing explicitly enabled, subscribe to it
@@ -170,6 +181,7 @@ function appInit (opts) {
     namespace: 'location',
     subscriptions: subs,
     reducers: reducers,
+    effects: effects,
     state: state
   }
 
