@@ -140,7 +140,7 @@ const mainView = (state, prev, send) => html`
     <h1>Title: ${state.title}</h1>
     <input
       type="text"
-      oninput=${(e) => send('update', e.target.value)}>
+      oninput=${(e) => send('update', e.target.value)}/>
   </main>
 `
 
