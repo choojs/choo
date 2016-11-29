@@ -321,6 +321,7 @@ complicated.
 Subscriptions are a way of receiving data from a source. For example when
 listening for events from a server using `SSE` or `Websockets` for a
 chat app, or when catching keyboard input for a videogame.
+It has a signature of ```(send, done)``` and allow calling actions and/or reducers went the subcribed event is triggered or some data is recived 
 
 An example subscription that logs `"dog?"` every second:
 ```js
@@ -341,6 +342,30 @@ app.model({
   }
 })
 ```
+
+another example for logging the key pressed
+
+```js
+const app = choo()
+app.model({
+  namespace: 'app',
+  subscriptions: [
+    (send, done) => {
+      window.addEventListener('keypress', function (e) {
+        const key = e.code
+        console.log(event)
+        send('keyPressed', key, (err) => {
+          if (err) return done(err)
+        })
+      })
+    }
+  ],
+  effects: {
+    keyPressed: (data, state) => console.log(data)
+  }
+})
+```
+
 If a `subscription` runs into an error, it can call `done(err)` to signal the
 error to the error hook.
 
