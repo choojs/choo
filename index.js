@@ -111,7 +111,7 @@ function choo (opts) {
   // create a new router with a custom `createRoute()` function
   // (str?, obj) -> null
   function createRouter (routerOpts, routes, createSend) {
-    var prev = {}
+    var prev = null
     if (!routes) {
       routes = routerOpts
       routerOpts = {}
@@ -131,7 +131,7 @@ function choo (opts) {
 
           // TODO(yw): find a way to wrap handlers so params shows up in state
           const nwState = xtend(state)
-          nwState.location = xtend(nwPrev.location, { params: params })
+          nwState.location = xtend(nwState.location, { params: params })
 
           if (opts.freeze !== false) Object.freeze(nwState)
           return handler(nwState, nwPrev, send)
