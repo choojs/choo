@@ -111,7 +111,7 @@ function choo (opts) {
   // create a new router with a custom `createRoute()` function
   // (str?, obj) -> null
   function createRouter (routerOpts, routes, createSend) {
-    var prev = {}
+    var prev = null
     if (!routes) {
       routes = routerOpts
       routerOpts = {}
@@ -130,9 +130,8 @@ function choo (opts) {
           prev = state
 
           // TODO(yw): find a way to wrap handlers so params shows up in state
-          const nwState = xtend(state, {
-            location: xtend(state.location, { params: params })
-          })
+          const nwState = xtend(state)
+          nwState.location = xtend(nwState.location, { params: params })
 
           if (opts.freeze !== false) Object.freeze(nwState)
           return handler(nwState, nwPrev, send)
@@ -158,8 +157,12 @@ function createLocationModel (opts) {
   // (obj, obj) -> obj
   function updateLocation (state, data) {
     if (opts.history !== false && data.hash && data.hash !== state.hash) {
-      const el = document.querySelector(data.hash)
-      if (el) el.scrollIntoView(true)
+      try {
+        const el = document.querySelector(data.hash)
+        if (el) el.scrollIntoView(true)
+      } catch (e) {
+        return data
+      }
     }
     return data
   }
