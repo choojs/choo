@@ -164,8 +164,8 @@ test('routing', function (t) {
     app.start()
   })
 
-  t.test('prev.params always exists', function (t) {
-    t.plan(1)
+  t.test('prev.params and prev.location always exist', function (t) {
+    t.plan(2)
 
     const choo = require('../..')
     const app = choo()
@@ -174,6 +174,7 @@ test('routing', function (t) {
       route('/users', [
         route('/:user', function (state, prev) {
           t.ok(prev.params)
+          t.ok(prev.location)
         })
       ])
     ])
