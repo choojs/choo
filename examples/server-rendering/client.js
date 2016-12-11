@@ -1,6 +1,7 @@
+const mount = require('../../mount')
 const choo = require('../../')
 
-const mainView = require('./views/main')
+const mainView = require('./view')
 
 const app = choo()
 
@@ -12,12 +13,11 @@ app.model({
   }
 })
 
-app.router((route) => [
-  route('/', mainView)
-])
+app.router(['/', mainView])
 
 if (module.parent) {
   module.exports = app
 } else {
-  app.start('#app-root')
+  const tree = app.start()
+  mount('#app-root', tree)
 }

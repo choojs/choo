@@ -1,3 +1,32 @@
+## `4.0.0` The routing patch
+This patch changes the way we handle routes. It introduces query string
+support (!), and changes the router to use a lisp-like syntax. It also inverts
+the argument order of effects and reducers to be more intuitive. We also
+managed to sneak in some performance upgrades :sparkles: - We hope you enjoy
+it!
+
+### changes
+- :exclamation: slim down server side rendering API |
+  [issue](https://github.com/yoshuawuyts/choo/issues/191) |
+  [pull-request](https://github.com/yoshuawuyts/choo/pull/203)
+- :exclamation: update router API to be lisp-like
+- :exclamation: swap `state` and `data` argument order |
+  [issue](https://github.com/yoshuawuyts/choo/issues/179)
+- :exclamation: remove `choo/http`. Use [xhr](https://github.com/naugtur/xhr)
+  instead | [pull-request](https://github.com/yoshuawuyts/choo/pull/269)
+- update `router` to use memoization |
+  [issue](https://github.com/yoshuawuyts/sheet-router/issues/17) |
+  [pull-request](https://github.com/yoshuawuyts/sheet-router/pull/34)
+- support inline anchor links |
+  [issue](https://github.com/yoshuawuyts/choo/issues/65)
+- allow bypassing of link clicks in `sheet-router` |
+  [issue](https://github.com/yoshuawuyts/sheet-router/issues/15) |
+  [pull-request](https://github.com/yoshuawuyts/sheet-router/pull/27)
+- update router API to handle hashes by default
+- update router to provide out of the box support for Electron
+- update `location` state to expose `search` parameters (query strings) |
+  [issue](https://github.com/yoshuawuyts/sheet-router/issues/31)
+
 ## `3.3.0`
 Yay, `plugins` now support `wrappers` which is a segway onto HMR, time travel
 and other cool plugins. These changes have come through in barracks `v8.3.0`

@@ -125,49 +125,50 @@ production, we'd love to hear from you!_
 Let's create an input box that changes the content of a textbox in real time.
 [Click here to see the app running](http://requirebin.com/?gist=229bceda0334cf30e3044d5f5c600960).
 ```js
-const choo = require('choo')
-const html = require('choo/html')
-const app = choo()
+var html = require('choo/html')
+var choo = require('choo')
+var app = choo()
 
 app.model({
   state: { title: 'Not quite set yet' },
   reducers: {
-    update: (data, state) => ({ title: data })
+    update: function (state, data) {
+      return { title: data }
+    }
   }
 })
 
-const mainView = (state, prev, send) => html`
-  <main>
-    <h1>Title: ${state.title}</h1>
-    <input
-      type="text"
-      oninput=${(e) => send('update', e.target.value)}/>
-  </main>
-`
+function mainView (state, prev, send) {
+  return html`
+    <main>
+      <h1>Title: ${state.title}</h1>
+      <input type="text" oninput=${update}>
+    </main>
+  `
 
-app.router((route) => [
-  route('/', mainView)
-])
+  function update (e) {
+    send('update', e.target.value)
+  }
+}
 
-const tree = app.start()
+app.router(['/', mainView])
+
+var tree = app.start()
 document.body.appendChild(tree)
 ```
 
-To run it, save it as `client.js` and run with [budo] and [es2020]. These tools
-are convenient but any [browserify] based tool should do:
+To run it, save it as `client.js` and run with [bankai][bankai]. `bankai` is
+convenient but any [browserify][browserify] based tool should do:
 ```sh
-$ budo client.js -p 8080 --open -- -t es2020
-```
+# run and reload on port 8080
+$ bankai client.js -p 8080 --open
 
-And to save the output to files so it can be deployed, open a new terminal and
-do:
-```bash
-$ mkdir -p 'dist/'
-$ curl 'localhost:8080' > 'dist/index.html'
-$ curl 'localhost:8080/client.js' > 'dist/client.js'
+# compile to static files in `./dist/`
+$ bankai build index.js dist/
+
+# deploy to github pages using `tschaub/gh-pages`
+$ gh-pages -d dist/
 ```
-All using a couple of shell commands and `.js` files, no grandiose boilerplate
-needed.
 
 ## Philosophy
 We believe programming should be fun and light, not stern and stressful. It's
@@ -194,47 +195,36 @@ better results and super smiley faces.
 
 ## Concepts
 `choo` cleanly structures internal data flow, so that all pieces of logic can
-be combined into a nice, cohesive machine. Internally all logic lives within
-`models` that contain several properties. `subscriptions` are functions that
-are called at startup and have `send()` passed in, so they act as read-only
-sources of data. `effects` react to changes, perform an `action` and can then
-post the results. `reducers` take data, modify it, and update the internal
-`state`.
+be combined into a nice, cohesive machine. Roughly speaking there are two parts
+to `choo`: the views and the models. Models take care of state and logic, and
+views are responsible for displaying the interface and responding to user
+interactions.
 
-Communication of data is done using something called `actions`. Each `action`
-consists of a unique `actionName` and an optional payload of `data`, which can
-be any value.
+All of `choo`'s state is contained in a single object and whenever it changes
+the views receive a new version of the state which they can use to safely
+render a complete new representation of the DOM. The DOM is efficiently updated
+using DOM diffing/patching.
 
-When a `reducer` modifies `state`, the `router` is called, which in turn calls
-`views`. `views` take `state` and return [DOM] nodes which are then
-efficiently rendered on the screen.
+The logic in choo exist in three different kinds of actions, each with their
+own role: `effects`, `subscriptions` and `reducers`.
 
-In turn when the `views` are rendered, the `user` can interact with elements by
-clicking on them, triggering `actions` which then flow back into the
-application logic. This is the _unidirectional_ architecture of `choo`.
+- __Effects__ makes an asynchronous operation and calls another action when
+  it's done.
+
+- __Subscriptions__ (called once when the DOM loads) listens for external input
+  like keyboard or WebSocket events and then calls another action.
+
+- __Reducers__ receives the current state and returns an updated version of the
+  state which is then sent to the views.
+
 ```txt
  ┌─────────────────┐
  │  Subscriptions ─┤     User ───┐
  └─ Effects  ◀─────┤             ▼
- ┌─ Reducers ◀─────┴──Actions── DOM ◀┐
+ ┌─ Reducers ◀─────┴─────────── DOM ◀┐
  │                                   │
  └▶ Router ─────State ───▶ Views ────┘
 ```
-- __user:__ 🙆
-- __DOM:__ the [Document Object Model][DOM] is what is currently displayed in
-  your browser
-- __actions:__ a named event with optional properties attached. Used to call
-  `effects` and `reducers` that have been registered in `models`
-- __model:__ optionally namespaced object containing `subscriptions`,
-  `effects`, `reducers` and initial `state`
-- __subscriptions:__ read-only data sources that emit `actions`
-- __effects:__ asynchronous functions that emit an `action` when done
-- __reducers:__ synchronous functions that modify `state`
-- __state:__ a single object that contains __all__ the values used in your
-  application
-- __router:__ determines which `view` to render
-- __views:__ take `state` and returns a new `DOM tree` that is rendered in the
-  browser
 
 ### Models
 `models` are objects that contain initial `state`, `subscriptions`, `effects`
@@ -249,12 +239,14 @@ Outside the model they're called by `send('todos:add')` and
 `state.todos.items`. Inside the namespaced model they're called by
 `send('todos:add')` and `state.items`. An example namespaced model:
 ```js
-const app = choo()
+var app = choo()
 app.model({
   namespace: 'todos',
   state: { items: [] },
   reducers: {
-    add: (data, state) => ({ items: state.items.concat(data.payload) })
+    add: function (state, data) {
+      return { items: state.items.concat(data.payload) }
+    }
   }
 })
 ```
@@ -272,51 +264,51 @@ bulk of your logic will be safely shielded, with only a few points touching ever
 part of your application.
 
 ### Effects
-Side effects are done through `effects` declared in `app.model()`. Unlike
-`reducers` they cannot modify the state by returning objects, but get a
-callback passed which is used to emit `actions` to handle results. Use effects
-every time you don't need to modify the state object directly, but wish to
-respond to an action.
+`effects` are similar to `reducers` except instead of modifying the state they
+cause side `effects` by interacting servers, databases, DOM APIs, etc. Often
+they'll call a reducer when they're done to update the state. For instance, you
+may have an effect called getUsers that fetches a list of users from a server
+API using AJAX. Assuming the AJAX request completes successfully, the effect
+can pass off the list of users to a reducer called receiveUsers which simply
+updates the state with that list, separating the concerns of interacting with
+an API from updating the application's state.
 
-A typical `effect` flow looks like:
-
-1. An action is received
-2. An effect is triggered
-3. The effect performs an async call
-4. When the async call is done, either a success or error action is emitted
-5. A reducer catches the action and updates the state
-
-Examples of effects include: performing [xhr] requests (server requests),
-calling multiple `reducers`, persisting state to [localstorage].
+This is an example `effect` that is called once when the application loads and
+calls the `'todos:add'` `reducer` when it receives data from the server:
 
 ```js
-const http = require('choo/http')
-const choo = require('choo')
-const app = choo()
+var choo = require('choo')
+var http = require('xhr')
+var app = choo()
+
 app.model({
   namespace: 'todos',
-  state: { items: [] },
+  state: { values: [] },
+  reducers: {
+    add: function (data, state) {
+      return { todos: data }
+    }
+  },
   effects: {
-    fetch: (data, state, send, done) => {
-      http('/todos', (err, res, body) => {
-        send('todos:receive', body, done)
+    addAndSave: function (state, data, send, done) {
+      var opts = { body: data.payload, json: true }
+      http.post('/todo', opts, function (err, res, body) {
+        if (err) return done(err)
+        data.payload.id = body.id
+        send('todos:add', data, function (err, value) {
+          if (err) return done(err)
+          done(null, value)
+        })
       })
     }
   },
-  reducers: {
-    receive: (data, state) => {
-      return { items: data }
+  subscriptions: {
+    'called-once-when-the-app-loads': function (send, done) {
+      send('todos:addAndSave', done)
     }
   }
 })
 ```
-
-When an `effect` is done executing, it should call the `done(err, res)`
-callback. This callback is used to communicate when an `effect` is done, handle
-possible errors, and send values back to the caller. You'll probably notice when
-applications become more complex, that composing multiple namespaced models
-using higher level effects becomes really powerful - without becoming
-complicated.
 
 ### Subscriptions
 Subscriptions are a way of receiving data from a source. For example when
@@ -325,23 +317,29 @@ chat app, or when catching keyboard input for a videogame.
 
 An example subscription that logs `"dog?"` every second:
 ```js
-const app = choo()
+var choo = require('choo')
+
+var app = choo()
 app.model({
   namespace: 'app',
-  subscriptions: [
-    (send, done) => {
-      setInterval(() => {
-        send('app:print', { payload: 'dog?', myOtherValue: 1000 }, (err) => {
+  effects: {
+    print: function (state, data) {
+      console.log(data.payload)
+    }
+  },
+  subscriptions: {
+    callDog: function (send, done) {
+      setInterval(function () {
+        var data = { payload: 'dog?', myOtherValue: 1000 }
+        send('app:print', data, function (err) {
           if (err) return done(err)
         })
       }, 1000)
     }
-  ],
-  effects: {
-    print: (data, state) => console.log(data.payload)
   }
 })
 ```
+
 If a `subscription` runs into an error, it can call `done(err)` to signal the
 error to the error hook.
 
@@ -350,13 +348,13 @@ The `router` manages which `views` are rendered at any given time. It also
 supports rendering a default `view` if no routes match.
 
 ```js
-const app = choo()
-app.router('/404', (route) => [
-  route('/', require('./views/empty')),
-  route('/404', require('./views/error')),
-  route('/:mailbox', require('./views/mailbox'), [
-    route('/:message', require('./views/email'))
-  ])
+var app = choo()
+app.router({ default: '/404' }, [
+  [ '/', require('./views/empty') ],
+  [ '/404', require('./views/error') ],
+  [ '/:mailbox', require('./views/mailbox'), [
+    [ '/:message', require('./views/email') ]
+  ]]
 ])
 ```
 
@@ -372,21 +370,29 @@ from within namespaced `models`, and usage should preferably be kept to a
 minimum. Changing views all over the place tends to lead to messiness.
 
 ### Views
-Views are pure functions that return a DOM tree for the router to render. They’re passed the current state, and any time the state changes they’re run again with the new state.
+Views are pure functions that return a DOM tree for the router to render.
+They’re passed the current state, and any time the state changes they’re run
+again with the new state.
 
-Views are also passed the `send` function, which they can use to dispatch actions that can update the state. For example, the DOM tree can have an `onclick` handler that dispatches an `add` action.
+Views are also passed the `send` function, which they can use to dispatch
+actions that can update the state. For example, the DOM tree can have an
+`onclick` handler that dispatches an `add` action.
 
-```javascript
-const view = (state, prev, send) => {
+```js
+function view (state, prev, send) {
   return html`
     <div>
       <h1>Total todos: ${state.todos.length}</h1>
-      <button onclick=${(e) => send('add', {title: 'demo'})}>
-        Add
-      </button>
-    </div>`
+      <button onclick=${addTodo}>Add</button>
+    </div>
+  `
+
+  function addTodo (e) {
+    send('add', { title: 'demo' })
+  }
 }
 ```
+
 In this example, when the `Add` button is clicked, the view will dispatch an
 `add` action that the model’s `add` reducer will receive. [As seen
 above](#models), the reducer will add an item to the state’s `todos` array. The
@@ -401,13 +407,13 @@ somewhere. This is done through something called `plugins`. Plugins are objects
 that contain `hook` and `wrap` functions and are passed to `app.use()`:
 
 ```js
-const log = require('choo-log')
-const choo = require('choo')
-const app = choo()
+var log = require('choo-log')
+var choo = require('choo')
+var app = choo()
 
 app.use(log())
 
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)
 ```
 
@@ -427,9 +433,9 @@ and `wrappers` are available, head on over to [app.use()](#appusehooks).
 Using `choo` in a project? Show off which version you've used using a badge:
 
 
-[![built with choo v3](https://img.shields.io/badge/built%20with%20choo-v3-ffc3e4.svg?style=flat-square)](https://github.com/yoshuawuyts/choo)
+[![built with choo v4](https://img.shields.io/badge/built%20with%20choo-v4-ffc3e4.svg?style=flat-square)](https://github.com/yoshuawuyts/choo)
 ```md
-[![built with choo v3](https://img.shields.io/badge/built%20with%20choo-v3-ffc3e4.svg?style=flat-square)](https://github.com/yoshuawuyts/choo)
+[![built with choo v4](https://img.shields.io/badge/built%20with%20choo-v4-ffc3e4.svg?style=flat-square)](https://github.com/yoshuawuyts/choo)
 ```
 
 ## API
@@ -449,9 +455,9 @@ arguments:
   and handlers in other models
 - __state:__ initial values of `state` inside the model
 - __reducers:__ synchronous operations that modify state. Triggered by
-  `actions`. Signature of `(data, state)`.
+  `actions`. Signature of `(state, data)`.
 - __effects:__ asynchronous operations that don't modify state directly.
-  Triggered by `actions`, can call `actions`. Signature of `(data, state,
+  Triggered by `actions`, can call `actions`. Signature of `(state, data,
   send, done)`
 - __subscriptions:__ asynchronous read-only operations that don't modify state
   directly. Can call `actions`. Signature of `(send, done)`.
@@ -490,9 +496,9 @@ There are several `hooks` and `wrappers` that are picked up by `choo`:
 - __onError(err, state, createSend):__ called when an `effect` or
   `subscription` emit an error. If no handler is passed, the default handler
   will `throw` on each error.
-- __onAction(data, state, name, caller, createSend):__ called when an
+- __onAction(state, data, name, caller, createSend):__ called when an
   `action` is fired.
-- __onStateChange(data, state, prev, caller, createSend):__ called after a
+- __onStateChange(state, data, prev, caller, createSend):__ called after a
   reducer changes the `state`.
 - __wrapSubscriptions(fn):__ wraps a `subscription` to add custom behavior
 - __wrapReducers(fn):__ wraps a `reducer` to add custom behavior
@@ -523,12 +529,9 @@ optional state object. When calling `.toString()` instead of `.start()`, all
 calls to `send()` are disabled, and `subscriptions`, `effects` and `reducers`
 aren't loaded.
 
-### tree = app.start(rootId?, opts)
+### tree = app.start(opts)
 Start the application. Returns a tree of DOM nodes that can be mounted using
-`document.body.appendChild()`. If a valid `id` selector is passed in as the
-first argument, the tree will diff against the selected node rather than be
-returned. This is useful for [rehydration](https://github.com/yoshuawuyts/choo-handbook/blob/master/rendering-in-node.md#rehydration). Opts can contain the
-following values:
+`document.body.appendChild()`. Opts can contain the following values:
 - __opts.history:__ default: `true`. Enable a `subscription` to the browser
   history API. e.g. updates the internal `location.href` state whenever the
   browsers "forward" and "backward" buttons are pressed.
@@ -549,10 +552,14 @@ current `state`, `prev` is the last state, `state.params` is URI partials and
 
 To create listeners for events, create interpolated attributes on elements.
 ```js
-const html = require('choo/html')
+var html = require('choo/html')
 html`
-  <button onclick=${(e) => console.log(e)}>click for bananas</button>
+  <button onclick=${log}>click for bananas</button>
 `
+
+function log (e) {
+  console.log(e)
+}
 ```
 Example listeners include: `onclick`, `onsubmit`, `oninput`, `onkeydown`,
 `onkeyup`. A full list can be found [at the yo-yo
@@ -660,8 +667,8 @@ Consider running some of the following:
 - [unassertify](https://github.com/twada/unassertify) - remove `assert()`
   statements which reduces file size. Use as a `--global` transform
 - [es2020](https://github.com/yoshuawuyts/es2020) - backport `const`,
-  `fat-arrows` and `template strings` to older browsers. Should be run as a
-  `--global` transform
+  `arrow functions` and `template strings` to older browsers. Should be run as
+  a `--global` transform
 - [yo-yoify](https://github.com/shama/yo-yoify) - replace the internal `hyperx`
   dependency with `document.createElement` calls; greatly speeds up performance
   too
@@ -676,8 +683,8 @@ Consider running some of the following:
 ### Choo + Internet Explorer &amp; Safari
 Out of the box `choo` only supports runtimes which support:
 * `const`
-* `fat-arrow` functions (e.g. `() => {}`)
-* `template-strings`
+* `arrow functions` (e.g. `() => {}`)
+* `template strings`
 
 This does not include Safari 9 or any version of IE. If support for these
 platforms is required you will have to provide some sort of transform that
@@ -814,35 +821,18 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 <a href="https://opencollective.com/choo/backer/28/website" target="_blank"><img src="https://opencollective.com/choo/backer/28/avatar.svg"></a>
 <a href="https://opencollective.com/choo/backer/29/website" target="_blank"><img src="https://opencollective.com/choo/backer/29/avatar.svg"></a>
 
-
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
+[bankai]: https://github.com/yoshuawuyts/bankai
 [bel]: https://github.com/shama/bel
-[big-o]: https://rob-bell.net/2009/06/a-beginners-guide-to-big-o-notation/
-[bl]: https://github.com/rvagg/bl
 [browserify]: https://github.com/substack/node-browserify
 [budo]: https://github.com/mattdesl/budo
-[DOM]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
-[dom]: https://en.wikipedia.org/wiki/Document_Object_Model
 [es2020]: https://github.com/yoshuawuyts/es2020
 [handbook]: https://github.com/yoshuawuyts/choo-handbook
-[html-input]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
 [hyperx]: https://github.com/substack/hyperx
 [inu]: https://github.com/ahdinosaur/inu
-[isomorphic]: https://en.wikipedia.org/wiki/Isomorphism
-[keyboard-support]: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Browser_compatibility
-[localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
-[module-parent]: https://nodejs.org/dist/latest-v6.x/docs/api/modules.html#modules_module_parent
 [morphdom-bench]: https://github.com/patrick-steele-idem/morphdom#benchmarks
 [morphdom]: https://github.com/patrick-steele-idem/morphdom
-[nginx]: http://nginx.org/
-[qps]: https://en.wikipedia.org/wiki/Queries_per_second
 [sheet-router]: https://github.com/yoshuawuyts/sheet-router
-[sse-reconnect]: http://stackoverflow.com/questions/24564030/is-an-eventsource-sse-supposed-to-try-to-reconnect-indefinitely
-[sse]: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
-[varnish]: https://varnish-cache.org
-[ws-reconnect]: http://stackoverflow.com/questions/13797262/how-to-reconnect-to-websocket-after-close-connection
-[ws]: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
-[xhr]: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
 [yo-yo]: https://github.com/maxogden/yo-yo

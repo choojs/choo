@@ -1,10 +1,9 @@
-const history = require('sheet-router/history')
+const createLocation = require('sheet-router/create-location')
+const onHistoryChange = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
-const document = require('global/document')
-const onReady = require('document-ready')
-const href = require('sheet-router/href')
-const hash = require('sheet-router/hash')
-const hashMatch = require('hash-match')
+const onHref = require('sheet-router/href')
+const walk = require('sheet-router/walk')
+const mutate = require('xtend/mutable')
 const barracks = require('barracks')
 const nanoraf = require('nanoraf')
 const assert = require('assert')
@@ -20,7 +19,7 @@ function choo (opts) {
 
   const _store = start._store = barracks()
   var _router = start._router = null
-  var _defaultRoute = null
+  var _routerOpts = null
   var _rootNode = null
   var _routes = null
   var _frame = null
@@ -45,7 +44,7 @@ function choo (opts) {
     _store.start({ subscriptions: false, reducers: false, effects: false })
 
     const state = _store.state({ state: serverState })
-    const router = createRouter(_defaultRoute, _routes, createSend)
+    const router = createRouter(_routerOpts, _routes, createSend)
     const tree = router(route, state)
     return tree.outerHTML || tree.toString()
 
@@ -58,38 +57,31 @@ function choo (opts) {
 
   // start the application
   // (str?, obj?) -> DOMNode
-  function start (selector, startOpts) {
-    if (!startOpts && typeof selector !== 'string') {
-      startOpts = selector
-      selector = null
-    }
-    startOpts = startOpts || {}
-
-    _store.model(appInit(startOpts))
-    const createSend = _store.start(startOpts)
-    _router = start._router = createRouter(_defaultRoute, _routes, createSend)
+  function start () {
+    _store.model(createLocationModel(opts))
+    const createSend = _store.start(opts)
+    _router = start._router = createRouter(_routerOpts, _routes, createSend)
     const state = _store.state({state: {}})
 
-    if (!selector) {
-      const tree = _router(state.location.pathname, state)
-      _rootNode = tree
-      return tree
-    } else {
-      onReady(function onReady () {
-        const oldTree = document.querySelector(selector)
-        assert.ok(oldTree, 'could not query selector: ' + selector)
-        const newTree = _router(state.location.pathname, state)
-        _rootNode = yo.update(oldTree, newTree)
-      })
+    const tree = _router(state.location.href, state)
+    _rootNode = tree
+    tree.done = done
+
+    return tree
+
+    // allow a 'mount' function to return the new node
+    // html -> null
+    function done (newNode) {
+      _rootNode = newNode
     }
   }
 
   // update the DOM after every state mutation
   // (obj, obj, obj, str, fn) -> null
-  function render (data, state, prev, name, createSend) {
+  function render (state, data, prev, name, createSend) {
     if (!_frame) {
       _frame = nanoraf(function (state, prev) {
-        const newTree = _router(state.location.pathname, state, prev)
+        const newTree = _router(state.location.href, state, prev)
         _rootNode = yo.update(_rootNode, newTree)
       })
     }
@@ -99,7 +91,7 @@ function choo (opts) {
   // register all routes on the router
   // (str?, [fn|[fn]]) -> obj
   function router (defaultRoute, routes) {
-    _defaultRoute = defaultRoute
+    _routerOpts = defaultRoute
     _routes = routes
   }
 
@@ -117,70 +109,103 @@ function choo (opts) {
   }
 
   // create a new router with a custom `createRoute()` function
-  // (str?, obj, fn?) -> null
-  function createRouter (defaultRoute, routes, createSend) {
-    var prev = { params: {} }
-    return sheetRouter(defaultRoute, routes, createRoute)
+  // (str?, obj) -> null
+  function createRouter (routerOpts, routes, createSend) {
+    var prev = null
+    if (!routes) {
+      routes = routerOpts
+      routerOpts = {}
+    }
+    routerOpts = mutate({ thunk: 'match' }, routerOpts)
+    const router = sheetRouter(routerOpts, routes)
+    walk(router, wrap)
 
-    function createRoute (routeFn) {
-      return function (route, inline, child) {
-        if (typeof inline === 'function') {
-          inline = wrap(inline, route)
-        }
-        return routeFn(route, inline, child)
-      }
+    return router
 
-      function wrap (child, route) {
-        const send = createSend('view: ' + route, true)
-        return function chooWrap (params, state) {
+    function wrap (route, handler) {
+      const send = createSend('view: ' + route, true)
+      return function chooWrap (params) {
+        return function (state) {
           const nwPrev = prev
-          const nwState = prev = xtend(state, { params: params })
+          prev = state
+
+          // TODO(yw): find a way to wrap handlers so params shows up in state
+          const nwState = xtend(state)
+          nwState.location = xtend(nwState.location, { params: params })
+
           if (opts.freeze !== false) Object.freeze(nwState)
-          return child(nwState, nwPrev, send)
+          return handler(nwState, nwPrev, send)
         }
       }
     }
   }
 }
 
-// initial application state model
+// application location model
 // obj -> obj
-function appInit (opts) {
-  const loc = document.location
-  const state = { pathname: (opts.hash) ? hashMatch(loc.hash) : loc.href }
-  const reducers = {
-    setLocation: function setLocation (data, state) {
-      return { pathname: data.location.replace(/#.*/, '') }
-    }
-  }
-  // if hash routing explicitly enabled, subscribe to it
-  const subs = {}
-  if (opts.hash === true) {
-    pushLocationSub(function (navigate) {
-      hash(function (fragment) {
-        navigate(hashMatch(fragment))
-      })
-    }, 'handleHash', subs)
-  } else {
-    if (opts.history !== false) pushLocationSub(history, 'handleHistory', subs)
-    if (opts.href !== false) pushLocationSub(href, 'handleHref', subs)
-  }
-
+function createLocationModel (opts) {
   return {
     namespace: 'location',
-    subscriptions: subs,
-    reducers: reducers,
-    state: state
+    state: mutate(createLocation(), { params: {} }),
+    subscriptions: createSubscriptions(opts),
+    effects: { set: setLocation, touch: touchLocation },
+    reducers: { update: updateLocation }
   }
 
-  // create a new subscription that modifies
-  // 'app:location' and push it to be loaded
-  // (fn, obj) -> null
-  function pushLocationSub (cb, key, model) {
-    model[key] = function (send, done) {
-      cb(function navigate (pathname) {
-        send('location:setLocation', { location: pathname }, done)
-      })
+  // update the location on the state
+  // try and jump to an anchor on the page if it exists
+  // (obj, obj) -> obj
+  function updateLocation (state, data) {
+    if (opts.history !== false && data.hash && data.hash !== state.hash) {
+      try {
+        const el = document.querySelector(data.hash)
+        if (el) el.scrollIntoView(true)
+      } catch (e) {
+        return data
+      }
     }
+    return data
+  }
+
+  // update internal location only
+  // (str, obj, fn, fn) -> null
+  function touchLocation (state, data, send, done) {
+    const newLocation = createLocation(state, data)
+    send('location:update', newLocation, done)
+  }
+
+  // set a new location e.g. "/foo/bar#baz?beep=boop"
+  // (str, obj, fn, fn) -> null
+  function setLocation (state, data, send, done) {
+    const newLocation = createLocation(state, data)
+
+    // update url bar if it changed
+    if (opts.history !== false && newLocation.href !== state.href) {
+      window.history.pushState({}, null, newLocation.href)
+    }
+
+    send('location:update', newLocation, done)
+  }
+
+  function createSubscriptions (opts) {
+    const subs = {}
+
+    if (opts.history !== false) {
+      subs.handleHistory = function (send, done) {
+        onHistoryChange(function navigate (href) {
+          send('location:touch', href, done)
+        })
+      }
+    }
+
+    if (opts.href !== false) {
+      subs.handleHref = function (send, done) {
+        onHref(function navigate (location) {
+          send('location:set', location, done)
+        })
+      }
+    }
+
+    return subs
   }
 }

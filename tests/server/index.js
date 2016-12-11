@@ -8,9 +8,7 @@ test('server', function (t) {
     t.plan(1)
 
     const app = choo()
-    app.router((route) => [
-      route('/', () => view`<h1>Hello Tokyo!</h1>`)
-    ])
+    app.router(['/', () => view`<h1>Hello Tokyo!</h1>`])
 
     const html = app.toString('/')
     const expected = '<h1>Hello Tokyo!</h1>'
@@ -21,9 +19,7 @@ test('server', function (t) {
     t.plan(1)
 
     const app = choo()
-    app.router((route) => [
-      route('/', () => minDocument.createElement('div'))
-    ])
+    app.router(['/', () => minDocument.createElement('div')])
 
     const html = app.toString('/')
     const expected = '<div></div>'
@@ -34,11 +30,9 @@ test('server', function (t) {
     t.plan(1)
 
     const app = choo()
-    app.router((route) => [
-      route('/', function (state, prev, send) {
-        return view`<h1>meow meow ${state.message}</h1>`
-      })
-    ])
+    app.router(['/', (state, prev, send) => {
+      return view`<h1>meow meow ${state.message}</h1>`
+    }])
 
     const html = app.toString('/', { message: 'nyan!' })
     const expected = '<h1>meow meow nyan!</h1>'
@@ -50,11 +44,9 @@ test('server', function (t) {
 
     const app = choo()
     app.model({ state: { bin: 'baz', beep: 'boop' } })
-    app.router((route) => [
-      route('/', function (state, prev, send) {
-        return view`<h1>${state.foo} ${state.bin} ${state.beep}</h1>`
-      })
-    ])
+    app.router(['/', (state, prev, send) => {
+      return view`<h1>${state.foo} ${state.bin} ${state.beep}</h1>`
+    }])
 
     const state = { foo: 'bar!', beep: 'beep' }
     const html = app.toString('/', state)
@@ -70,13 +62,11 @@ test('server', function (t) {
       namespace: 'hello',
       state: { bin: 'baz', beep: 'boop' }
     })
-    app.router((route) => [
-      route('/', function (state, prev, send) {
-        return view`
-          <h1>${state.hello.foo} ${state.hello.bin} ${state.hello.beep}</h1>
-        `
-      })
-    ])
+    app.router(['/', (state, prev, send) => {
+      return view`
+        <h1>${state.hello.foo} ${state.hello.bin} ${state.hello.beep}</h1>
+      `
+    }])
 
     const state = {
       hello: {
@@ -93,12 +83,7 @@ test('server', function (t) {
     t.plan(1)
 
     const app = choo()
-    app.router((route) => [
-      route('/', function (state, prev, send) {
-        send('hey!')
-      })
-    ])
-
+    app.router(['/', (state, prev, send) => send('hey!')])
     t.throws(app.toString.bind(null), /route must be a string/)
   })
 
@@ -106,12 +91,7 @@ test('server', function (t) {
     t.plan(1)
 
     const app = choo()
-    app.router((route) => [
-      route('/', function (state, prev, send) {
-        send('hey!')
-      })
-    ])
-
+    app.router(['/', (state, prev, send) => send('hey!')])
     const msg = /send\(\) cannot be called/
     t.throws(app.toString.bind(null, '/', { message: 'nyan!' }), msg)
   })
