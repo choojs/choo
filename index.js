@@ -119,7 +119,7 @@ function choo (opts) {
   // create a new router with a custom `createRoute()` function
   // (str?, obj, fn?) -> null
   function createRouter (defaultRoute, routes, createSend) {
-    var prev = { params: {} }
+    var prev = { params: {}, location: {} }
     return sheetRouter(defaultRoute, routes, createRoute)
 
     function createRoute (routeFn) {
