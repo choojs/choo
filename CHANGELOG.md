@@ -1,22 +1,15 @@
 ## `4.0.0` The routing patch
-Another month, another set of breaking changes. Kidding (not kidding) - the
-last month has been mad, all sorts of people have flocked to choo and people
-seem to be using to build a wide variety of things. Amazing!
-
-But with wide uptake, we also get a larger flow of feedback - and one of the
-most prominent thing we've heard is that routing was a bit off. So `4.0.0` is
-all about the routing, trying to make it so that whatever routing you're into
-we support - while secretly sneaking in some performance upgrades. Enjoy!
-
-### upgrade guide
-- [choo-handbook/upgrading/4.0.0]()
+This patch changes the way we handle routes. It introduces query string
+support (!), and changes the router to use a lisp-like syntax. It also inverts
+the argument order of effects and reducers to be more intuitive. We also
+managed to sneak in some performance upgrades :sparkles: - We hope you enjoy
+it!
 
 ### changes
 - :exclamation: slim down server side rendering API |
   [issue](https://github.com/yoshuawuyts/choo/issues/191) |
   [pull-request](https://github.com/yoshuawuyts/choo/pull/203)
-- :exclamation: update router API to be lisp-like | [issue]() |
-  [pull-request]()
+- :exclamation: update router API to be lisp-like
 - :exclamation: swap `state` and `data` argument order |
   [issue](https://github.com/yoshuawuyts/choo/issues/179)
 - :exclamation: remove `choo/http`. Use [xhr](https://github.com/naugtur/xhr)
@@ -30,6 +23,7 @@ we support - while secretly sneaking in some performance upgrades. Enjoy!
   [issue](https://github.com/yoshuawuyts/sheet-router/issues/15) |
   [pull-request](https://github.com/yoshuawuyts/sheet-router/pull/27)
 - update router API to handle hashes by default
+- update router to provide out of the box support for Electron
 - update `location` state to expose `search` parameters (query strings) |
   [issue](https://github.com/yoshuawuyts/sheet-router/issues/31)
 
