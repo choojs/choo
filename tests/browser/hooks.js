@@ -10,15 +10,15 @@ test('hooks', function (t) {
     onError: function (err) {
       t.equal(err.message, 'effect error', 'onError: receives err')
     },
-    onAction: function (data, state, name, caller, createSend) {
+    onAction: function (state, data, name, caller, createSend) {
       if (name === 'explodes') return
       t.deepEqual(data, {foo: 'bar'}, 'onAction: action data')
       t.equal(state.clicks, 0, 'onAction: current state: 0 clicks')
-      t.equal(name, 'click', 'onAction: action name')
+      t.equal(name, 'click', 'onAction: data name')
       t.equal(caller, 'view: /', 'onAction: caller name')
       t.equal(typeof createSend, 'function', 'onAction: createSend fn')
     },
-    onStateChange: function (data, state, prev, createSend) {
+    onStateChange: function (state, data, prev, createSend) {
       t.deepEqual(data, {foo: 'bar'}, 'onState: action data')
       t.deepEqual(state.clicks, 1, 'onState: new state: 1 clicks')
       t.deepEqual(prev.clicks, 0, 'onState: prev state: 0 clicks')
@@ -30,26 +30,24 @@ test('hooks', function (t) {
       clicks: 0
     },
     reducers: {
-      click: (data, state) => ({clicks: state.clicks + 1})
+      click: (state, data) => ({clicks: state.clicks + 1})
     },
     effects: {
-      explodes: (data, state, send, done) => {
+      explodes: (state, data, send, done) => {
         setTimeout(() => done(new Error('effect error')), 5)
       }
     }
   })
 
   var sent = false
-  app.router((route) => [
-    route('/', function (state, prev, send) {
-      if (!sent) {
-        send('click', {foo: 'bar'})
-        send('explodes')
-      }
-      sent = true
-      return view`<span></span>`
-    })
-  ])
+  app.router(['/', function (state, prev, send) {
+    if (!sent) {
+      send('click', {foo: 'bar'})
+      send('explodes')
+    }
+    sent = true
+    return view`<span></span>`
+  }])
 
   const tree = app.start()
   t.on('end', append(tree))
