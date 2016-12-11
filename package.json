@@ -66,6 +66,7 @@
     "server-router": "^3.0.0",
     "sheetify": "^5.1.0",
     "standard": "^8.0.0",
+    "standard-markdown": "^2.2.0",
     "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1",
     "tape-istanbul": "~1.0.2",

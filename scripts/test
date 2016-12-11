@@ -8,7 +8,8 @@ usage () {
 }
 
 lint () {
-  standard
+  standard > /dev/tty
+  standard-markdown > /dev/tty
 }
 
 test_electron () {
@@ -71,6 +72,7 @@ case "$1" in
   b|browser) shift; test_browser "$@";;
   l|browser-local) shift; test_browser_local "$@";;
   s|server) shift; test_server "$@";;
+  lint) shift; lint "$@";;
   c|cov) shift; test_cov "$@";;
   d|deps) shift; check_deps "$@";;
 esac
