@@ -125,6 +125,7 @@ test('routing', function (t) {
     app.router('/', [
       ['/', function () {
         t.pass('rendered')
+        return document.createElement('div')
       }]
     ])
 
@@ -139,7 +140,10 @@ test('routing', function (t) {
     })
 
     const app = choo({ href: false })
-    app.router(['/', () => t.pass('rendered')])
+    app.router(['/', function () {
+      t.pass('rendered')
+      return document.createElement('div')
+    }])
     app.start()
   })
 
@@ -152,26 +156,10 @@ test('routing', function (t) {
     app.router({ default: '/users/123' }, [
       ['/users', [
         ['/:user', function (state) {
-          t.deepEqual(state.params, {user: '123'})
+          t.deepEqual(state.location.params, {user: '123'})
+          return document.createElement('div')
         }]
       ]]
-    ])
-
-    app.start()
-  })
-
-  t.test('prev.params always exists', function (t) {
-    t.plan(1)
-
-    const choo = require('../..')
-    const app = choo()
-
-    app.router('/users/123', (route) => [
-      route('/users', [
-        route('/:user', function (state, prev) {
-          t.ok(prev.params)
-        })
-      ])
     ])
 
     app.start()

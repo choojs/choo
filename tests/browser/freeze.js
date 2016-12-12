@@ -16,6 +16,7 @@ test('freeze (default)', function (t) {
     t.equal(state.foo, 'bar', 'cannot modify property')
     state.bar = 'baz'
     t.equal(state.bar, undefined, 'cannot add property')
+    return document.createElement('div')
   }])
 
   app.start()
@@ -36,6 +37,7 @@ test('noFreeze', function (t) {
     t.equal(state.foo, '', 'can modify property')
     state.bar = 'baz'
     t.equal(state.bar, 'baz', 'can add property')
+    return document.createElement('div')
   }])
 
   app.start()

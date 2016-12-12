@@ -64,6 +64,7 @@ function choo (opts) {
     const state = _store.state({state: {}})
 
     const tree = _router(state.location.href, state)
+    assert.ok(tree, 'tree should exist')
     _rootNode = tree
     tree.done = done
 

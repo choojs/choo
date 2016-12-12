@@ -12,7 +12,7 @@ test('rehydration', function (t) {
 
   const node = html`
     <section id="app-root">
-      <div id="app-root">Hello squirrel!</span>
+      <div>Hello squirrel!</span>
     </section>
   `
 
