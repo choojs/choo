@@ -89,3 +89,27 @@ test('Browser location can be set', (t) => {
   const tree = app.start()
   t.on('end', append(tree))
 })
+
+test('Browser search parameters can be set', (t) => {
+  t.plan(1)
+
+  const app = choo()
+  app.model({})
+
+  let haveRouted = false
+
+  app.router([
+    ['/', function (state, prev, send) {
+      if (!haveRouted) {
+        send('location:set', '?test=test')
+        haveRouted = true
+      } else {
+        t.deepEqual(state.location.search, {test: 'test'})
+      }
+      return html`<div></div>`
+    }]
+  ])
+
+  const tree = app.start()
+  t.on('end', append(tree))
+})
