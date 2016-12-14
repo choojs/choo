@@ -17,7 +17,7 @@ test('state is immutable', function (t) {
     state: state,
     namespace: 'test',
     reducers: {
-      'no-reducer-mutate': (state, data) => {
+      'no-reducer-mutate': () => {
         return {}
       },
       'mutate-on-return': (state, data) => {
@@ -35,7 +35,7 @@ test('state is immutable', function (t) {
   let loop = -1
 
   const asserts = [
-    (state) => t.deepEqual(state, {foo: 'baz', beep: 'boop'}, 'intial state'),
+    (state) => t.deepEqual(state, {foo: 'baz', beep: 'boop'}, 'initial state'),
     (state) => t.deepEqual(state, {foo: 'baz', beep: 'boop'}, 'no change in state'),
     (state) => t.deepEqual(state, {foo: 'oof', beep: 'boop'}, 'change in state from reducer'),
     (state) => t.deepEqual(state, {foo: 'oof', beep: 'barp'}, 'change in state from effect')
@@ -55,6 +55,58 @@ test('state is immutable', function (t) {
       return html`
         <div><span class="test">${state.foo}:${state.beep}</span></div>
       `
+    }]
+  ])
+
+  const tree = app.start()
+  t.on('end', append(tree))
+})
+
+test('Browser location can be set', (t) => {
+  const app = choo()
+  app.model({})
+
+  let alreadyRouted = false
+
+  app.router([
+    ['/', function (state, prev, send) {
+      if (alreadyRouted) {
+        t.fail('/ should not be routed to again')
+        t.end()
+      }
+      alreadyRouted = true
+      send('location:set', '/other')
+      return html`<div></div>`
+    }],
+    ['/other', function (state, prev, send) {
+      // TODO: Make this unnecessary - at the moment, location isn't reset before the next test
+      send('location:set', '/')
+      t.end()
+      return html`<div></div>`
+    }]
+  ])
+
+  const tree = app.start()
+  t.on('end', append(tree))
+})
+
+test('Browser search parameters can be set', (t) => {
+  t.plan(1)
+
+  const app = choo()
+  app.model({})
+
+  let haveRouted = false
+
+  app.router([
+    ['/', function (state, prev, send) {
+      if (!haveRouted) {
+        send('location:set', '?test=test')
+        haveRouted = true
+      } else {
+        t.deepEqual(state.location.search, {test: 'test'})
+      }
+      return html`<div></div>`
     }]
   ])
 
