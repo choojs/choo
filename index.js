@@ -178,7 +178,6 @@ function createLocationModel (opts) {
   // (str, obj, fn, fn) -> null
   function setLocation (state, data, send, done) {
     const newLocation = createLocation(state, data)
-    console.log(`New location:`, newLocation)
 
     // update url bar if it changed
     if (opts.history !== false && newLocation.href !== state.href) {
