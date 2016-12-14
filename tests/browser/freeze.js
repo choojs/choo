@@ -11,10 +11,18 @@ test('freeze (default)', function (t) {
     }
   })
 
-  app.router(['/', function (state, prev, send) {
-    state.foo = ''
+  app.router(['/', function (state) {
+    // Modifying frozen objects can lead to TypeError
+    try {
+      state.foo = ''
+    } catch (e) {
+    }
     t.equal(state.foo, 'bar', 'cannot modify property')
-    state.bar = 'baz'
+    // Modifying frozen objects can lead to TypeError
+    try {
+      state.bar = 'baz'
+    } catch (e) {
+    }
     t.equal(state.bar, undefined, 'cannot add property')
     return document.createElement('div')
   }])
@@ -32,7 +40,7 @@ test('noFreeze', function (t) {
     }
   })
 
-  app.router(['/', function (state, prev, send) {
+  app.router(['/', function (state) {
     state.foo = ''
     t.equal(state.foo, '', 'can modify property')
     state.bar = 'baz'
