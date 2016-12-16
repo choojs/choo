@@ -366,7 +366,7 @@ Under the hood `choo` uses [sheet-router]. Internally the
 currently rendered route is kept in `state.location`. To access the route 
 `:params` you can use `state.location.params`. If you want to modify
 the location programmatically the `reducer` for the location can be called
-using `send('location:set', { location: href })`. This will not work
+using `send('location:set', href)`. This will not work
 from within namespaced `models`, and usage should preferably be kept to a
 minimum. Changing views all over the place tends to lead to messiness.
 
