@@ -285,7 +285,7 @@ app.model({
   namespace: 'todos',
   state: { values: [] },
   reducers: {
-    add: function (data, state) {
+    add: function (state, data) {
       return { todos: data }
     }
   },
