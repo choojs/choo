@@ -504,7 +504,7 @@ There are several `hooks` and `wrappers` that are picked up by `choo`:
 - __wrapSubscriptions(fn):__ wraps a `subscription` to add custom behavior
 - __wrapReducers(fn):__ wraps a `reducer` to add custom behavior
 - __wrapEffects(fn):__ wraps an `effect` to add custom behavior
-- __wrapInitialState(fn):__ mutate the complete initial `state` to add custom
+- __wrapInitialState(state):__ mutate the complete initial `state` to add custom
   behavior - useful to mutate the state before starting up
 
 __:warning: Warning :warning:: plugins should only be used as a last resort.
