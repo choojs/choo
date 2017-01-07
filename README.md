@@ -482,10 +482,10 @@ registered in `choo(handlers)`. If no callback is registered, errors will
 Creates a new router. Takes a function that exposes a single `route` function,
 and that expects a tree of `routes` to be returned. See [sheet-router] for full
 documentation. Registered views have a signature of `(state, prev, send)`,
-where `state` is the current `state`, `prev` is the last state, `state.params`
-is URI partials and `send()` can be called to trigger actions. If
-`defaultRoute` is passed in, that will be called if no paths match. If no
-`defaultRoute` is specified it will throw instead.
+where `state` is the current `state`, `prev` is the last state,
+`state.location.params` is URI partials and `send()` can be called to trigger
+actions. If `defaultRoute` is passed in, that will be called if no paths match.
+If no `defaultRoute` is specified it will throw instead.
 
 ### app.use(hooks)
 Register an object of hooks on the application. This is useful to extend the
@@ -546,9 +546,9 @@ Start the application. Returns a tree of DOM nodes that can be mounted using
 
 ### view = require('choo/html')\`html\`
 Tagged template string HTML builder. Built on top of [yo-yo], [bel], and
-[hyperx]. To register a view on the `router` it should be wrapped
-in a function with the signature of `(state, prev, send)` where `state` is the
-current `state`, `prev` is the last state, `state.params` is URI partials and
+[hyperx]. To register a view on the `router` it should be wrapped in a function
+with the signature of `(state, prev, send)` where `state` is the current
+`state`, `prev` is the last state, `state.location.params` is URI partials and
 `send()` can be called to trigger actions.
 
 To create listeners for events, create interpolated attributes on elements.
