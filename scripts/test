@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 # setting exit because we're linting and need to exit on failure
-set -e
+set -e -o pipefail
 
 usage () {
   printf "Usage: test\n"
