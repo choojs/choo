@@ -1,5 +1,5 @@
-const html = require('../../../html')
-const format = require('../utilities/format')
+var html = require('../../../html')
+var format = require('../utilities/format')
 
 function toggle (state, send) {
   if (state.start) {
@@ -10,8 +10,8 @@ function toggle (state, send) {
 }
 
 module.exports = (state, prev, send) => {
-  const start = state.start
-  const elapsed = state.elapsed
+  var start = state.start
+  var elapsed = state.elapsed
 
   return html`
     <main class="app">

@@ -1,13 +1,13 @@
-const serverRouter = require('server-router')
-const browserify = require('browserify')
-const bankai = require('bankai')
-const http = require('http')
-const SSE = require('sse')
+var serverRouter = require('server-router')
+var browserify = require('browserify')
+var bankai = require('bankai')
+var http = require('http')
+var SSE = require('sse')
 
-const clients = []
-const PORT = 8080
+var clients = []
+var PORT = 8080
 
-const server = http.createServer(createRouter())
+var server = http.createServer(createRouter())
 server.listen(PORT, () => {
   process.stdout.write(`listening on port ${PORT}\n`)
   var sse = new SSE(server)
@@ -38,12 +38,12 @@ setInterval(() => {
 }, 1500)
 
 function createRouter () {
-  const router = serverRouter('/404')
+  var router = serverRouter('/404')
 
-  const html = bankai.html({ css: false })
+  var html = bankai.html({ css: false })
   router.on('/', (req, res) => html(req, res).pipe(res))
 
-  const js = bankai.js(browserify, require.resolve('./client.js'))
+  var js = bankai.js(browserify, require.resolve('./client.js'))
   router.on('/bundle.js', (req, res) => js(req, res).pipe(res))
 
   router.on('/404', (req, res) => {

@@ -1,11 +1,11 @@
-const choo = require('../../')
-const html = require('../../html')
+var choo = require('../../')
+var html = require('../../html')
 
-const app = choo()
+var app = choo()
 app.model(createModel())
 app.router(['/', mainView])
 
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)
 
 function mainView (state, prev, send) {
@@ -15,7 +15,7 @@ function mainView (state, prev, send) {
 }
 
 function createModel () {
-  const stream = new window.EventSource('/sse')
+  var stream = new window.EventSource('/sse')
   return {
     namespace: 'logger',
     state: {
@@ -27,7 +27,7 @@ function createModel () {
           send('logger:error', { payload: JSON.stringify(e) }, done)
         }
         stream.onmessage = (e) => {
-          const msg = JSON.parse(e.data).message
+          var msg = JSON.parse(e.data).message
           send('logger:print', { payload: msg }, done)
         }
       }

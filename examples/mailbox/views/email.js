@@ -1,9 +1,9 @@
-const html = require('../../../html')
+var html = require('../../../html')
 
-const emailList = require('../elements/email-list')
-const pathname = require('../elements/pathname')
-const email = require('../elements/email')
-const nav = require('../elements/nav')
+var emailList = require('../elements/email-list')
+var pathname = require('../elements/pathname')
+var email = require('../elements/email')
+var nav = require('../elements/nav')
 
 module.exports = function (state, prev, send) {
   return html`

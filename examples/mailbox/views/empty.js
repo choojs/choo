@@ -1,8 +1,8 @@
-const html = require('../../../html')
+var html = require('../../../html')
 
-const empty = require('../elements/empty-mailbox')
-const pathname = require('../elements/pathname')
-const nav = require('../elements/nav')
+var empty = require('../elements/empty-mailbox')
+var pathname = require('../elements/pathname')
+var nav = require('../elements/nav')
 
 module.exports = function (state, prev, send) {
   return html`

@@ -1,11 +1,11 @@
-const log = require('choo-log')
-const sf = require('sheetify')
+var log = require('choo-log')
+var sf = require('sheetify')
 
-const choo = require('../../')
+var choo = require('../../')
 
 sf('css-wipe/dest/bundle')
 
-const app = choo()
+var app = choo()
 app.use(log())
 
 app.model(require('./models/inbox'))
@@ -19,5 +19,5 @@ app.router([
   ]]
 ])
 
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)

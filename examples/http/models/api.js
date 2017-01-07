@@ -1,4 +1,4 @@
-const http = require('../../../http')
+var http = require('../../../http')
 
 module.exports = {
   namespace: 'api',
@@ -20,7 +20,7 @@ function request (uri, send, done) {
   http(uri, { json: true }, function (err, res, body) {
     if (err) return done(new Error('HTTP error'))
     if (res.statusCode !== 200) {
-      const message = (body && body.message)
+      var message = (body && body.message)
         ? body.message
         : 'unknown server error'
       return done(new Error(message))

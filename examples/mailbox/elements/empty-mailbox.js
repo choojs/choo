@@ -1,4 +1,4 @@
-const html = require('../../../html')
+var html = require('../../../html')
 
 module.exports = function (state, prev, send) {
   return html`

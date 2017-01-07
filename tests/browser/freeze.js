@@ -1,9 +1,9 @@
-const test = require('tape')
-const choo = require('../../')
+var test = require('tape')
+var choo = require('../../')
 
 test('freeze (default)', function (t) {
   t.plan(2)
-  const app = choo()
+  var app = choo()
 
   app.model({
     state: {
@@ -24,7 +24,7 @@ test('freeze (default)', function (t) {
 
 test('noFreeze', function (t) {
   t.plan(2)
-  const app = choo({freeze: false})
+  var app = choo({freeze: false})
 
   app.model({
     state: {

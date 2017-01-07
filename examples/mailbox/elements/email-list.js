@@ -1,10 +1,10 @@
-const dateformat = require('dateformat')
-const html = require('../../../html')
+var dateformat = require('dateformat')
+var html = require('../../../html')
 
 module.exports = function (state, prev, send) {
-  const params = state.params
-  const mailbox = params.mailbox
-  const messages = state[mailbox].messages
+  var params = state.params
+  var mailbox = params.mailbox
+  var messages = state[mailbox].messages
   return html`
     <div>
       <div class="db cf w-100">

@@ -1,14 +1,14 @@
-const choo = require('../../')
+var choo = require('../../')
 
-const mainView = require('./views/main')
+var mainView = require('./views/main')
 
-const app = choo({
+var app = choo({
   onError: function (err, state, createSend) {
     console.trace()
     console.groupCollapsed(`Error: ${err.message}`)
     console.error(err)
     console.groupEnd()
-    const send = createSend('onError: ')
+    var send = createSend('onError: ')
     send('app:error', err)
   },
   onAction: function (state, data, name, caller, createSend) {
@@ -29,5 +29,5 @@ app.model(require('./models/api'))
 
 app.router(['/', mainView])
 
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)

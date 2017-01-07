@@ -1,9 +1,9 @@
-const assert = require('assert')
-const html = require('../../html')
+var assert = require('assert')
+var html = require('../../html')
 
 module.exports = function (state, prev, send) {
-  const serverMessage = state.message.server
-  const clientMessage = state.message.client
+  var serverMessage = state.message.server
+  var clientMessage = state.message.client
 
   assert.equal(typeof serverMessage, 'string', 'server should be a string')
   assert.equal(typeof clientMessage, 'string', 'client should be a string')

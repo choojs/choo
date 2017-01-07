@@ -1,21 +1,21 @@
-const serverRouter = require('server-router')
-const browserify = require('browserify')
-const bankai = require('bankai')
-const http = require('http')
+var serverRouter = require('server-router')
+var browserify = require('browserify')
+var bankai = require('bankai')
+var http = require('http')
 
-const PORT = 8080
+var PORT = 8080
 
-const server = http.createServer(createRouter())
+var server = http.createServer(createRouter())
 server.listen(PORT, () => process.stdout.write(`listening on port ${PORT}\n`))
 
 function createRouter () {
-  const router = serverRouter('/404')
+  var router = serverRouter('/404')
 
-  const js = bankai.js(browserify, require.resolve('./client.js'))
+  var js = bankai.js(browserify, require.resolve('./client.js'))
   router.on('/bundle.js', (req, res) => js(req, res).pipe(res))
   router.on('/:inbox/bundle.js', (req, res) => js(req, res).pipe(res))
 
-  const html = bankai.html({ css: false })
+  var html = bankai.html({ css: false })
   router.on('/', (req, res) => html(req, res).pipe(res))
   router.on('/:inbox', (req, res) => html(req, res).pipe(res))
   router.on('/:inbox/:message_id', (req, res) => html(req, res).pipe(res))

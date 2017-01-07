@@ -1,4 +1,4 @@
-const raf = require('raf')
+var raf = require('raf')
 
 module.exports = {
   state: {

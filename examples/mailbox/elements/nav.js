@@ -1,6 +1,6 @@
-const html = require('../../../html')
+var html = require('../../../html')
 
-const mailboxes = [ 'inbox', 'spam', 'sent' ]
+var mailboxes = [ 'inbox', 'spam', 'sent' ]
 
 module.exports = function (state, prev, send) {
   return html`
@@ -10,7 +10,7 @@ module.exports = function (state, prev, send) {
           <h2 class="f4 b lh0">Mailbox</h2>
         </li>
         ${mailboxes.map(function (mailbox) {
-          const messages = mailbox.messages
+          var messages = mailbox.messages
           return createLi(mailbox, messages)
         })}
       </ul>

@@ -1,15 +1,15 @@
-const serverRouter = require('server-router')
-const browserify = require('browserify')
-const bankai = require('bankai')
-const http = require('http')
+var serverRouter = require('server-router')
+var browserify = require('browserify')
+var bankai = require('bankai')
+var http = require('http')
 
-const PORT = 8080
+var PORT = 8080
 
-const server = http.createServer(createRouter())
+var server = http.createServer(createRouter())
 server.listen(PORT, () => process.stdout.write(`listening on port ${PORT}\n`))
 
 var index = 0
-const errors = [
+var errors = [
   'a giant robot invaded robot town!',
   'something weird crawled out of the swamp',
   'oh no, the bear people invaded the server!',
@@ -19,12 +19,12 @@ const errors = [
 ]
 
 function createRouter () {
-  const router = serverRouter('/404')
+  var router = serverRouter('/404')
 
-  const html = bankai.html({ css: false })
+  var html = bankai.html({ css: false })
   router.on('/', (req, res) => html(req, res).pipe(res))
 
-  const js = bankai.js(browserify, require.resolve('./client.js'))
+  var js = bankai.js(browserify, require.resolve('./client.js'))
   router.on('/bundle.js', (req, res) => js(req, res).pipe(res))
 
   router.on('/good', (req, res) => {
