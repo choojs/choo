@@ -87,7 +87,7 @@ function choo (opts) {
     if (!_frame) {
       _frame = nanoraf(function (state, prev) {
         var newTree = _router(state.location.href, state, prev)
-        _rootNode = _update(_rootNode, newTree)
+        _rootNode = _update(newTree)
       })
     }
     _frame(state, prev)

@@ -1,8 +1,7 @@
 // mount.js
 var documentReady = require('document-ready')
+var morph = require('nanomorph/update-dom')
 var assert = require('assert')
-var morph = require('nanomorph')
-var yo = require('yo-yo')
 
 module.exports = mount
 
@@ -28,7 +27,8 @@ function mount (selector, newTree) {
       }
     }
 
-    var newNode = yo.update(_rootNode, newTree)
+    var update = morph(_rootNode)
+    var newNode = update(newTree)
     assert.equal(newNode, _rootNode, 'choo/mount: The DOM node: \n' +
       newNode.outerHTML + '\n is not equal to \n' + newTree.outerHTML +
       'choo cannot begin diffing.' +

@@ -3,7 +3,7 @@ var html = require('../../../html')
 
 module.exports = function () {
   return function (state, prev, send) {
-    var params = state.params
+    var params = state.email.params
     var mailbox = params.mailbox
     var message = params.message
     var messages = state[mailbox].messages
