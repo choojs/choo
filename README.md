@@ -222,7 +222,7 @@ own role: `effects`, `subscriptions` and `reducers`.
  │  Subscriptions ─┤     User ───┐
  └─ Effects  ◀─────┤             ▼
  ┌─ Reducers ◀─────┴─────────── DOM ◀┐
- │                                   │
+ │                                    │
  └▶ Router ─────State ───▶ Views ────┘
 ```
 
