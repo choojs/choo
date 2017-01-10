@@ -42,7 +42,8 @@
     "nanoraf": "^2.1.1",
     "sheet-router": "^4.0.1",
     "xtend": "^4.0.1",
-    "yo-yo": "^1.2.2"
+    "yo-yo": "^1.2.2",
+    "morphdom": "<2.2"
   },
   "devDependencies": {
     "append-child": "~1.0.0",
