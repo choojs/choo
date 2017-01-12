@@ -40,11 +40,10 @@
     "bel": "^4.5.1",
     "document-ready": "~1.0.2",
     "global": "^4.3.0",
-    "nanomorph": "^1.2.0",
+    "nanomorph": "^2.1.2",
     "nanoraf": "^2.1.1",
     "sheet-router": "^4.0.1",
-    "xtend": "^4.0.1",
-    "yo-yo": "^1.2.2"
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "append-child": "~1.0.0",

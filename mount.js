@@ -1,6 +1,6 @@
 // mount.js
 var documentReady = require('document-ready')
-var morph = require('nanomorph/update-dom')
+var morph = require('nanomorph/update')
 var assert = require('assert')
 
 module.exports = mount
