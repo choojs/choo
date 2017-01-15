@@ -570,7 +570,7 @@ creating listeners always remember to call `e.preventDefault()` and
 refreshing the full page or the like.
 
 To trigger lifecycle events on any part of a view, set the `onload=${(el) =>
-{}}` and `onunload=${() => {el}}` attributes. These parameters are useful when
+{}}` and `onunload=${(el) => {}}` attributes. These parameters are useful when
 creating self-contained widgets that take care of their own state and lifecycle
 (e.g. a maps widget) or to trigger animations. Most elements shouldn't have a
 need for these hooks though.
