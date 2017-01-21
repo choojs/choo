@@ -575,6 +575,12 @@ creating self-contained widgets that take care of their own state and lifecycle
 (e.g. a maps widget) or to trigger animations. Most elements shouldn't have a
 need for these hooks though.
 
+### mount('selector', html)
+Use `choo/mount` to mount a tree of DOMNodes at a given selector. This is
+especially useful to mount a `<body>` tag on the document body after rendering
+from the server. It makes sure all `<script>` tags and similar are persisted so
+no duplicate download calls are triggered.
+
 ## FAQ
 ### Why is it called choo?
 Because I thought it sounded cute. All these programs talk about being
