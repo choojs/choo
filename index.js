@@ -24,7 +24,9 @@ function choo (opts) {
   var _routes = null
   var _frame = null
 
-  _store.use({ onStateChange: render })
+  if (typeof window !== 'undefined') {
+    _store.use({ onStateChange: render })
+  }
   _store.use(opts)
 
   start.toString = toString
