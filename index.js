@@ -33,6 +33,7 @@ function choo (opts) {
   start.router = router
   start.model = model
   start.start = start
+  start.stop = _store.stop
   start.use = use
 
   return start
