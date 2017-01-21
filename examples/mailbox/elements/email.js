@@ -1,11 +1,11 @@
-const html = require('../../../html')
+var html = require('../../../html')
 
 module.exports = function (state, prev, send) {
-  const params = state.params
-  const mailbox = params.mailbox
-  const message = params.message
+  var params = state.location.params
+  var mailbox = params.mailbox
+  var message = params.message
 
-  const email = state[mailbox].messages.filter(function (msg) {
+  var email = state[mailbox].messages.filter(function (msg) {
     return String(msg.id) === message
   })[0]
 

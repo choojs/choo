@@ -1,14 +1,14 @@
-const createLocation = require('sheet-router/create-location')
-const onHistoryChange = require('sheet-router/history')
-const sheetRouter = require('sheet-router')
-const onHref = require('sheet-router/href')
-const walk = require('sheet-router/walk')
-const mutate = require('xtend/mutable')
-const barracks = require('barracks')
-const nanoraf = require('nanoraf')
-const assert = require('assert')
-const xtend = require('xtend')
-const yo = require('yo-yo')
+var createLocation = require('sheet-router/create-location')
+var onHistoryChange = require('sheet-router/history')
+var sheetRouter = require('sheet-router')
+var onHref = require('sheet-router/href')
+var update = require('nanomorph/update')
+var walk = require('sheet-router/walk')
+var mutate = require('xtend/mutable')
+var barracks = require('barracks')
+var nanoraf = require('nanoraf')
+var assert = require('assert')
+var xtend = require('xtend')
 
 module.exports = choo
 
@@ -17,11 +17,12 @@ module.exports = choo
 function choo (opts) {
   opts = opts || {}
 
-  const _store = start._store = barracks()
+  var _store = start._store = barracks()
   var _router = start._router = null
   var _routerOpts = null
   var _rootNode = null
   var _routes = null
+  var _update = null
   var _frame = null
 
   if (typeof window !== 'undefined') {
@@ -45,9 +46,9 @@ function choo (opts) {
     assert.equal(typeof serverState, 'object', 'choo.app.toString: serverState must be an object')
     _store.start({ subscriptions: false, reducers: false, effects: false })
 
-    const state = _store.state({ state: serverState })
-    const router = createRouter(_routerOpts, _routes, createSend)
-    const tree = router(route, state)
+    var state = _store.state({ state: serverState })
+    var router = createRouter(_routerOpts, _routes, createSend)
+    var tree = router(route, state)
     return tree.outerHTML || tree.toString()
 
     function createSend () {
@@ -61,14 +62,16 @@ function choo (opts) {
   // (str?, obj?) -> DOMNode
   function start () {
     _store.model(createLocationModel(opts))
-    const createSend = _store.start(opts)
+    var createSend = _store.start(opts)
     _router = start._router = createRouter(_routerOpts, _routes, createSend)
-    const state = _store.state({state: {}})
+    var state = _store.state({state: {}})
 
-    const tree = _router(state.location.href, state)
+    var tree = _router(state.location.href, state)
     assert.ok(tree, 'choo.start: the router should always return a valid DOM node')
     assert.equal(typeof tree, 'object', 'choo.start: the router should always return a valid DOM node')
+
     _rootNode = tree
+    _update = update(_rootNode)
     tree.done = done
 
     return tree
@@ -76,7 +79,7 @@ function choo (opts) {
     // allow a 'mount' function to return the new node
     // html -> null
     function done (newNode) {
-      _rootNode = newNode
+      _rootNode = _update(newNode)
     }
   }
 
@@ -85,8 +88,8 @@ function choo (opts) {
   function render (state, data, prev, name, createSend) {
     if (!_frame) {
       _frame = nanoraf(function (state, prev) {
-        const newTree = _router(state.location.href, state, prev)
-        _rootNode = yo.update(_rootNode, newTree)
+        var newTree = _router(state.location.href, state, prev)
+        _rootNode = _update(newTree)
       })
     }
     _frame(state, prev)
@@ -121,20 +124,20 @@ function choo (opts) {
       routerOpts = {}
     }
     routerOpts = mutate({ thunk: 'match' }, routerOpts)
-    const router = sheetRouter(routerOpts, routes)
+    var router = sheetRouter(routerOpts, routes)
     walk(router, wrap)
 
     return router
 
     function wrap (route, handler) {
-      const send = createSend('view: ' + route, true)
+      var send = createSend('view: ' + route, true)
       return function chooWrap (params) {
         return function (state) {
           // TODO(yw): find a way to wrap handlers so params shows up in state
-          const nwState = xtend(state)
+          var nwState = xtend(state)
           nwState.location = xtend(nwState.location, { params: params })
 
-          const nwPrev = prev
+          var nwPrev = prev
           prev = nwState // save for next time
 
           if (opts.freeze !== false) Object.freeze(nwState)
@@ -162,7 +165,7 @@ function createLocationModel (opts) {
   function updateLocation (state, data) {
     if (opts.history !== false && data.hash && data.hash !== state.hash) {
       try {
-        const el = document.querySelector(data.hash)
+        var el = document.querySelector(data.hash)
         if (el) el.scrollIntoView(true)
       } catch (e) {
         return data
@@ -174,14 +177,14 @@ function createLocationModel (opts) {
   // update internal location only
   // (str, obj, fn, fn) -> null
   function touchLocation (state, data, send, done) {
-    const newLocation = createLocation(state, data)
+    var newLocation = createLocation(state, data)
     send('location:update', newLocation, done)
   }
 
   // set a new location e.g. "/foo/bar#baz?beep=boop"
   // (str, obj, fn, fn) -> null
   function setLocation (state, data, send, done) {
-    const newLocation = createLocation(state, data)
+    var newLocation = createLocation(state, data)
 
     // update url bar if it changed
     if (opts.history !== false && newLocation.href !== state.href) {
@@ -192,7 +195,7 @@ function createLocationModel (opts) {
   }
 
   function createSubscriptions (opts) {
-    const subs = {}
+    var subs = {}
 
     if (opts.history !== false) {
       subs.handleHistory = function (send, done) {

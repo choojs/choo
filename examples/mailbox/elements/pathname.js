@@ -1,8 +1,8 @@
-const pathname = require('pathname-match')
-const html = require('../../../html')
+var pathname = require('pathname-match')
+var html = require('../../../html')
 
 module.exports = function (state, prev, send) {
-  const location = state.location.pathname
+  var location = state.location.pathname
   return html`
     <span class="fl mt4 w-100 f4 b">
       URL: ${pathname(location) || '/'}

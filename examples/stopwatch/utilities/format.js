@@ -7,9 +7,9 @@ function formatSeconds (seconds) {
 }
 
 module.exports = function format (elapsed) {
-  const minutes = formatMinutes(Math.floor((elapsed / 1000) / 60))
-  const seconds = formatSeconds(Math.floor((elapsed / 1000) % 60))
-  const ms = formatSeconds(Math.floor((elapsed % 1000) / 10))
+  var minutes = formatMinutes(Math.floor((elapsed / 1000) / 60))
+  var seconds = formatSeconds(Math.floor((elapsed / 1000) % 60))
+  var ms = formatSeconds(Math.floor((elapsed % 1000) / 10))
 
   return `${minutes}:${seconds}.${ms}`
 }

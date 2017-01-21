@@ -667,7 +667,7 @@ things like reduce file size, prune dependencies and clean up boilerplate code.
 Consider running some of the following:
 - [unassertify](https://github.com/twada/unassertify) - remove `assert()`
   statements which reduces file size. Use as a `--global` transform
-- [es2020](https://github.com/yoshuawuyts/es2020) - backport `const`,
+- [es2020](https://github.com/yoshuawuyts/es2020) - backport `var`,
   `arrow functions` and `template strings` to older browsers. Should be run as
   a `--global` transform
 - [yo-yoify](https://github.com/shama/yo-yoify) - replace the internal `hyperx`
@@ -683,7 +683,7 @@ Consider running some of the following:
 
 ### Choo + Internet Explorer &amp; Safari
 Out of the box `choo` only supports runtimes which support:
-* `const`
+* `var`
 * `arrow functions` (e.g. `() => {}`)
 * `template strings`
 

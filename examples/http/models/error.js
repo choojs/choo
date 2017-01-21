@@ -5,7 +5,7 @@
 // fancy CSS animation thingies
 
 // Each error is displayed 1 second
-const ERROR_TIMEOUT = 1000
+var ERROR_TIMEOUT = 1000
 
 module.exports = {
   namespace: 'app',
@@ -28,16 +28,16 @@ module.exports = {
   },
   effects: {
     error: function (err, state, send, done) {
-      const timeDone = state.errorTimeDone
-      const now = Date.now()
+      var timeDone = state.errorTimeDone
+      var now = Date.now()
 
-      const timeStamp = (timeDone && timeDone >= now)
+      var timeStamp = (timeDone && timeDone >= now)
         ? timeDone + ERROR_TIMEOUT
         : now + ERROR_TIMEOUT
 
-      const timeout = timeStamp - now
+      var timeout = timeStamp - now
 
-      const errAction = {
+      var errAction = {
         message: err.message,
         errorTimeDone: timeStamp
       }

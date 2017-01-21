@@ -1,15 +1,15 @@
-const dateformat = require('dateformat')
-const html = require('../../../html')
+var dateformat = require('dateformat')
+var html = require('../../../html')
 
 module.exports = function () {
   return function (state, prev, send) {
-    const params = state.params
-    const mailbox = params.mailbox
-    const message = params.message
-    const messages = state[mailbox].messages
+    var params = state.email.params
+    var mailbox = params.mailbox
+    var message = params.message
+    var messages = state[mailbox].messages
 
     if (message) {
-      const email = state[mailbox].messages.filter(function (msg) {
+      var email = state[mailbox].messages.filter(function (msg) {
         return String(msg.id) === message
       })[0]
 

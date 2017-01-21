@@ -1,8 +1,8 @@
-const choo = require('../../')
-const html = require('../../html')
-const plur = require('plur')
+var choo = require('../../')
+var html = require('../../html')
+var plur = require('plur')
 
-const app = choo()
+var app = choo()
 app.model({
   state: {
     counter: 0
@@ -22,7 +22,7 @@ app.model({
 })
 
 function mainView (state, prev, send) {
-  const count = state.counter
+  var count = state.counter
 
   return html`
     <main class="app">
@@ -38,5 +38,5 @@ function mainView (state, prev, send) {
 
 app.router([ '/', mainView ])
 
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)

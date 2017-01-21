@@ -1,19 +1,19 @@
-const test = require('tape')
-const Event = require('geval/event')
-const proxyquire = require('proxyquire')
-const append = require('append-child')
-const view = require('../../html')
+var test = require('tape')
+var Event = require('geval/event')
+var proxyquire = require('proxyquire')
+var append = require('append-child')
+var view = require('../../html')
 
 test('routing', function (t) {
   t.test('history', function (t) {
     t.plan(2)
 
-    const history = Event()
-    const choo = proxyquire('../..', {
+    var history = Event()
+    var choo = proxyquire('../..', {
       'sheet-router/history': history.listen
     })
 
-    const app = choo()
+    var app = choo()
 
     app.model({
       state: {
@@ -39,7 +39,7 @@ test('routing', function (t) {
       ]]
     ])
 
-    const tree = app.start()
+    var tree = app.start()
     t.on('end', append(tree))
 
     t.equal(tree.innerHTML.trim(), 'Open')
@@ -63,12 +63,12 @@ test('routing', function (t) {
   //   t.plan(1)
 
   //   resetLocation()
-  //   const hash = Event()
-  //   const choo = proxyquire('../..', {
+  //   var hash = Event()
+  //   var choo = proxyquire('../..', {
   //     'sheet-router/hash': hash.listen
   //   })
 
-  //   const app = choo({hash: true})
+  //   var app = choo({hash: true})
 
   //   app.model({
   //     state: {
@@ -93,7 +93,7 @@ test('routing', function (t) {
   //     ]]
   //   ])
 
-  //   const tree = app.start()
+  //   var tree = app.start()
   //   t.on('end', append(tree))
 
   //   tree.onclick()
@@ -116,11 +116,11 @@ test('routing', function (t) {
     t.plan(1)
 
     resetLocation()
-    const choo = proxyquire('../..', {
+    var choo = proxyquire('../..', {
       'sheet-router/history': () => t.fail('history listener attached')
     })
 
-    const app = choo({ history: false })
+    var app = choo({ history: false })
 
     app.router('/', [
       ['/', function () {
@@ -135,11 +135,11 @@ test('routing', function (t) {
   t.test('disabling href', function (t) {
     t.plan(1)
 
-    const choo = proxyquire('../..', {
+    var choo = proxyquire('../..', {
       'sheet-router/href': () => t.fail('href listener attached')
     })
 
-    const app = choo({ href: false })
+    var app = choo({ href: false })
     app.router(['/', function () {
       t.pass('rendered')
       return document.createElement('div')
@@ -150,8 +150,8 @@ test('routing', function (t) {
   t.test('viewless nesting', function (t) {
     t.plan(1)
 
-    const choo = require('../..')
-    const app = choo()
+    var choo = require('../..')
+    var app = choo()
 
     app.router({ default: '/users/123' }, [
       ['/users', [

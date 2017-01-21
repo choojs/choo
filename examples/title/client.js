@@ -1,7 +1,7 @@
-const choo = require('../../')
-const html = require('../../html')
+var choo = require('../../')
+var html = require('../../html')
 
-const app = choo()
+var app = choo()
 app.model({
   namespace: 'input',
   state: {
@@ -18,7 +18,7 @@ app.model({
   }
 })
 
-const mainView = (state, prev, send) => {
+var mainView = (state, prev, send) => {
   return html`
     <main class="app">
       <h1>${state.input.title}</h1>
@@ -32,5 +32,5 @@ const mainView = (state, prev, send) => {
 }
 
 app.router(['/', mainView])
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)

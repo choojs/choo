@@ -6,7 +6,7 @@
     <script src="../../dist/choo.min.js"></script>
     <script src="../../dist/html.min.js"></script>
     <script>
-      const app = choo()
+      var app = choo()
 
       app.model({
         namespace: 'counter',
@@ -17,7 +17,7 @@
         }
       })
 
-      const mainView = (state, prev, send) => {
+      var mainView = (state, prev, send) => {
         return html`
           <main class="app">
             <h1>Counter example</h1>
@@ -31,7 +31,7 @@
       }
 
       app.router(['/', mainView])
-      const tree = app.start()
+      var tree = app.start()
       document.body.appendChild(tree)
     </script>
   </body>

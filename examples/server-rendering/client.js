@@ -1,9 +1,9 @@
-const mount = require('../../mount')
-const choo = require('../../')
+var mount = require('../../mount')
+var choo = require('../../')
 
-const mainView = require('./view')
+var mainView = require('./view')
 
-const app = choo()
+var app = choo()
 
 app.model({
   namespace: 'message',
@@ -18,6 +18,6 @@ app.router(['/', mainView])
 if (module.parent) {
   module.exports = app
 } else {
-  const tree = app.start()
+  var tree = app.start()
   mount('#app-root', tree)
 }

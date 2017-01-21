@@ -1,8 +1,8 @@
-const html = require('../../../html')
+var html = require('../../../html')
 
-const emailList = require('../elements/email-list')
-const pathname = require('../elements/pathname')
-const nav = require('../elements/nav')
+var emailList = require('../elements/email-list')
+var pathname = require('../elements/pathname')
+var nav = require('../elements/nav')
 
 module.exports = function (state, prev, send) {
   return html`
@@ -17,6 +17,6 @@ module.exports = function (state, prev, send) {
   `
 
   function goHome () {
-    send('location:set', { pathname: '/' })
+    send('location:set', '/')
   }
 }

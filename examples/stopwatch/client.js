@@ -1,13 +1,13 @@
-const choo = require('../../')
+var choo = require('../../')
 
-const stopwatch = require('./models/stopwatch')
-const mainView = require('./views/main')
+var stopwatch = require('./models/stopwatch')
+var mainView = require('./views/main')
 
-const app = choo()
+var app = choo()
 
 app.model(stopwatch)
 
 app.router(['/', mainView])
 
-const tree = app.start()
+var tree = app.start()
 document.body.appendChild(tree)
