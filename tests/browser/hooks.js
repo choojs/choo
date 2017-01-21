@@ -6,6 +6,8 @@ const view = require('../../html')
 test('hooks', function (t) {
   t.plan(9)
 
+  var initialized = false
+
   const app = choo({
     onError: function (err) {
       t.equal(err.message, 'effect error', 'onError: receives err')
@@ -19,6 +21,10 @@ test('hooks', function (t) {
       t.equal(typeof createSend, 'function', 'onAction: createSend fn')
     },
     onStateChange: function (state, data, prev, createSend) {
+      if (!initialized) {
+        initialized = true
+        return
+      }
       t.deepEqual(data, {foo: 'bar'}, 'onState: action data')
       t.deepEqual(state.clicks, 1, 'onState: new state: 1 clicks')
       t.deepEqual(prev.clicks, 0, 'onState: prev state: 0 clicks')

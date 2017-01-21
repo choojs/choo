@@ -39,6 +39,7 @@ test('routing', function (t) {
       ]]
     ])
 
+    var called = false
     const tree = app.start()
     t.on('end', append(tree))
 
@@ -54,7 +55,10 @@ test('routing', function (t) {
     }
 
     function childView (state, prev, send) {
-      t.equal(state.user, 1)
+      if (!called) {
+        t.equal(state.user, 1)
+        called = true
+      }
       return view`<button>${state.user}</button>`
     }
   })
@@ -135,13 +139,17 @@ test('routing', function (t) {
   t.test('disabling href', function (t) {
     t.plan(1)
 
+    var called = false
     const choo = proxyquire('../..', {
       'sheet-router/href': () => t.fail('href listener attached')
     })
 
     const app = choo({ href: false })
     app.router(['/', function () {
-      t.pass('rendered')
+      if (!called) {
+        t.pass('rendered')
+        called = true
+      }
       return document.createElement('div')
     }])
     app.start()
