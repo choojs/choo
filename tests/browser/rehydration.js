@@ -1,16 +1,16 @@
-const test = require('tape')
-const onReady = require('document-ready')
-const append = require('append-child')
-const mount = require('../../mount')
-const choo = require('../../')
-const html = require('../../html')
+var test = require('tape')
+var onReady = require('document-ready')
+var append = require('append-child')
+var mount = require('../../mount')
+var choo = require('../../')
+var html = require('../../html')
 
 test('rehydration', function (t) {
   t.plan(2)
 
-  const app = choo()
+  var app = choo()
 
-  const node = html`
+  var node = html`
     <section id="app-root">
       <div>Hello squirrel!</span>
     </section>
@@ -26,12 +26,12 @@ test('rehydration', function (t) {
 
   append(node)
 
-  const tree = app.start()
+  var tree = app.start()
   mount('#app-root', tree)
 
   onReady(function () {
-    const newNode = document.querySelector('#app-root')
-    const el = newNode.children[0]
+    var newNode = document.querySelector('#app-root')
+    var el = newNode.children[0]
     t.equal(el.innerHTML, 'Hello world!', 'same as it ever was')
     t.equal(typeof el.onclick, 'function', 'attaches dom listeners')
   })

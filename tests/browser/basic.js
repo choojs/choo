@@ -1,14 +1,14 @@
-const append = require('append-child')
-const test = require('tape')
+var append = require('append-child')
+var test = require('tape')
 
-const choo = require('../../')
-const html = require('../../html')
+var choo = require('../../')
+var html = require('../../html')
 
 test('state is immutable', function (t) {
   t.plan(4)
 
-  const app = choo()
-  const state = {
+  var app = choo()
+  var state = {
     foo: 'baz',
     beep: 'boop'
   }
@@ -34,14 +34,14 @@ test('state is immutable', function (t) {
 
   let loop = -1
 
-  const asserts = [
+  var asserts = [
     (state) => t.deepEqual(state, {foo: 'baz', beep: 'boop'}, 'intial state'),
     (state) => t.deepEqual(state, {foo: 'baz', beep: 'boop'}, 'no change in state'),
     (state) => t.deepEqual(state, {foo: 'oof', beep: 'boop'}, 'change in state from reducer'),
     (state) => t.deepEqual(state, {foo: 'oof', beep: 'barp'}, 'change in state from effect')
   ]
 
-  const triggers = [
+  var triggers = [
     (send) => send('test:no-reducer-mutate'),
     (send) => send('test:mutate-on-return', {foo: 'oof'}),
     (send) => send('test:triggers-reducers')
@@ -58,6 +58,6 @@ test('state is immutable', function (t) {
     }]
   ])
 
-  const tree = app.start()
+  var tree = app.start()
   t.on('end', append(tree))
 })

@@ -1,14 +1,15 @@
-const test = require('tape')
-const append = require('append-child')
-const choo = require('../../')
-const view = require('../../html')
+var test = require('tape')
+var append = require('append-child')
+var choo = require('../../')
+var view = require('../../html')
 
 test('hooks', function (t) {
   t.plan(9)
 
   var initialized = false
 
-  const app = choo({
+  var app = choo()
+  app.use({
     onError: function (err) {
       t.equal(err.message, 'effect error', 'onError: receives err')
     },
@@ -55,6 +56,6 @@ test('hooks', function (t) {
     return view`<span></span>`
   }])
 
-  const tree = app.start()
+  var tree = app.start()
   t.on('end', append(tree))
 })
