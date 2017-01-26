@@ -449,6 +449,18 @@ the first time, consider reading through the [handbook] or
 Initialize a new `choo` app. Takes an optional object of handlers that is
 passed to [app.use()](#appusehooks).
 
+Opts can also contain the following values:
+- __opts.history:__ default: `true`. Enable a `subscription` to the browser
+  history API. e.g. updates the internal `location.href` state whenever the
+  browsers "forward" and "backward" buttons are pressed.
+- __opts.href:__ default: `true`. Handle all relative `<a
+  href="<location>"></a>` clicks and update internal `state.location`
+  accordingly.
+- __opts.hash:__ default: `false`. Enable a `subscription` to the hash change
+  event, updating the internal `state.location` state whenever the URL hash
+  changes (eg `localhost/#posts/123`). Enabling this option automatically
+  disables `opts.history` and `opts.href`.
+
 ### app.model(obj)
 Create a new model. Models modify data and perform IO. Takes the following
 arguments:
@@ -530,19 +542,9 @@ optional state object. When calling `.toString()` instead of `.start()`, all
 calls to `send()` are disabled, and `subscriptions`, `effects` and `reducers`
 aren't loaded.
 
-### tree = app.start(opts)
+### tree = app.start()
 Start the application. Returns a tree of DOM nodes that can be mounted using
-`document.body.appendChild()`. Opts can contain the following values:
-- __opts.history:__ default: `true`. Enable a `subscription` to the browser
-  history API. e.g. updates the internal `location.href` state whenever the
-  browsers "forward" and "backward" buttons are pressed.
-- __opts.href:__ default: `true`. Handle all relative `<a
-  href="<location>"></a>` clicks and update internal `state.location`
-  accordingly.
-- __opts.hash:__ default: `false`. Enable a `subscription` to the hash change
-  event, updating the internal `state.location` state whenever the URL hash
-  changes (eg `localhost/#posts/123`). Enabling this option automatically
-  disables `opts.history` and `opts.href`.
+`document.body.appendChild()`.
 
 ### view = require('choo/html')\`html\`
 Tagged template string HTML builder. Built on top of [yo-yo], [bel], and
