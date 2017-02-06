@@ -682,10 +682,7 @@ Consider running some of the following:
   with plain strings
 
 ### Choo + Internet Explorer &amp; Safari
-Out of the box `choo` only supports runtimes which support:
-* `var`
-* `arrow functions` (e.g. `() => {}`)
-* `template strings`
+Out of the box `choo` only supports runtimes which support `template strings`.
 
 This does not include Safari 9 or any version of IE. If support for these
 platforms is required you will have to provide some sort of transform that
@@ -710,13 +707,6 @@ Yup, it's greatly inspired by the `elm` architecture. But contrary to `elm`,
 
 ### Is it production ready?
 Sure.
-
-## Browser Test Status
-<a href="https://saucelabs.com/u/yoshuawuyts">
-  <img
-    src="https://saucelabs.com/browser-matrix/yoshuawuyts.svg"
-    alt="Sauce Test Status"/>
-</a>
 
 ## Installation
 ```sh
