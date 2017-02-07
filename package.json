@@ -29,16 +29,15 @@
     "tiny"
   ],
   "files": [
-    "index.js",
-    "mount.js",
-    "html.js",
-    "dist/"
+    "*.js",
+    "dist/*"
   ],
   "license": "MIT",
   "dependencies": {
     "barracks": "^9.1.0",
     "document-ready": "~1.0.2",
     "global": "^4.3.0",
+    "nanocomponent": "^1.1.1",
     "nanoraf": "^2.1.1",
     "sheet-router": "^4.0.1",
     "xtend": "^4.0.1",
