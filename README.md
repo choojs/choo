@@ -7,7 +7,7 @@
   <strong>Fun functional programming</strong>
 </div>
 <div align="center">
-  A <code>5kb</code> framework for creating sturdy frontend applications
+  A <code>7kb</code> framework for creating sturdy frontend applications
 </div>
 
 <br />
@@ -94,7 +94,7 @@
 </details>
 
 ## Features
-- __minimal size:__ weighing `5kb`, `choo` is a tiny little framework
+- __minimal size:__ weighing `7kb` (`18kb` with optional html module), `choo` is a tiny little framework
 - __single state:__ immutable single state helps reason about changes
 - __small api:__ with only 6 methods, there's not a lot to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
