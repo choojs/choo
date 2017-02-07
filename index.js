@@ -131,9 +131,8 @@ function choo (opts) {
       const send = createSend('view: ' + route, true)
       return function chooWrap (params) {
         return function (state) {
-          // TODO(yw): find a way to wrap handlers so params shows up in state
+          if (state.location) state.location.params = params
           const nwState = xtend(state)
-          nwState.location = xtend(nwState.location, { params: params })
 
           const nwPrev = prev
           prev = nwState // save for next time
