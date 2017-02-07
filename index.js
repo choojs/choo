@@ -1,5 +1,6 @@
 const createLocation = require('sheet-router/create-location')
 const onHistoryChange = require('sheet-router/history')
+const wrapHook = require('barracks/wrap-hook')
 const sheetRouter = require('sheet-router')
 const onHref = require('sheet-router/href')
 const walk = require('sheet-router/walk')
@@ -19,6 +20,7 @@ function choo (opts) {
 
   const _store = start._store = barracks()
   var _router = start._router = null
+  var _routerWraps = []
   var _routerOpts = null
   var _rootNode = null
   var _routes = null
@@ -110,6 +112,7 @@ function choo (opts) {
   // (obj) -> null
   function use (hooks) {
     assert.equal(typeof hooks, 'object', 'choo.use: hooks should be an object')
+    if (hooks.wrapRouter) _routerWraps.push(hooks.wrapRouter)
     _store.use(hooks)
   }
 
@@ -122,6 +125,7 @@ function choo (opts) {
       routerOpts = {}
     }
     routerOpts = mutate({ thunk: 'match' }, routerOpts)
+    if (_routerWraps.length) routes = wrapHook(routes, _routerWraps)
     const router = sheetRouter(routerOpts, routes)
     walk(router, wrap)
 
