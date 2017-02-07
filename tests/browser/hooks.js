@@ -1,12 +1,15 @@
-const test = require('tape')
-const append = require('append-child')
-const choo = require('../../')
-const view = require('../../html')
+var test = require('tape')
+var append = require('append-child')
+var choo = require('../../')
+var view = require('../../html')
 
 test('hooks', function (t) {
   t.plan(9)
 
-  const app = choo({
+  var initialized = false
+
+  var app = choo()
+  app.use({
     onError: function (err) {
       t.equal(err.message, 'effect error', 'onError: receives err')
     },
@@ -19,6 +22,10 @@ test('hooks', function (t) {
       t.equal(typeof createSend, 'function', 'onAction: createSend fn')
     },
     onStateChange: function (state, data, prev, createSend) {
+      if (!initialized) {
+        initialized = true
+        return
+      }
       t.deepEqual(data, {foo: 'bar'}, 'onState: action data')
       t.deepEqual(state.clicks, 1, 'onState: new state: 1 clicks')
       t.deepEqual(prev.clicks, 0, 'onState: prev state: 0 clicks')
@@ -49,6 +56,6 @@ test('hooks', function (t) {
     return view`<span></span>`
   }])
 
-  const tree = app.start()
+  var tree = app.start()
   t.on('end', append(tree))
 })

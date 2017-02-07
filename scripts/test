@@ -13,8 +13,8 @@ lint () {
 }
 
 test_electron () {
-  check_deps
-  lint
+  # check_deps
+  # lint
   browserify tests/**/*.js \
     -t es2020 \
     -p proxyquire-universal \
