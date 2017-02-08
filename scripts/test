@@ -54,7 +54,8 @@ check_deps () {
   dependency-check . --entry 'index.js'
   dependency-check . --entry 'index.js' --extra --no-dev \
     -i document-ready \
-    -i global
+    -i global \
+    -i morphdom
 }
 
 # set CLI flags
