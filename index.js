@@ -9,6 +9,7 @@ const nanoraf = require('nanoraf')
 const assert = require('assert')
 const xtend = require('xtend')
 const yo = require('yo-yo')
+const tick = require('nanotick')()
 
 module.exports = choo
 
@@ -62,9 +63,16 @@ function choo (opts) {
   // (str?, obj?) -> DOMNode
   function start () {
     _store.model(createLocationModel(opts))
-    const createSend = _store.start(opts)
+    const createSend = _store.start(xtend(opts, {
+      subscriptions: false,
+      noSubscriptions: true
+    }))
     _router = start._router = createRouter(_routerOpts, _routes, createSend)
     const state = _store.state({state: {}})
+    ;(tick(function () {
+      // Trigger subscriptions
+      _store.start()
+    }))()
 
     const tree = _router(state.location.href, state)
     assert.ok(tree, 'choo.start: the router should always return a valid DOM node')
