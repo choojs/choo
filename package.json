@@ -39,7 +39,7 @@
     "barracks": "^9.1.0",
     "document-ready": "~1.0.2",
     "global": "^4.3.0",
-    "nanoraf": "^2.1.1",
+    "nanoraf": "^3.0.0",
     "sheet-router": "^4.0.1",
     "xtend": "^4.0.1",
     "yo-yo": "^1.2.2"
