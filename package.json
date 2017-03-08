@@ -70,7 +70,7 @@
     "tachyons": "^4.0.0-beta.19",
     "tape": "^4.5.1",
     "tape-istanbul": "~1.0.2",
-    "tape-run": "~2.1.4",
+    "tape-run": "~3.0.0",
     "uglifyify": "^3.0.2",
     "uglifyjs": "^2.4.10",
     "unassertify": "^2.0.3",
