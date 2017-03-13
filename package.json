@@ -4,9 +4,9 @@
   "description": "A 5kb framework for creating sturdy frontend applications",
   "main": "index.js",
   "scripts": {
-    "deps": "./scripts/test deps",
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
     "start": "bankai start example --open",
-    "test": "npm run test:electron",
+    "test": "standard && npm run deps && node test.js",
     "build:dev": "echo 'to be implemented'",
     "build:min": "echo 'to be implemented'",
     "prepublish": "npm run build:dev && npm run build:min"
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "bankai": "^5.4.0",
+    "dependency-check": "^2.8.0",
     "sheetify": "^6.0.1",
     "spok": "^0.7.0",
     "tape": "^4.6.3",
