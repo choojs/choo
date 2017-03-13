@@ -1,216 +1,118 @@
-const createLocation = require('sheet-router/create-location')
-const onHistoryChange = require('sheet-router/history')
-const sheetRouter = require('sheet-router')
-const onHref = require('sheet-router/href')
-const walk = require('sheet-router/walk')
-const mutate = require('xtend/mutable')
-const barracks = require('barracks')
-const nanoraf = require('nanoraf')
-const assert = require('assert')
-const xtend = require('xtend')
-const yo = require('yo-yo')
+var documentReady = require('document-ready')
+var nanorouter = require('nanorouter')
+var nanomount = require('nanomount')
+var nanomorph = require('nanomorph')
+var nanoraf = require('nanoraf')
+var nanobus = require('nanobus')
+var assert = require('assert')
 
-module.exports = choo
+var onHistoryChange = require('./lib/history')
+var onHref = require('./lib/href')
 
-// framework for creating sturdy web applications
-// null -> fn
-function choo (opts) {
+module.exports = Framework
+
+function Framework (opts) {
   opts = opts || {}
 
-  const _store = start._store = barracks()
-  var _router = start._router = null
-  var _routerOpts = null
-  var _rootNode = null
-  var _routes = null
-  var _frame = null
-
-  if (typeof window !== 'undefined') {
-    _store.use({ onStateChange: render })
+  var routerOpts = {
+    default: opts.defaultRoute || '/404',
+    curry: true
   }
-  _store.use(opts)
 
-  start.toString = toString
-  start.router = router
-  start.model = model
-  start.start = start
-  start.stop = _store.stop
-  start.use = use
+  var router = nanorouter(routerOpts)
+  var bus = nanobus()
+  var rerender = null
+  var tree = null
+  var state = {}
 
-  return start
+  return {
+    toString: toString,
+    use: register,
+    mount: mount,
+    route: route,
+    start: start
+  }
 
-  // render the application to a string
-  // (str, obj) -> str
-  function toString (route, serverState) {
-    serverState = serverState || {}
-    assert.equal(typeof route, 'string', 'choo.app.toString: route must be a string')
-    assert.equal(typeof serverState, 'object', 'choo.app.toString: serverState must be an object')
-    _store.start({ subscriptions: false, reducers: false, effects: false })
+  function route (route, handler) {
+    router.on(route, function (params) {
+      return function () {
+        state.params = params
+        return handler(state, emit)
+      }
+    })
+  }
 
-    const state = _store.state({ state: serverState })
-    const router = createRouter(_routerOpts, _routes, createSend)
-    const tree = router(route, state)
-    return tree.outerHTML || tree.toString()
+  function register (cb) {
+    cb(state, bus)
+  }
 
-    function createSend () {
-      return function send () {
-        assert.ok(false, 'choo: send() cannot be called from Node')
+  function start () {
+    tree = router(createLocation(), state, emit)
+    rerender = nanoraf(function () {
+      var newTree = router(createLocation(), state, emit)
+      tree = nanomorph(tree, newTree)
+    })
+
+    bus.on('render', rerender)
+
+    if (opts.history !== false) {
+      onHistoryChange(function (href) {
+        bus.emit('pushState', window.location.href)
+        scrollIntoView()
+      })
+
+      if (opts.href !== false) {
+        onHref(function (location) {
+          var href = location.href
+          var currHref = window.location.href
+          if (href === currHref) return
+          window.history.pushState({}, null, href)
+          bus.emit('pushState', window.location.href)
+          bus.emit('render')
+          scrollIntoView()
+        })
       }
     }
-  }
 
-  // start the application
-  // (str?, obj?) -> DOMNode
-  function start () {
-    _store.model(createLocationModel(opts))
-    const createSend = _store.start(opts)
-    _router = start._router = createRouter(_routerOpts, _routes, createSend)
-    const state = _store.state({state: {}})
-
-    const tree = _router(state.location.href, state)
-    assert.ok(tree, 'choo.start: the router should always return a valid DOM node')
-    assert.equal(typeof tree, 'object', 'choo.start: the router should always return a valid DOM node')
-    _rootNode = tree
-    tree.done = done
+    documentReady(function () {
+      bus.emit('DOMContentLoaded')
+    })
 
     return tree
-
-    // allow a 'mount' function to return the new node
-    // html -> null
-    function done (newNode) {
-      _rootNode = newNode
-    }
   }
 
-  // update the DOM after every state mutation
-  // (obj, obj, obj, str, fn) -> null
-  function render (state, data, prev, name, createSend) {
-    if (!_frame) {
-      _frame = nanoraf(function (state, prev) {
-        const newTree = _router(state.location.href, state, prev)
-        _rootNode = yo.update(_rootNode, newTree)
-      })
-    }
-    _frame(state, prev)
+  function emit (eventName, data) {
+    bus.emit(eventName, data)
   }
 
-  // register all routes on the router
-  // (str?, [fn|[fn]]) -> obj
-  function router (defaultRoute, routes) {
-    _routerOpts = defaultRoute
-    _routes = routes
+  function mount (selector) {
+    var newTree = start()
+    documentReady(function () {
+      var root = document.querySelector(selector)
+      assert.ok(root, 'could not query selector: ' + selector)
+      nanomount(root, newTree)
+      tree = root
+    })
   }
 
-  // create a new model
-  // (str?, obj) -> null
-  function model (model) {
-    _store.model(model)
-  }
-
-  // register a plugin
-  // (obj) -> null
-  function use (hooks) {
-    assert.equal(typeof hooks, 'object', 'choo.use: hooks should be an object')
-    _store.use(hooks)
-  }
-
-  // create a new router with a custom `createRoute()` function
-  // (str?, obj) -> null
-  function createRouter (routerOpts, routes, createSend) {
-    var prev = null
-    if (!routes) {
-      routes = routerOpts
-      routerOpts = {}
-    }
-    routerOpts = mutate({ thunk: 'match' }, routerOpts)
-    const router = sheetRouter(routerOpts, routes)
-    walk(router, wrap)
-
-    return router
-
-    function wrap (route, handler) {
-      const send = createSend('view: ' + route, true)
-      return function chooWrap (params) {
-        return function (state) {
-          // TODO(yw): find a way to wrap handlers so params shows up in state
-          const nwState = xtend(state)
-          nwState.location = xtend(nwState.location, { params: params })
-
-          const nwPrev = prev
-          prev = nwState // save for next time
-
-          if (opts.freeze !== false) Object.freeze(nwState)
-          return handler(nwState, nwPrev, send)
-        }
-      }
-    }
+  function toString (location, state) {
+    state = state || {}
+    return router(location, state)
   }
 }
 
-// application location model
-// obj -> obj
-function createLocationModel (opts) {
-  return {
-    namespace: 'location',
-    state: mutate(createLocation(), { params: {} }),
-    subscriptions: createSubscriptions(opts),
-    effects: { set: setLocation, touch: touchLocation },
-    reducers: { update: updateLocation }
+function scrollIntoView () {
+  var hash = window.location.hash
+  if (hash) {
+    try {
+      var el = document.querySelector(hash)
+      if (el) el.scrollIntoView(true)
+    } catch (e) {}
   }
+}
 
-  // update the location on the state
-  // try and jump to an anchor on the page if it exists
-  // (obj, obj) -> obj
-  function updateLocation (state, data) {
-    if (opts.history !== false && data.hash && data.hash !== state.hash) {
-      try {
-        const el = document.querySelector(data.hash)
-        if (el) el.scrollIntoView(true)
-      } catch (e) {
-        return data
-      }
-    }
-    return data
-  }
-
-  // update internal location only
-  // (str, obj, fn, fn) -> null
-  function touchLocation (state, data, send, done) {
-    const newLocation = createLocation(state, data)
-    send('location:update', newLocation, done)
-  }
-
-  // set a new location e.g. "/foo/bar#baz?beep=boop"
-  // (str, obj, fn, fn) -> null
-  function setLocation (state, data, send, done) {
-    const newLocation = createLocation(state, data)
-
-    // update url bar if it changed
-    if (opts.history !== false && newLocation.href !== state.href) {
-      window.history.pushState({}, null, newLocation.href)
-    }
-
-    send('location:update', newLocation, done)
-  }
-
-  function createSubscriptions (opts) {
-    const subs = {}
-
-    if (opts.history !== false) {
-      subs.handleHistory = function (send, done) {
-        onHistoryChange(function navigate (href) {
-          send('location:touch', href, done)
-        })
-      }
-    }
-
-    if (opts.href !== false) {
-      subs.handleHref = function (send, done) {
-        onHref(function navigate (location) {
-          send('location:set', location, done)
-        })
-      }
-    }
-
-    return subs
-  }
+function createLocation () {
+  var pathname = window.location.pathname.replace(/\/$/, '')
+  var hash = window.location.hash.replace(/^#/, '/')
+  return pathname + hash
 }
