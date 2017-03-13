@@ -7,7 +7,7 @@
   <strong>Fun functional programming</strong>
 </div>
 <div align="center">
-  A <code>5kb</code> framework for creating sturdy frontend applications
+  A <code>4kb</code> framework for creating sturdy frontend applications
 </div>
 
 <br />
