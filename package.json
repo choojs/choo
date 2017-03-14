@@ -4,7 +4,7 @@
   "description": "A 5kb framework for creating sturdy frontend applications",
   "main": "index.js",
   "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "deps": "dependency-check --entry ./html.js . && dependency-check . --extra --no-dev --entry ./html.js",
     "start": "bankai start example --open",
     "test": "standard && npm run deps && node test.js",
     "build:dev": "echo 'to be implemented'",
@@ -29,8 +29,7 @@
     "nanomorph": "^4.0.0",
     "nanomount": "^1.0.0",
     "nanoraf": "^3.0.0",
-    "nanorouter": "^2.0.0",
-    "xtend": "^4.0.1"
+    "nanorouter": "^2.0.0"
   },
   "devDependencies": {
     "bankai": "^5.4.0",
@@ -39,6 +38,7 @@
     "spok": "^0.7.0",
     "tape": "^4.6.3",
     "todomvc-app-css": "^2.0.6",
-    "todomvc-common": "^1.0.3"
+    "todomvc-common": "^1.0.3",
+    "xtend": "^4.0.1"
   }
 }
