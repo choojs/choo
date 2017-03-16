@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "bankai": "^5.4.0",
+    "choo-expose": "^1.0.0",
     "dependency-check": "^2.8.0",
     "sheetify": "^6.0.1",
     "spok": "^0.7.0",
