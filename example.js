@@ -7,6 +7,7 @@ var choo = require('./')
 css('todomvc-common/base.css')
 css('todomvc-app-css/index.css')
 
+// we export this so tests can run
 if (module.parent) {
   exports.todoStore = todoStore
 } else {
@@ -19,7 +20,7 @@ if (module.parent) {
     app.use(logger())
   }
   app.use(expose())
-  app.use(todoStore())
+  app.use(todoStore)
 
   app.route('/', mainView)
   app.route('#active', mainView)
@@ -45,147 +46,143 @@ function mainView (state, emit) {
   `
 }
 
-function todoStore () {
-  return function (state, emitter) {
-    var localState = state.todos
+function todoStore (state, emitter) {
+  if (!state.todos) {
+    state.todos = {}
 
-    if (!localState) {
-      localState = state.todos = {}
+    state.todos.active = []
+    state.todos.done = []
+    state.todos.all = []
 
-      localState.active = []
-      localState.done = []
-      localState.all = []
+    state.todos.idCounter = 0
+  }
 
-      localState.idCounter = 0
+  emitter.on('DOMContentLoaded', function () {
+    emitter.emit('log:debug', 'Loading todos model')
+
+    // CRUD
+    emitter.on('todos:create', create)
+    emitter.on('todos:update', update)
+    emitter.on('todos:delete', del)
+
+    // Shorthand
+    emitter.on('todos:edit', edit)
+    emitter.on('todos:unedit', unedit)
+    emitter.on('todos:toggle', toggle)
+    emitter.on('todos:toggleAll', toggleAll)
+    emitter.on('todos:deleteCompleted', deleteCompleted)
+  })
+
+  function create (name) {
+    var item = {
+      id: state.todos.idCounter,
+      editing: false,
+      done: false,
+      name: name
     }
 
-    emitter.on('DOMContentLoaded', function () {
-      emitter.emit('log:debug', 'Loading todos model')
+    state.todos.idCounter += 1
+    state.todos.active.push(item)
+    state.todos.all.push(item)
+    emitter.emit('render')
+  }
 
-      // CRUD
-      emitter.on('todos:create', create)
-      emitter.on('todos:update', update)
-      emitter.on('todos:delete', del)
+  function edit (id) {
+    state.todos.all.forEach(function (todo) {
+      if (todo.id === id) todo.editing = true
+    })
+    emitter.emit('render')
+  }
 
-      // Shorthand
-      emitter.on('todos:edit', edit)
-      emitter.on('todos:unedit', unedit)
-      emitter.on('todos:toggle', toggle)
-      emitter.on('todos:toggleAll', toggleAll)
-      emitter.on('todos:deleteCompleted', deleteCompleted)
+  function unedit (id) {
+    state.todos.all.forEach(function (todo) {
+      if (todo.id === id) todo.editing = false
+    })
+    emitter.emit('render')
+  }
+
+  function update (newTodo) {
+    var todo = state.todos.all.filter(function (todo) {
+      return todo.id === newTodo.id
+    })[0]
+
+    if (newTodo.done && todo.done === false) {
+      state.todos.active.splice(state.todos.active.indexOf(todo), 1)
+      state.todos.done.push(todo)
+    } else if (newTodo.done === false && todo.done) {
+      state.todos.done.splice(state.todos.done.indexOf(todo), 1)
+      state.todos.active.push(todo)
+    }
+
+    mutate(todo, newTodo)
+    emitter.emit('render')
+  }
+
+  function del (id) {
+    var i = null
+    var todo = null
+    state.todos.all.forEach(function (_todo, j) {
+      if (_todo.id === id) {
+        i = j
+        todo = _todo
+      }
+    })
+    state.todos.all.splice(i, 1)
+
+    if (todo.done) {
+      var done = state.todos.done
+      var doneIndex = done[todo]
+      done.splice(doneIndex, 1)
+    } else {
+      var active = state.todos.active
+      var activeIndex = active[todo]
+      active.splice(activeIndex, 1)
+    }
+    emitter.emit('render')
+  }
+
+  function deleteCompleted (data) {
+    var done = state.todos.done
+    done.forEach(function (todo) {
+      var index = state.todos.all.indexOf(todo)
+      state.todos.all.splice(index, 1)
+    })
+    state.todos.done = []
+    emitter.emit('render')
+  }
+
+  function toggle (id) {
+    var todo = state.todos.all.filter(function (todo) {
+      return todo.id === id
+    })[0]
+    var done = todo.done
+    todo.done = !done
+    var arr = done ? state.todos.done : state.todos.active
+    var target = done ? state.todos.active : state.todos.done
+    var index = arr.indexOf(todo)
+    arr.splice(index, 1)
+    target.push(todo)
+    emitter.emit('render')
+  }
+
+  function toggleAll (data) {
+    var todos = state.todos.all
+    var allDone = state.todos.all.length &&
+      state.todos.done.length === state.todos.all.length
+
+    todos.forEach(function (todo) {
+      todo.done = !allDone
     })
 
-    function create (name) {
-      var item = {
-        id: localState.idCounter,
-        editing: false,
-        done: false,
-        name: name
-      }
-
-      localState.idCounter += 1
-      localState.active.push(item)
-      localState.all.push(item)
-      emitter.emit('render')
+    if (allDone) {
+      state.todos.done = []
+      state.todos.active = state.todos.all
+    } else {
+      state.todos.done = state.todos.all
+      state.todos.active = []
     }
 
-    function edit (id) {
-      localState.all.forEach(function (todo) {
-        if (todo.id === id) todo.editing = true
-      })
-      emitter.emit('render')
-    }
-
-    function unedit (id) {
-      localState.all.forEach(function (todo) {
-        if (todo.id === id) todo.editing = false
-      })
-      emitter.emit('render')
-    }
-
-    function update (newTodo) {
-      var todo = localState.all.filter(function (todo) {
-        return todo.id === newTodo.id
-      })[0]
-
-      if (newTodo.done && todo.done === false) {
-        localState.active.splice(localState.active.indexOf(todo), 1)
-        localState.done.push(todo)
-      } else if (newTodo.done === false && todo.done) {
-        localState.done.splice(localState.done.indexOf(todo), 1)
-        localState.active.push(todo)
-      }
-
-      mutate(todo, newTodo)
-      emitter.emit('render')
-    }
-
-    function del (id) {
-      var i = null
-      var todo = null
-      state.todos.all.forEach(function (_todo, j) {
-        if (_todo.id === id) {
-          i = j
-          todo = _todo
-        }
-      })
-      state.todos.all.splice(i, 1)
-
-      if (todo.done) {
-        var done = localState.done
-        var doneIndex = done[todo]
-        done.splice(doneIndex, 1)
-      } else {
-        var active = localState.active
-        var activeIndex = active[todo]
-        active.splice(activeIndex, 1)
-      }
-      emitter.emit('render')
-    }
-
-    function deleteCompleted (data) {
-      var done = localState.done
-      done.forEach(function (todo) {
-        var index = state.todos.all.indexOf(todo)
-        state.todos.all.splice(index, 1)
-      })
-      localState.done = []
-      emitter.emit('render')
-    }
-
-    function toggle (id) {
-      var todo = localState.all.filter(function (todo) {
-        return todo.id === id
-      })[0]
-      var done = todo.done
-      todo.done = !done
-      var arr = done ? localState.done : localState.active
-      var target = done ? localState.active : localState.done
-      var index = arr.indexOf(todo)
-      arr.splice(index, 1)
-      target.push(todo)
-      emitter.emit('render')
-    }
-
-    function toggleAll (data) {
-      var todos = localState.all
-      var allDone = localState.all.length &&
-        localState.done.length === localState.all.length
-
-      todos.forEach(function (todo) {
-        todo.done = !allDone
-      })
-
-      if (allDone) {
-        localState.done = []
-        localState.active = localState.all
-      } else {
-        localState.done = localState.all
-        localState.active = []
-      }
-
-      emitter.emit('render')
-    }
+    emitter.emit('render')
   }
 }
 
