@@ -95,9 +95,11 @@ function Framework (opts) {
     })
   }
 
-  function toString (location, state) {
-    state = state || {}
-    return router(location, state)
+  function toString (location, _state) {
+    state = _state || {}
+    var html = router(location)
+    assert.equal()
+    return html.toString()
   }
 }
 
