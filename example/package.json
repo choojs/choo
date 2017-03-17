@@ -1,0 +1,23 @@
+{
+  "name": "choo-todomvc-example",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "start": "bankai start --open",
+    "build": "bankai build --optimize",
+    "test": "standard && npm run deps && node test.js"
+  },
+  "dependencies": {
+    "choo-expose": "^1.0.0",
+    "sheetify": "^6.0.1",
+    "todomvc-app-css": "^2.0.6",
+    "todomvc-common": "^1.0.3",
+    "xtend": "^4.0.1"
+  },
+  "devDependencies": {
+    "bankai": "^5.4.0",
+    "dependency-check": "^2.8.0",
+    "standard": "^9.0.1"
+  }
+}

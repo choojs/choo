@@ -32,15 +32,9 @@
     "nanorouter": "^2.0.0"
   },
   "devDependencies": {
-    "bankai": "^5.4.0",
-    "choo-expose": "^1.0.0",
     "dependency-check": "^2.8.0",
-    "sheetify": "^6.0.1",
     "spok": "^0.7.0",
     "standard": "^9.0.1",
-    "tape": "^4.6.3",
-    "todomvc-app-css": "^2.0.6",
-    "todomvc-common": "^1.0.3",
-    "xtend": "^4.0.1"
+    "tape": "^4.6.3"
   }
 }

@@ -2,7 +2,7 @@ var mutate = require('xtend/mutable')
 var expose = require('choo-expose')
 var css = require('sheetify')
 var html = require('bel')
-var choo = require('./')
+var choo = require('../')
 
 css('todomvc-common/base.css')
 css('todomvc-app-css/index.css')
