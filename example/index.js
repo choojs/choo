@@ -131,11 +131,21 @@ function todoStore (state, emitter) {
 
     if (todo.done) {
       var done = state.todos.done
-      var doneIndex = done[todo]
+      var doneIndex
+      done.forEach(function (_todo, j) {
+        if (_todo.id === id) {
+          doneIndex = j
+        }
+      })
       done.splice(doneIndex, 1)
     } else {
       var active = state.todos.active
-      var activeIndex = active[todo]
+      var activeIndex
+      active.forEach(function (_todo, j) {
+        if (_todo.id === id) {
+          activeIndex = j
+        }
+      })
       active.splice(activeIndex, 1)
     }
     emitter.emit('render')
