@@ -51,7 +51,7 @@
       Website
     </a>
     <span> | </span>
-    <a href="https://yoshuawuyts.gitbooks.io/choo/content">
+    <a href="https://github.com/yoshuawuyts/choo-handbook">
       Handbook
     </a>
     <span> | </span>
