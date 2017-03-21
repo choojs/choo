@@ -47,18 +47,22 @@
 
 <div align="center">
   <h3>
+    <a href="https://choo.io">
+      Website
+    </a>
+    <span> | </span>
     <a href="https://yoshuawuyts.gitbooks.io/choo/content">
       Handbook
     </a>
     <span> | </span>
-      <a href="https://github.com/YerkoPalma/awesome-choo">
-        Ecosystem
-      </a>
+    <a href="https://github.com/YerkoPalma/awesome-choo">
+      Ecosystem
+    </a>
     <span> | </span>
-      <a href="https://github.com/trainyard/choo-cli">
-        CLI
-      </a>
-    <span> | </span>
+    <!-- <a href="https://github.com/trainyard/choo-cli"> -->
+    <!--   CLI -->
+    <!-- </a> -->
+    <!-- <span> | </span> -->
     <a href="https://github.com/yoshuawuyts/choo/blob/master/.github/CONTRIBUTING.md">
       Contributing
     </a>
@@ -88,9 +92,9 @@
 - [Support](#support)
 
 ## Features
-- __minimal size:__ weighing `5kb`, `choo` is a tiny little framework
-- __single state:__ immutable single state helps reason about changes
-- __small api:__ with only 6 methods there's very few to learn
+- __minimal size:__ weighing `4kb`, `choo` is a tiny little framework
+- __event based:__ our performant event system makes writing apps easy
+- __small api:__ with only 6 methods there's not much to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
 - __isomorphic:__ renders seamlessly in both Node and browsers
 - __very cute:__ choo choo!
@@ -165,7 +169,7 @@ _"performant"_, _"rigid"_, _"robust"_ - I like programming to be light, fun and
 non-scary. `choo` embraces that.
 
 Also imagine telling some business people you chose to rewrite something
-critical for serious bizcorp using `choo`.
+critical for serious bizcorp using a train themed framework.
 :steam_locomotive::train::train::train:
 
 ### Is it called choo, choo.js or...?
@@ -210,8 +214,9 @@ of [nanobus](https://github.com/yoshuawuyts/nanobus/). You can listen to
 messages by calling `emitter.on()` and emit messages by calling `bus.emit()`.
 
 Choo fires messages when certain events happen:
-- __DOMContentLoaded:__ when the DOM has succesfully finished loading
-- __render:__ when the DOM re-renders
+- __`.on('DOMContentLoaded')`__: when the DOM has succesfully finished loading
+- __`.on('render')`__: when the DOM re-renders
+- __`.on('pushState')`__: when the history API is triggered
 
 ### `app.route(routeName, handler)`
 Register a route on the router
@@ -337,9 +342,8 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [es2020]: https://github.com/yoshuawuyts/es2020
 [handbook]: https://github.com/yoshuawuyts/choo-handbook
 [hyperx]: https://github.com/substack/hyperx
-[inu]: https://github.com/ahdinosaur/inu
 [morphdom-bench]: https://github.com/patrick-steele-idem/morphdom#benchmarks
-[morphdom]: https://github.com/yoshuawuyts/nanomorph
-[sheet-router]: https://github.com/yoshuawuyts/sheet-router
+[nanomorph]: https://github.com/yoshuawuyts/nanomorph
+[nanorouter]: https://github.com/yoshuawuyts/nanorouter
 [yo-yo]: https://github.com/maxogden/yo-yo
 [yo-yoify]: https://github.com/shama/yo-yoify
