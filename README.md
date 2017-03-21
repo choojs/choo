@@ -51,7 +51,7 @@
       Website
     </a>
     <span> | </span>
-    <a href="https://yoshuawuyts.gitbooks.io/choo/content">
+    <a href="https://github.com/yoshuawuyts/choo-handbook">
       Handbook
     </a>
     <span> | </span>
@@ -257,10 +257,28 @@ Choo fires messages when certain events happen:
 - __`.on('pushState')`__: when the history API is triggered
 
 ### `app.route(routeName, handler)`
-Register a route on the router
+Register a route on the router. Uses [nanorouter][nanorouter] under the hood.
+Params can be registered by prepending the routename with `:routename`, e.g.
+`/foo/:bar/:baz`. The value of the param will be saved on `state.params` (e.g.
+`state.params.bar`). Wildcard routes can be registered with `*`, e.g. `/foo/*`.
+The value of the wildcard will be saved under `state.params.wildcard`.
+
+Using hashes to delimit routes is supported out of the box (e.g. `/foo#bar`).
+When a hash is found we also check if there's an available anchor on the same
+page, and will scroll the screen to the position. Using both hashes in URLs and
+anchor links on the page is generally not recommended.
+
+New routes can be triggered through `emitter.emit('pushState', <routename>)`.
+By default we also catch and match all `<a href="">` clicks against the router.
+This can be disabled by setting `opts.href` to `false` in the constructor.
+
+Querystrings (`?foo=bar`) are ignored when matching routes. They should be
+extracted from the `window.location` object on render events, from either a
+custom event listener or the matched views.
 
 ### `app.mount(selector)`
-Start the application and mount it on the given `querySelector`
+Start the application and mount it on the given `querySelector`. Uses
+[nanomount][nanomount] under the hood.
 
 ### `tree = app.start()`
 Start the application. Returns a tree of DOM nodes that can be mounted using
@@ -268,7 +286,6 @@ Start the application. Returns a tree of DOM nodes that can be mounted using
 
 ### `app.toString(location, [state])`
 Render the application to a string. Useful for rendering on the server.
-`.use()` calls w
 
 ### `framework/html`
 Create DOM nodes from template string literals. Exposes
@@ -383,6 +400,7 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [morphdom-bench]: https://github.com/patrick-steele-idem/morphdom#benchmarks
 [nanomorph]: https://github.com/yoshuawuyts/nanomorph
 [nanorouter]: https://github.com/yoshuawuyts/nanorouter
+[nanomount]: https://github.com/yoshuawuyts/nanomount
 [yo-yo]: https://github.com/maxogden/yo-yo
 [yo-yoify]: https://github.com/shama/yo-yoify
 [unassertify]: https://github.com/unassert-js/unassertify
