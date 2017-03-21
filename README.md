@@ -85,6 +85,7 @@
 - [Features](#features)
 - [Example](#example)
 - [Philosophy](#philosophy)
+- [Optimizations](#optimizations)
 - [FAQ](#faq)
 - [API](#api)
 - [Installation](#installation)
@@ -161,6 +162,43 @@ everyone on a team, no matter the size, to fully understand how an application
 is laid out. And once an application is built, we want it to be small,
 performant and easy to reason about. All of which makes for easy to debug code,
 better results and super smiley faces.
+
+## Optimizations
+Choo is reasonably fast out of the box. But sometimes you might hit a scenario
+where a particular part of the UI slows down the application, and you want to
+speed it up. Here are some optimizations that are possible.
+
+### Reordering lists
+To be implemented. (See [yoshuawuyts/nanomorph#8](https://github.com/yoshuawuyts/nanomorph/issues/8))
+
+### Caching DOM elements
+Sometimes we want to tell the algorithm to not evaluate certain nodes (and its
+children). This can be because we're sure they haven't changed, or perhaps
+because another piece of code is managing that part of the DOM tree. To achieve
+this `nanomorph` evaluates the `.isSameNode()` method on nodes to determine if
+they should be updated or not.
+
+```js
+var el = html`<div>node</div>`
+
+// tell nanomorph to not compare the DOM tree if they're both divs
+el.isSameNode = function (target) {
+  return (target && target.nodeName && target.nodeName === 'DIV')
+}
+```
+
+### Pruning dependencies
+We use the `require('assert')` module from Node core to provide helpful error
+messages in development. In production you probably want to strip this using
+[unassertify][unassertify].
+
+To convert inlined HTML to valid DOM nodes we use `require('bel')`. This has
+overhead during runtime, so for production environments we should unwrap this
+using [yo-yoify][yo-yoify].
+
+Setting up browserify transforms can sometimes be a bit of hassle; to make this
+more convenient we recommend using [bankai][bankai] with `--optimize` to
+compile your assets for production.
 
 ## FAQ
 ### Why is it called choo?
@@ -347,3 +385,4 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [nanorouter]: https://github.com/yoshuawuyts/nanorouter
 [yo-yo]: https://github.com/maxogden/yo-yo
 [yo-yoify]: https://github.com/shama/yo-yoify
+[unassertify]: https://github.com/unassert-js/unassertify
