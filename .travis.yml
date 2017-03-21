@@ -10,8 +10,8 @@ addons:
 before_install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-script: npm run test:cov
-after_script: npm i -g codecov.io && cat ./coverage/lcov.info | codecov
+script: npm run test
+# after_script: npm i -g codecov.io && cat ./coverage/lcov.info | codecov
 env:
   global:
   - secure: t6MYp/rV/HXKQ8yb21fDMAV9fkwZmPFJ/4Za4TeXvVOojFan4Q40j5VZF6wiVBHTemctMRueQ2iuGl8pgNX3jqRHMKvNS5zKCCUHYvmyvMLQiWpkDC3Lz3R9oz2fooY1f0fpnzaE0TmJHoZQcVDYDTZSk/o6fNXJQnI4SUG/nmnb3VAA0H8lRZ1OidkAbBzJNFj8i0ZTuaqwo0uQVhNDSvLLKgM94ryF+DB+c0vKuZr85wn+xnuJ1ZPZM5S+uZrOAY+TnwD1QvstULHnbF6sqH5WuUkUCHpXV84Hz2pr7GL7yCkj65XoNoqvnoR5ETv8yBa5r/OccrCY9NqXSCv/zWiS4vRWybrJq0Mdx67cXHKHjbQMrILHsbRBDxbCJwn+LAQlwRUoktEcI9bNRUhi0Wt/LQmLvyfldt7mMvgl+7srBdlZWPoTZWRZKqu04XpYTaqAnAeNOjfSOOuB29uVTRu7n9pCeKA/gDNYOWCF3CfN++ztbL+E2OpPnpoRWwoSXnXzFQrLofq6zF1bpIrb5UpaqNYGX+PifUYX+hRYKLdOqqAS3JlJBqG+0ArRZgf3sm/uk4ZDesV5Ee9qB7Ty32Vh66wmU8P6wZjgare4TL+hcsgtNRrd6+kZwXfn0mqcqeFovN2yPpQSmF1U5+ki8+o1NcFFYdeucWa7E9ULkVE=
