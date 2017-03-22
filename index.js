@@ -57,7 +57,12 @@ function Framework (opts) {
 
     if (opts.history !== false) {
       onHistoryChange(function (href) {
-        bus.emit('pushState', window.location.href)
+        bus.emit('pushState')
+      })
+
+      bus.on('pushState', function (href) {
+        if (href) window.history.pushState({}, null, href)
+        bus.emit('render')
         scrollIntoView()
       })
 
@@ -66,10 +71,7 @@ function Framework (opts) {
           var href = location.href
           var currHref = window.location.href
           if (href === currHref) return
-          window.history.pushState({}, null, href)
-          bus.emit('pushState', window.location.href)
-          bus.emit('render')
-          scrollIntoView()
+          bus.emit('pushState', href)
         })
       }
     }
