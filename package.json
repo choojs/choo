@@ -23,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "bel": "^4.5.1",
-    "document-ready": "^1.0.3",
+    "document-ready": "^2.0.0",
     "global": "^4.3.1",
     "nanobus": "^2.1.0",
     "nanomorph": "^4.0.0",
