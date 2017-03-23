@@ -118,5 +118,7 @@ function scrollIntoView () {
 }
 
 function createLocation () {
-  return window.location.pathname.replace(/\/$/, '')
+  var pathname = window.location.pathname.replace(/\/$/, '')
+  var hash = window.location.hash.replace(/^#/, '/')
+  return pathname + hash
 }
