@@ -1,3 +1,54 @@
+## `5.0.0` Welp Welp Welp
+So it turns out Choo could be radically simplified. We're now comfortably
+sitting at `~4kb`, have removed a whole bunch of words from the API and should
+be a whole lot faster. We've [written about it
+before](https://medium.com/@yoshuawuyts/choo-v5-bc775b007b5e); if you're
+interested we recommend reading through that post.
+
+We're now using an event emitter, mutable state and explicit re-renders. Some
+people might frown at first at the words "mutable state", but if you think it
+through the mental model doesn't change. "State" has always been a concept of
+an object that changes over time; we then render the DOM as a snapshot of that
+state.
+
+What we've done is change the way we mutate that state - we no longer generate
+a ton of expensive intermediate objects to mutate the state, but instead mutate
+the state directly. In turn we've also removed the magic re-rendering and made
+it explicit. This enables people to create tight render loops that can even be
+used in GC constrained environments like games or music production. We think
+this change was well worth it, and will make a lot of sense going forward.
+
+People might also wonder why we've moved away from `flux`/`elm` and are using
+an event emitter now. It turns out that the previous architecture had a lot of
+confusing words that made it harder to learn than it should. It was also not
+possible to react to changes; the thing that changed always had to specify what
+needed to respond to it. By using event emitters we've inverted this, which
+will make relations in the application more expressive. All in all, it turned
+out that all we needed for this was a simple event emitter - we think this was
+well worth the change and breaking away from what we were previously doing.
+
+_Pretty much everything about the API changed in this version. There's
+literally nothing left to remove from the API tho so this is probably the last
+time we get to break anything in a significant way._
+
+### changes
+- :exclamation: state is now mutable and renders are triggered through
+  `.emit('render')`.
+- :exclamation: we've replaced `.use()`, `.model()` and the rest of the choo
+  architecture with a reworked `.use()` method. It's called once on boot, and
+  exposes a mutable reference to `state` and an event emitter that's compatible
+  with Node's `require('events').EventEmitter`
+- :exclamation: the `.router()` method has been replaced with `.route()`,
+  replacing the nested array API. This should be easier to remember and more
+  performant.
+- :exclamation: we've replaced `morphdom`/`yo-yo` with `nanomorph`. The two
+  algorithms are very comparable. The differences are that the new algorithm
+  is smaller and the value of input fields on re-rendering will be whatever the
+  `value=""` attribute is.
+- :exclamation: `choo/mount` is now available as `app.mount()`
+
+---
+
 ## `4.0.0` The routing patch
 This patch changes the way we handle routes. It introduces query string
 support (!), and changes the router to use a lisp-like syntax. It also inverts
@@ -27,6 +78,8 @@ it!
 - update `location` state to expose `search` parameters (query strings) |
   [issue](https://github.com/yoshuawuyts/sheet-router/issues/31)
 
+---
+
 ## `3.3.0`
 Yay, `plugins` now support `wrappers` which is a segway onto HMR, time travel
 and other cool plugins. These changes have come through in barracks `v8.3.0`
@@ -35,6 +88,8 @@ but should be super valuable. Wooh!
 
 ### changes
 - updated barracks to `v8.3.1`
+
+---
 
 ## `3.2.0`
 Wooh, `plugins` are a first class citizen now thanks to the `.use()` API. It's
@@ -47,6 +102,8 @@ have fun with plugins! :tada:
 ### changes
 - added `app.use()`
 
+---
+
 ## `3.1.0`
 And another patch down. This time around it's mostly maintenance and a bit of
 perf:
@@ -57,6 +114,8 @@ perf:
   [https://unpkg.com/choo](https://unpkg.com/choo). The goal of this is to
   support sites like codepen and the like; __this should not be used for
   production__.
+
+---
 
 ## `3.0.0`
 Woooh, happy third birthday `choo` - _thanks dad_. You're all grown up now;
@@ -140,18 +199,26 @@ Huge thanks to everyone who's collaborated on this, provided feedback or
 even mentioned it anywhere. It's been a hella lot of people, but seriously,
 you're the best :steam_locomotive::train::train::train::train::train:
 
+---
+
 ## `2.3.1`
 - [76](https://github.com/yoshuawuyts/choo/pull/76) - fix router arguments
+
+---
 
 ## `2.3.0`
 - [55](https://github.com/yoshuawuyts/choo/pull/55) - load subscriptions once
   DOM is ready
 - heaps of documentation fixes; looks like choo is taking off 🐨
 
+---
+
 ## `2.2.2`
 - [53](https://github.com/yoshuawuyts/choo/pull/53) - fix assert call for
   subscriptions
 - [52](https://github.com/yoshuawuyts/choo/pull/52) - fix naming rootId
+
+---
 
 ## `2.0.0`
 ### breaking changes
@@ -160,6 +227,8 @@ you're the best :steam_locomotive::train::train::train::train::train:
 - the `namespace` key was introduced inside of models (was prior the leading
   string in models)
 - namespaced models can now only operate within themselves
+
+---
 
 ## `1.0.0`
 - first version of choo
