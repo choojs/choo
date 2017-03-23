@@ -22,10 +22,10 @@ People might also wonder why we've moved away from `flux`/`elm` and are using
 an event emitter now. It turns out that the previous architecture had a lot of
 confusing words that made it harder to learn than it should. It was also not
 possible to react to changes; the thing that changed always had to specify what
-needed to respond to it. By using event emitters we've inverted this, which
-will make relations in the application more expressive. All in all, it turned
-out that all we needed for this was a simple event emitter - we think this was
-well worth the change and breaking away from what we were previously doing.
+needed to respond to it. By using event emitters we've changed this, which will
+make relations in the application more expressive. All in all, it turned out
+that all we needed for this was a simple event emitter - we think this was well
+worth the change and breaking away from what we were previously doing.
 
 _Pretty much everything about the API changed in this version. There's
 literally nothing left to remove from the API tho so this is probably the last
@@ -36,8 +36,10 @@ time we get to break anything in a significant way._
   `.emit('render')`.
 - :exclamation: we've replaced `.use()`, `.model()` and the rest of the choo
   architecture with a reworked `.use()` method. It's called once on boot, and
-  exposes a mutable reference to `state` and an event emitter that's compatible
-  with Node's `require('events').EventEmitter`
+  exposes a mutable reference to `state` and [an event
+  emitter](https://github.com/yoshuawuyts/nanobus/) that's compatible with
+  Node's
+  [`require('events').EventEmitter`](https://nodejs.org/api/events.html#events_class_eventemitter)
 - :exclamation: the `.router()` method has been replaced with `.route()`,
   replacing the nested array API. This should be easier to remember and more
   performant.
@@ -45,7 +47,8 @@ time we get to break anything in a significant way._
   algorithms are very comparable. The differences are that the new algorithm
   is smaller and the value of input fields on re-rendering will be whatever the
   `value=""` attribute is.
-- :exclamation: `choo/mount` is now available as `app.mount()`
+- :exclamation: `choo/mount` is now available as `app.mount()` and calls
+  `app.start()` internally now
 
 ---
 
