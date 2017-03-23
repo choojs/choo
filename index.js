@@ -63,7 +63,9 @@ function Framework (opts) {
       bus.on('pushState', function (href) {
         if (href) window.history.pushState({}, null, href)
         bus.emit('render')
-        scrollIntoView()
+        setTimeout(function () {
+          scrollIntoView()
+        }, 0)
       })
 
       if (opts.href !== false) {
@@ -116,7 +118,5 @@ function scrollIntoView () {
 }
 
 function createLocation () {
-  var pathname = window.location.pathname.replace(/\/$/, '')
-  var hash = window.location.hash.replace(/^#/, '/')
-  return pathname + hash
+  return window.location.pathname.replace(/\/$/, '')
 }
