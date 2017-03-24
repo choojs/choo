@@ -102,8 +102,8 @@
 
 ## Example
 ```js
-var html = require('./html')
-var choo = require('./')
+var html = require('choo/html')
+var choo = require('choo')
 
 var app = choo()
 app.use(logger)
