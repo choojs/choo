@@ -63,7 +63,9 @@ function Framework (opts) {
       bus.on('pushState', function (href) {
         if (href) window.history.pushState({}, null, href)
         bus.emit('render')
-        scrollIntoView()
+        setTimeout(function () {
+          scrollIntoView()
+        }, 0)
       })
 
       if (opts.href !== false) {
