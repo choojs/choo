@@ -278,7 +278,9 @@ custom event listener or the matched views.
 
 ### `app.mount(selector)`
 Start the application and mount it on the given `querySelector`. Uses
-[nanomount][nanomount] under the hood.
+[nanomount][nanomount] under the hood. This will _replace_ the selector provided
+with the tree returned from `app.start()`. If you want to add the app as a child
+to an element, use `app.start()` to obtain the tree and manually append it.
 
 ### `tree = app.start()`
 Start the application. Returns a tree of DOM nodes that can be mounted using
