@@ -241,10 +241,15 @@ the first time, consider reading through the [handbook][handbook] first
 
 ### `app = choo([opts])`
 Initialize a new `choo` instance. `opts` can also contain the following values:
-- __opts.history:__ default: `true`. LIsten for url changes through the
+- __opts.history:__ default: `true`. Listen for url changes through the
   history API.
 - __opts.href:__ default: `true`. Handle all relative `<a
   href="<location>"></a>` clicks and call `emit('render')`
+- __opts.timing:__ default: `true`. Enables calls to the
+  [window.performance][window-performance] timing API. Timing calls will not
+  run in browsers that don't support it out of the box. The timing marks are
+  `choo:renderStart`, `choo:renderEnd`. The resulting diff is stored as
+  `choo:render`.
 
 ### `app.use(callback(state, emitter))`
 Call a function and pass it a `state` and `emitter`. `emitter` is an instance
@@ -404,3 +409,4 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [yo-yo]: https://github.com/maxogden/yo-yo
 [yo-yoify]: https://github.com/shama/yo-yoify
 [unassertify]: https://github.com/unassert-js/unassertify
+[window-performance]: https://developer.mozilla.org/en-US/docs/Web/API/Performance

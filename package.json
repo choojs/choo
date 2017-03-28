@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check --entry ./html.js . && dependency-check . --extra --no-dev --entry ./html.js",
-    "start": "bankai start example --open",
+    "start": "bankai start example --open --optimize",
     "test": "standard && npm run deps && node test.js",
     "build:dev": "echo 'to be implemented'",
     "build:min": "echo 'to be implemented'",
