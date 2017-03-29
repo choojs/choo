@@ -1,3 +1,32 @@
+## `5.1.0` Timing API support
+In order to improve, we must measure first. Specifically when it comes to
+framerate there are very specific numbers we can rely on: `~16ms` for any given
+frame to achieve 60fps. That's why in `5.1.0` we're adding support for the
+[window.Performance](https://developer.mozilla.org/en-US/docs/Web/API/Performance)
+API.
+
+We hope that by adding support for timers, people building applications on
+`choo` will become more aware of their application's performance and learn how
+and when to optimize. Hopefully this will help in making applications
+accessible to all sorts of devices, and not just the latest and greatest.
+
+Timing support will be enabled by default, and can be toggled off by passing
+`{ timing: false }` to the `var app = choo()` constructor.
+
+Timing calls will not run in browsers that don't support it out of the box.
+For unsupported browser's there's a polyfill available at
+[nolanlawson/marky](https://github.com/nolanlawson/marky). The timing marks are
+`choo:renderStart`, `choo:renderEnd`. The resulting diff is stored as
+`choo:render`.
+
+We hope you'll enjoy this release; thanks heaps for using choo!
+
+### changes
+- added out of the box support for performance timings (`window.performance`)
+- updated `nanobus` to `3.0.0`; `'*'` events now run after named events
+
+---
+
 ## `5.0.0` Welp Welp Welp
 So it turns out Choo could be radically simplified. We're now comfortably
 sitting at `~4kb`, have removed a whole bunch of words from the API and should
