@@ -11,7 +11,7 @@
   "dependencies": {
     "bel": "^4.5.1",
     "choo-expose": "^1.0.0",
-    "choo-log": "^5.0.0",
+    "choo-log": "^6.0.0",
     "choo-persist": "^3.0.0",
     "sheetify": "^6.0.1",
     "todomvc-app-css": "^2.0.6",

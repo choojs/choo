@@ -19,6 +19,8 @@ function Framework (opts) {
     curry: true
   }
 
+  var timingEnabled = opts.timing === undefined ? true : opts.timing
+  var hasPerformance = window.performance && window.performance.mark
   var router = nanorouter(routerOpts)
   var bus = nanobus()
   var rerender = null
@@ -49,8 +51,15 @@ function Framework (opts) {
   function start () {
     tree = router(createLocation(), state, emit)
     rerender = nanoraf(function () {
+      if (hasPerformance && timingEnabled) {
+        window.performance.mark('choo:renderStart')
+      }
       var newTree = router(createLocation(), state, emit)
       tree = nanomorph(tree, newTree)
+      if (hasPerformance && timingEnabled) {
+        window.performance.mark('choo:renderEnd')
+        window.performance.measure('choo:render', 'choo:renderStart', 'choo:renderEnd')
+      }
     })
 
     bus.on('render', rerender)

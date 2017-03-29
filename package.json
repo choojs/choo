@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deps": "dependency-check --entry ./html.js . && dependency-check . --extra --no-dev --entry ./html.js",
-    "start": "bankai start example --open",
+    "start": "bankai start example --open --optimize",
     "test": "standard && npm run deps && node test.js",
     "build:dev": "echo 'to be implemented'",
     "build:min": "echo 'to be implemented'",
@@ -23,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "bel": "^4.5.1",
-    "nanobus": "^2.1.0",
+    "nanobus": "^3.0.0",
     "nanomorph": "^4.0.0",
     "nanomount": "^1.0.0",
     "nanoraf": "^3.0.0",
