@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "dependency-check": "^2.8.0",
-    "spok": "^0.7.0",
+    "spok": "^0.8.0",
     "standard": "^9.0.1",
     "tape": "^4.6.3"
   }
