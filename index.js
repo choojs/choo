@@ -49,12 +49,12 @@ function Framework (opts) {
   }
 
   function start () {
-    tree = router(createLocation(), state, emit)
+    tree = router(createLocation())
     rerender = nanoraf(function () {
       if (hasPerformance && timingEnabled) {
         window.performance.mark('choo:renderStart')
       }
-      var newTree = router(createLocation(), state, emit)
+      var newTree = router(createLocation())
       tree = nanomorph(tree, newTree)
       if (hasPerformance && timingEnabled) {
         window.performance.mark('choo:renderEnd')
