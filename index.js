@@ -1,3 +1,4 @@
+var documentReady = require('document-ready')
 var nanorouter = require('nanorouter')
 var nanomount = require('nanomount')
 var nanomorph = require('nanomorph')
@@ -5,7 +6,6 @@ var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
 var assert = require('assert')
 
-var documentReady = require('./lib/document-ready')
 var onHistoryChange = require('./lib/history')
 var onHref = require('./lib/href')
 
