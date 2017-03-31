@@ -3,16 +3,22 @@ node_js:
 - '6'
 sudo: false
 language: node_js
+env:
+  - CXX=g++-4.8
+notifications:
+  irc:
+    on_success: change
+    on_failure: always
+    use_notice: true
+    channels:
+      - "chat.freenode.net#choo"
+    template:
+      - "%{repository_slug} #%{build_number} %{result}: %{build_url}"
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-      - xvfb
-before_install:
-  - export DISPLAY=':99.0'
-  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+      - g++-4.8
 script: npm run test
 # after_script: npm i -g codecov.io && cat ./coverage/lcov.info | codecov
-env:
-  global:
-  - secure: t6MYp/rV/HXKQ8yb21fDMAV9fkwZmPFJ/4Za4TeXvVOojFan4Q40j5VZF6wiVBHTemctMRueQ2iuGl8pgNX3jqRHMKvNS5zKCCUHYvmyvMLQiWpkDC3Lz3R9oz2fooY1f0fpnzaE0TmJHoZQcVDYDTZSk/o6fNXJQnI4SUG/nmnb3VAA0H8lRZ1OidkAbBzJNFj8i0ZTuaqwo0uQVhNDSvLLKgM94ryF+DB+c0vKuZr85wn+xnuJ1ZPZM5S+uZrOAY+TnwD1QvstULHnbF6sqH5WuUkUCHpXV84Hz2pr7GL7yCkj65XoNoqvnoR5ETv8yBa5r/OccrCY9NqXSCv/zWiS4vRWybrJq0Mdx67cXHKHjbQMrILHsbRBDxbCJwn+LAQlwRUoktEcI9bNRUhi0Wt/LQmLvyfldt7mMvgl+7srBdlZWPoTZWRZKqu04XpYTaqAnAeNOjfSOOuB29uVTRu7n9pCeKA/gDNYOWCF3CfN++ztbL+E2OpPnpoRWwoSXnXzFQrLofq6zF1bpIrb5UpaqNYGX+PifUYX+hRYKLdOqqAS3JlJBqG+0ArRZgf3sm/uk4ZDesV5Ee9qB7Ty32Vh66wmU8P6wZjgare4TL+hcsgtNRrd6+kZwXfn0mqcqeFovN2yPpQSmF1U5+ki8+o1NcFFYdeucWa7E9ULkVE=
-  - secure: w0Bkyfc2O/DeSBiIJ3tRnV6zgRbZNCO3SZZikqga/oUWdeIeCB8HDx9eBNvvJH2PF3tyUtRbfbwR+yZotmX/pRF9wc8W8RMFg9xQgsho/WtUG9bQVWGTyeCd9+hCxh9+VnJP0t4YwNOc4UwheRWb+5bxgYZZABxT3VmGBeshFNlryGY9xGMVbDQeF1M3GpQdt51Kud8V2APzShyKdi0YjQM6eC8Jfcl58chrnWDBcGtynREM+fT3rAM7MMEAZf5cRYVze/V/UqFvwaMsu1niCL1eUyg3gf3NpkGIjd9pi7XmYfbRogx41/WPcpeq1susI2hrHdFmco+Ykv6ebrhA7qqQT0MKOSezN2lmoGnr7q+954qxPN7wQMnSCAYZ4Rk1S2Zu1HQBUW4UyjK+yvVnj0HOZF2ksIoNz46zFesa7+SlBN10VkVpBYIHW8GZn9+AanjGJbIPJ7I98Ga7rbU4nBQWpP5lc5vVflMmtVGOjcY37S+FxB05oPLnNU4AJivZFdbdf0xYrc5eWNC/t3+JLZ3BJyD2ZTiWbNtJT4YIdKpV9RdjV/u60XnxLKmGFuPIn+b+CKPW0+IM9ooyJK4mir8ET2uv4A926Ocgs2qzq9geU8IJ8WYLS1I9OgT/IM9EgJEeBeUOaeukW4t1V8pVRXDRsIqOleyHiBQ6bR7GH6I=
