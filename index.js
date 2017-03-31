@@ -20,7 +20,8 @@ function Framework (opts) {
   }
 
   var timingEnabled = opts.timing === undefined ? true : opts.timing
-  var hasPerformance = window.performance && window.performance.mark
+  var hasWindow = typeof window !== 'undefined'
+  var hasPerformance = hasWindow && window.performance && window.performance.mark
   var router = nanorouter(routerOpts)
   var bus = nanobus()
   var rerender = null
