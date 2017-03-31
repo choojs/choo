@@ -254,7 +254,7 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
 ### `app.use(callback(state, emitter))`
 Call a function and pass it a `state` and `emitter`. `emitter` is an instance
 of [nanobus](https://github.com/yoshuawuyts/nanobus/). You can listen to
-messages by calling `emitter.on()` and emit messages by calling `bus.emit()`.
+messages by calling `emitter.on()` and emit messages by calling `emitter.emit()`.
 
 Choo fires messages when certain events happen:
 - __`.on('DOMContentLoaded')`__: when the DOM has succesfully finished loading
