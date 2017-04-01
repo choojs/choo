@@ -1,3 +1,5 @@
+var Microbounce = require('microbounce')
+var Microframe = require('microframe')
 var mutate = require('xtend/mutable')
 var expose = require('choo-expose')
 var css = require('sheetify')
@@ -47,17 +49,21 @@ function mainView (state, emit) {
 }
 
 function todoStore (state, emitter) {
+  // Default values
   if (!state.todos) {
     state.todos = {}
 
     state.todos.active = []
     state.todos.done = []
     state.todos.all = []
-    state.todos.input = ''
 
     state.todos.idCounter = 0
   }
 
+  // Always reset when application boots
+  state.todos.input = ''
+
+  // Register emitters after DOM is loaded to speed up DOM loading
   emitter.on('DOMContentLoaded', function () {
     emitter.emit('log:debug', 'Loading todos model')
 
@@ -253,6 +259,8 @@ function Footer (state, emit) {
   }
 }
 
+var debounce = Microbounce(256)
+var nextFrame = Microframe()
 function Header (state, emit) {
   return html`
     <header class="header">
@@ -269,10 +277,16 @@ function Header (state, emit) {
     var value = e.target.value
     if (!value) return
     if (e.keyCode === 13) {
-      emit('todos:input', '')
-      emit('todos:create', value)
+      nextFrame(function () {
+        emit('todos:input', '')
+        emit('todos:create', value)
+      })
     } else {
-      emit('todos:input', value)
+      debounce(function () {
+        nextFrame(function () {
+          emit('todos:input', value)
+        })
+      })
     }
   }
 }
