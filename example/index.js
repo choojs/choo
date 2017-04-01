@@ -53,6 +53,7 @@ function todoStore (state, emitter) {
     state.todos.active = []
     state.todos.done = []
     state.todos.all = []
+    state.todos.input = ''
 
     state.todos.idCounter = 0
   }
@@ -65,6 +66,9 @@ function todoStore (state, emitter) {
     emitter.on('todos:update', update)
     emitter.on('todos:delete', del)
 
+    // Special
+    emitter.on('todos:input', oninput)
+
     // Shorthand
     emitter.on('todos:edit', edit)
     emitter.on('todos:unedit', unedit)
@@ -72,6 +76,10 @@ function todoStore (state, emitter) {
     emitter.on('todos:toggleAll', toggleAll)
     emitter.on('todos:deleteCompleted', deleteCompleted)
   })
+
+  function oninput (text) {
+    state.todos.input = text
+  }
 
   function create (name) {
     var item = {
@@ -245,11 +253,12 @@ function Footer (state, emit) {
   }
 }
 
-function Header (todos, emit) {
+function Header (state, emit) {
   return html`
     <header class="header">
       <h1>todos</h1>
       <input class="new-todo"
+        value=${state.todos.input}
         autofocus
         placeholder="What needs to be done?"
         onkeydown=${createTodo} />
@@ -257,9 +266,13 @@ function Header (todos, emit) {
   `
 
   function createTodo (e) {
+    var value = e.target.value
+    if (!value) return
     if (e.keyCode === 13) {
-      emit('todos:create', e.target.value)
-      e.target.value = ''
+      emit('todos:input', '')
+      emit('todos:create', value)
+    } else {
+      emit('todos:input', value)
     }
   }
 }
