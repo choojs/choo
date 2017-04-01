@@ -9,9 +9,9 @@ var assert = require('assert')
 var onHistoryChange = require('./lib/history')
 var onHref = require('./lib/href')
 
-module.exports = Framework
+module.exports = Choo
 
-function Framework (opts) {
+function Choo (opts) {
   opts = opts || {}
 
   var routerOpts = {

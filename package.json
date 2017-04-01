@@ -8,7 +8,7 @@
     "deps": "dependency-check --entry ./html.js . && dependency-check . --extra --no-dev --entry ./html.js",
     "inspect": "browserify --full-paths index -g unassertify -g uglifyify | discify --open",
     "prepublish": "npm run build",
-    "start": "bankai start example --open --optimize",
+    "start": "bankai start example --optimize",
     "test": "standard && npm run deps && node test.js"
   },
   "repository": "yoshuawuyts/choo",
