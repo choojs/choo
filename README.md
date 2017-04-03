@@ -294,7 +294,7 @@ Start the application. Returns a tree of DOM nodes that can be mounted using
 ### `app.toString(location, [state])`
 Render the application to a string. Useful for rendering on the server.
 
-### `framework/html`
+### `choo/html`
 Create DOM nodes from template string literals. Exposes
 [bel](https://github.com/shama/bel). Can be optimized using
 [yo-yoify][yo-yoify].
