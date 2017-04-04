@@ -1,7 +1,7 @@
-var documentReady = require('document-ready')
 var nanorouter = require('nanorouter')
 var nanomount = require('nanomount')
 var nanomorph = require('nanomorph')
+var nanotask = require('nanotask')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
 var assert = require('assert')
@@ -22,6 +22,7 @@ function Choo (opts) {
   var timingEnabled = opts.timing === undefined ? true : opts.timing
   var hasWindow = typeof window !== 'undefined'
   var hasPerformance = hasWindow && window.performance && window.performance.mark
+  var taskQueue = hasWindow ? nanotask() : null
   var router = nanorouter(routerOpts)
   var bus = nanobus()
   var rerender = null
@@ -73,9 +74,7 @@ function Choo (opts) {
       bus.on('pushState', function (href) {
         if (href) window.history.pushState({}, null, href)
         bus.emit('render')
-        setTimeout(function () {
-          scrollIntoView()
-        }, 0)
+        taskQueue(scrollIntoView)
       })
 
       if (opts.href !== false) {
@@ -88,7 +87,7 @@ function Choo (opts) {
       }
     }
 
-    documentReady(function () {
+    onReady(function () {
       bus.emit('DOMContentLoaded')
     })
 
@@ -99,13 +98,19 @@ function Choo (opts) {
     bus.emit(eventName, data)
   }
 
-  function mount (selector) {
+  function mount (root) {
     var newTree = start()
-    documentReady(function () {
-      var root = document.querySelector(selector)
+    if (typeof root === 'string') {
+      var selector = root
+      root = document.querySelector(selector)
       assert.ok(root, 'could not query selector: ' + selector)
-      nanomount(root, newTree)
-      tree = root
+    }
+
+    onReady(function () {
+      setTimeout(function () {
+        nanomount(root, newTree)
+        tree = root
+      }, 0)
     })
   }
 
@@ -114,6 +119,14 @@ function Choo (opts) {
     var html = router(location)
     assert.equal()
     return html.toString()
+  }
+
+  function onReady (cb) {
+    var docState = document.readyState
+    var onReady = taskQueue(cb)
+
+    if (docState === 'complete' || docState === 'interactive') onReady()
+    else document.addEventListener('DOMContentLoaded', onReady)
   }
 }
 
