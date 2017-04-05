@@ -99,13 +99,19 @@ function Choo (opts) {
     bus.emit(eventName, data)
   }
 
-  function mount (selector) {
+  function mount (selector, opts) {
+    opts = opts || {}
     var newTree = start()
     documentReady(function () {
       var root = document.querySelector(selector)
       assert.ok(root, 'could not query selector: ' + selector)
-      nanomount(root, newTree)
-      tree = root
+      if (opts.append) {
+        root.appendChild(newTree)
+        tree = newTree
+      } else {
+        nanomount(root, newTree)
+        tree = root
+      }
     })
   }
 
