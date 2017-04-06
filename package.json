@@ -38,7 +38,7 @@
     "node-zopfli": "^2.0.2",
     "pretty-bytes-cli": "^2.0.0",
     "spok": "^0.8.1",
-    "standard": "^9.0.1",
+    "standard": "^10.0.1",
     "tape": "^4.6.3",
     "uglifyify": "^3.0.4",
     "uglifyjs": "^2.4.10",
