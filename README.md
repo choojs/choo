@@ -148,20 +148,19 @@ we want to be nice and fun, and then _casually_ be the best choice around.
 _Real casually._
 
 We believe frameworks should be disposable, and components recyclable. We don't
-like the current state of web development where walled gardens jealously
-compete with one another. We want you to be free, not shackled to a damp
-dungeon wall. By making the DOM the lowest common denominator, switching from
-one framework to another becomes frictionless. Components should run anywhere
-that has a DOM, regardless of the framework. `choo` is modest in its design; we
-don't believe it will be top of the class forever, so we've made it as easy to
-toss out as it is to pick up.
+want a web where walled gardens jealously compete with one another. By making
+the DOM the lowest common denominator, switching from one framework to another
+becomes frictionless. Components should run anywhere that has a DOM, regardless
+of the framework. `choo` is modest in its design; we don't believe it will be
+top of the class forever, so we've made it as easy to toss out as it is to pick
+up.
 
-We don't believe that bigger is better. Big APIs, big dependencies, large file
-sizes - we see them as omens of impending userland complexity. We  want
-everyone on a team, no matter the size, to fully understand how an application
-is laid out. And once an application is built, we want it to be small,
-performant and easy to reason about. All of which makes for easy to debug code,
-better results and super smiley faces.
+We don't believe that bigger is better. Big APIs, large complexities, long
+files - we see them as omens of impending userland complexity. We want everyone
+on a team, no matter the size, to fully understand how an application is laid
+out. And once an application is built, we want it to be small, performant and
+easy to reason about. All of which makes for easy to debug code, better results
+and super smiley faces.
 
 ## Optimizations
 Choo is reasonably fast out of the box. But sometimes you might hit a scenario
