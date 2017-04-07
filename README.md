@@ -150,10 +150,9 @@ _Real casually._
 We believe frameworks should be disposable, and components recyclable. We don't
 want a web where walled gardens jealously compete with one another. By making
 the DOM the lowest common denominator, switching from one framework to another
-becomes frictionless. Components should run anywhere that has a DOM, regardless
-of the framework. `choo` is modest in its design; we don't believe it will be
-top of the class forever, so we've made it as easy to toss out as it is to pick
-up.
+becomes frictionless. `choo` is modest in its design; we don't believe it will
+be top of the class forever, so we've made it as easy to toss out as it is to
+pick up.
 
 We don't believe that bigger is better. Big APIs, large complexities, long
 files - we see them as omens of impending userland complexity. We want everyone
