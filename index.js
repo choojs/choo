@@ -51,7 +51,15 @@ function Choo (opts) {
   }
 
   function start () {
+    if (hasPerformance && timingEnabled) {
+      window.performance.mark('choo:renderStart')
+    }
     tree = router(createLocation())
+    if (hasPerformance && timingEnabled) {
+      window.performance.mark('choo:renderEnd')
+      window.performance.measure('choo:render', 'choo:renderStart', 'choo:renderEnd')
+    }
+
     rerender = nanoraf(function () {
       if (hasPerformance && timingEnabled) {
         window.performance.mark('choo:renderStart')
@@ -108,8 +116,15 @@ function Choo (opts) {
 
     onReady(function () {
       setTimeout(function () {
+        if (hasPerformance && timingEnabled) {
+          window.performance.mark('choo:mountStart')
+        }
         nanomount(root, newTree)
         tree = root
+        if (hasPerformance && timingEnabled) {
+          window.performance.mark('choo:mountEnd')
+          window.performance.measure('choo:mount', 'choo:mountStart', 'choo:mountEnd')
+        }
       }, 0)
     })
   }
