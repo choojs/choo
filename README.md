@@ -255,7 +255,7 @@ of [nanobus](https://github.com/yoshuawuyts/nanobus/). You can listen to
 messages by calling `emitter.on()` and emit messages by calling `emitter.emit()`.
 
 Choo fires messages when certain events happen:
-- __`.on('DOMContentLoaded')`__: when the DOM has succesfully finished loading
+- __`.on('DOMContentLoaded')`__: when the DOM has succesfully finished loading. Re-rendering and navigation will not work until this event has been fired.
 - __`.on('render')`__: when the DOM re-renders
 - __`.on('pushState')`__: when the history API is triggered
 
@@ -274,6 +274,7 @@ anchor links on the page is generally not recommended.
 New routes can be triggered through `emitter.emit('pushState', <routename>)`.
 By default we also catch and match all `<a href="">` clicks against the router.
 This can be disabled by setting `opts.href` to `false` in the constructor.
+Routing via `pushState` will not work until the `DOMContentLoaded` event has been fired.
 
 Querystrings (`?foo=bar`) are ignored when matching routes. They should be
 extracted from the `window.location` object on render events, from either a
