@@ -255,9 +255,15 @@ of [nanobus](https://github.com/yoshuawuyts/nanobus/). You can listen to
 messages by calling `emitter.on()` and emit messages by calling `emitter.emit()`.
 
 Choo fires messages when certain events happen:
-- __`.on('DOMContentLoaded')`__: when the DOM has succesfully finished loading. Re-rendering and navigation will not work until this event has been fired.
+- __`.on('DOMContentLoaded')`__: when the DOM has succesfully finished loading
 - __`.on('render')`__: when the DOM re-renders
 - __`.on('pushState')`__: when the history API is triggered
+
+The `render` event should be emitted (`emitter.emit('render')`) whenever you wan't the app to re-render the DOM - it won't happen on its own except when you navigate between routes.
+
+The `pushState` can be emitted to navigate between routes: `emitted.emit('pushState', '/some/route')`.
+
+Both `render` and `pushState` will only have an effect once the `DOMContentLoaded` event has been fired.
 
 ### `app.route(routeName, handler)`
 Register a route on the router. Uses [nanorouter][nanorouter] under the hood.
