@@ -259,6 +259,12 @@ Choo fires messages when certain events happen:
 - __`.on('render')`__: when the DOM re-renders
 - __`.on('pushState')`__: when the history API is triggered
 
+The `render` event should be emitted (`emitter.emit('render')`) whenever you want the app to re-render the DOM - it won't happen on its own except when you navigate between routes.
+
+The `pushState` can be emitted to navigate between routes: `emitted.emit('pushState', '/some/route')`.
+
+Both `render` and `pushState` will only have an effect once the `DOMContentLoaded` event has been fired.
+
 ### `app.route(routeName, handler)`
 Register a route on the router. Uses [nanorouter][nanorouter] under the hood.
 Params can be registered by prepending the routename with `:routename`, e.g.
@@ -274,6 +280,7 @@ anchor links on the page is generally not recommended.
 New routes can be triggered through `emitter.emit('pushState', <routename>)`.
 By default we also catch and match all `<a href="">` clicks against the router.
 This can be disabled by setting `opts.href` to `false` in the constructor.
+Routing via `pushState` will not work until the `DOMContentLoaded` event has been fired.
 
 Querystrings (`?foo=bar`) are ignored when matching routes. They should be
 extracted from the `window.location` object on render events, from either a
