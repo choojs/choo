@@ -26,7 +26,13 @@ function Choo (opts) {
   var bus = nanobus()
   var rerender = null
   var tree = null
+  var root = null
   var state = {}
+  var renderer = {
+    render: handleRender,
+    mount: handleMount,
+    toString: handleToString
+  }
 
   return {
     toString: toString,
@@ -46,7 +52,7 @@ function Choo (opts) {
   }
 
   function register (cb) {
-    cb(state, bus)
+    cb(state, bus, renderer)
   }
 
   function start () {
@@ -56,7 +62,7 @@ function Choo (opts) {
         window.performance.mark('choo:renderStart')
       }
       var newTree = router(createLocation())
-      tree = nanomorph(tree, newTree)
+      tree = renderer.render(tree, newTree, root)
       if (hasPerformance && timingEnabled) {
         window.performance.mark('choo:renderEnd')
         window.performance.measure('choo:render', 'choo:renderStart', 'choo:renderEnd')
@@ -102,10 +108,9 @@ function Choo (opts) {
   function mount (selector) {
     var newTree = start()
     documentReady(function () {
-      var root = document.querySelector(selector)
+      root = document.querySelector(selector)
       assert.ok(root, 'could not query selector: ' + selector)
-      nanomount(root, newTree)
-      tree = root
+      tree = renderer.mount(newTree, root)
     })
   }
 
@@ -113,8 +118,21 @@ function Choo (opts) {
     state = _state || {}
     var html = router(location)
     assert.equal()
-    return html.toString()
+    return renderer.toString(html)
   }
+}
+
+function handleRender (tree, newTree, root) {
+  return nanomorph(tree, newTree)
+}
+
+function handleMount (tree, root) {
+  nanomount(root, tree)
+  return root
+}
+
+function handleToString (html) {
+  return html.toString()
 }
 
 function scrollIntoView () {
