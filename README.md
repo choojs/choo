@@ -290,11 +290,14 @@ Querystrings (`?foo=bar`) are ignored when matching routes. They should be
 extracted from the `window.location` object on render events, from either a
 custom event listener or the matched views.
 
-### `app.mount(selector)`
+### `app.mount(selector, options)`
 Start the application and mount it on the given `querySelector`. Uses
 [nanomount][nanomount] under the hood. This will _replace_ the selector provided
 with the tree returned from `app.start()`. If you want to add the app as a child
 to an element, use `app.start()` to obtain the tree and manually append it.
+
+If `options.append` is set to `true`, it will append the application to the
+provided selector as a child of that node.
 
 ### `tree = app.start()`
 Start the application. Returns a tree of DOM nodes that can be mounted using
