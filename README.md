@@ -282,6 +282,10 @@ By default we also catch and match all `<a href="">` clicks against the router.
 This can be disabled by setting `opts.href` to `false` in the constructor.
 Routing via `pushState` will not work until the `DOMContentLoaded` event has been fired.
 
+If you need choo to ignore a particular route, you can add `data-no-routing`
+attribute with `<a href="" data-no-routing>`. This is especially useful for
+directing outside the choo app.
+
 Querystrings (`?foo=bar`) are ignored when matching routes. They should be
 extracted from the `window.location` object on render events, from either a
 custom event listener or the matched views.
