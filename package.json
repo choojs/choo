@@ -28,7 +28,8 @@
     "nanomorph": "^4.0.0",
     "nanomount": "^1.0.0",
     "nanoraf": "^3.0.0",
-    "nanorouter": "^2.0.0"
+    "nanorouter": "^2.0.0",
+    "nanotiming": "^1.0.1"
   },
   "devDependencies": {
     "browserify": "^14.3.0",
