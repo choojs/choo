@@ -1,13 +1,12 @@
 var documentReady = require('document-ready')
+var nanohistory = require('nanohistory')
 var nanorouter = require('nanorouter')
 var nanomount = require('nanomount')
 var nanomorph = require('nanomorph')
+var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
 var assert = require('assert')
-
-var onHistoryChange = require('./lib/history')
-var onHref = require('./lib/href')
 
 module.exports = Choo
 
@@ -66,7 +65,7 @@ function Choo (opts) {
     bus.on('render', rerender)
 
     if (opts.history !== false) {
-      onHistoryChange(function (href) {
+      nanohistory(function (href) {
         bus.emit('pushState')
       })
 
@@ -79,7 +78,7 @@ function Choo (opts) {
       })
 
       if (opts.href !== false) {
-        onHref(function (location) {
+        nanohref(function (location) {
           var href = location.href
           var currHref = window.location.href
           if (href === currHref) return
@@ -103,7 +102,7 @@ function Choo (opts) {
     var newTree = start()
     documentReady(function () {
       var root = document.querySelector(selector)
-      assert.ok(root, 'could not query selector: ' + selector)
+      assert.ok(root, 'choo.mount: could not query selector: ' + selector)
       nanomount(root, newTree)
       tree = root
     })
