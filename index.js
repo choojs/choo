@@ -1,4 +1,5 @@
 var documentReady = require('document-ready')
+var nanohistory = require('nanohistory')
 var nanorouter = require('nanorouter')
 var nanomount = require('nanomount')
 var nanomorph = require('nanomorph')
@@ -6,8 +7,6 @@ var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
 var assert = require('assert')
-
-var onHistoryChange = require('./lib/history')
 
 module.exports = Choo
 
@@ -66,7 +65,7 @@ function Choo (opts) {
     bus.on('render', rerender)
 
     if (opts.history !== false) {
-      onHistoryChange(function (href) {
+      nanohistory(function (href) {
         bus.emit('pushState')
       })
 
