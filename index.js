@@ -62,14 +62,14 @@ function Choo (opts) {
       }
     })
 
-    bus.on('render', rerender)
+    bus.prependListener('render', rerender)
 
     if (opts.history !== false) {
       nanohistory(function (href) {
         bus.emit('pushState')
       })
 
-      bus.on('pushState', function (href) {
+      bus.prependListener('pushState', function (href) {
         if (href) window.history.pushState({}, null, href)
         bus.emit('render')
         setTimeout(function () {
