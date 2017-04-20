@@ -65,8 +65,6 @@ function todoStore (state, emitter) {
 
   // Register emitters after DOM is loaded to speed up DOM loading
   emitter.on('DOMContentLoaded', function () {
-    emitter.emit('log:debug', 'Loading todos model')
-
     // CRUD
     emitter.on('todos:create', create)
     emitter.on('todos:update', update)
