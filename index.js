@@ -11,6 +11,7 @@ var assert = require('assert')
 module.exports = Choo
 
 function Choo (opts) {
+  if (!(this instanceof Choo)) return new Choo(opts)
   opts = opts || {}
 
   var routerOpts = {
@@ -18,105 +19,103 @@ function Choo (opts) {
     curry: true
   }
 
-  var timingEnabled = opts.timing === undefined ? true : opts.timing
-  var hasWindow = typeof window !== 'undefined'
-  var hasPerformance = hasWindow && window.performance && window.performance.mark
-  var router = nanorouter(routerOpts)
-  var bus = nanobus()
-  var rerender = null
-  var tree = null
-  var state = {}
+  // properties for internal use only
+  this._historyEnabled = opts.history === undefined ? true : opts.history
+  this._timingEnabled = opts.timing === undefined ? true : opts.timing
+  this._hrefEnabled = opts.href === undefined ? true : opts.href
+  this._hasWindow = typeof window !== 'undefined'
+  this._hasPerformance = this._hasWindow && window.performance && window.performance.mark
+  this._rerender = null
+  this._tree = null
 
-  return {
-    toString: toString,
-    use: register,
-    mount: mount,
-    route: route,
-    start: start
-  }
-
-  function route (route, handler) {
-    router.on(route, function (params) {
-      return function () {
-        state.params = params
-        return handler(state, emit)
-      }
-    })
-  }
-
-  function register (cb) {
-    cb(state, bus)
-  }
-
-  function start () {
-    tree = router(createLocation())
-    rerender = nanoraf(function () {
-      if (hasPerformance && timingEnabled) {
-        window.performance.mark('choo:renderStart')
-      }
-      var newTree = router(createLocation())
-      tree = nanomorph(tree, newTree)
-      if (hasPerformance && timingEnabled) {
-        window.performance.mark('choo:renderEnd')
-        window.performance.measure('choo:render', 'choo:renderStart', 'choo:renderEnd')
-      }
-    })
-
-    bus.prependListener('render', rerender)
-
-    if (opts.history !== false) {
-      nanohistory(function (href) {
-        bus.emit('pushState')
-      })
-
-      bus.prependListener('pushState', function (href) {
-        if (href) window.history.pushState({}, null, href)
-        bus.emit('render')
-        setTimeout(function () {
-          scrollIntoView()
-        }, 0)
-      })
-
-      if (opts.href !== false) {
-        nanohref(function (location) {
-          var href = location.href
-          var currHref = window.location.href
-          if (href === currHref) return
-          bus.emit('pushState', href)
-        })
-      }
-    }
-
-    documentReady(function () {
-      bus.emit('DOMContentLoaded')
-    })
-
-    return tree
-  }
-
-  function emit (eventName, data) {
-    bus.emit(eventName, data)
-  }
-
-  function mount (selector) {
-    var newTree = start()
-    documentReady(function () {
-      var root = document.querySelector(selector)
-      assert.ok(root, 'choo.mount: could not query selector: ' + selector)
-      nanomount(root, newTree)
-      tree = root
-    })
-  }
-
-  function toString (location, _state) {
-    state = _state || {}
-    var html = router(location)
-    assert.equal()
-    return html.toString()
-  }
+  // properties that are part of the API
+  this.router = nanorouter(routerOpts)
+  this.emitter = nanobus()
+  this.state = {}
 }
 
-function scrollIntoView () {
+Choo.prototype.route = function (route, handler) {
+  var self = this
+  this.router.on(route, function (params) {
+    return function () {
+      self.state.params = params
+      return handler(self.state, function (eventName, data) {
+        self.emitter.emit(eventName, data)
+      })
+    }
+  })
+}
+
+Choo.prototype.use = function (cb) {
+  cb(this.state, this.emitter)
+}
+
+Choo.prototype.start = function () {
+  var self = this
+
+  this._tree = this.router(this._createLocation())
+  this._rerender = nanoraf(function () {
+    if (self._hasPerformance && self._timingEnabled) {
+      window.performance.mark('choo:renderStart')
+    }
+    var newTree = self.router(self._createLocation())
+    self._tree = nanomorph(self._tree, newTree)
+    if (self._hasPerformance && self._timingEnabled) {
+      window.performance.mark('choo:renderEnd')
+      window.performance.measure('choo:render', 'choo:renderStart', 'choo:renderEnd')
+    }
+  })
+
+  this.emitter.prependListener('render', this._rerender)
+
+  if (this._historyEnabled) {
+    nanohistory(function (href) {
+      self.emitter.emit('pushState')
+    })
+
+    this.emitter.prependListener('pushState', function (href) {
+      if (href) window.history.pushState({}, null, href)
+      self.emitter.emit('render')
+      setTimeout(function () {
+        self._scrollIntoView()
+      }, 0)
+    })
+
+    if (self._hrefEnabled) {
+      nanohref(function (location) {
+        var href = location.href
+        var currHref = window.location.href
+        if (href === currHref) return
+        self.emitter.emit('pushState', href)
+      })
+    }
+  }
+
+  documentReady(function () {
+    self.emitter.emit('DOMContentLoaded')
+  })
+
+  return this._tree
+}
+
+Choo.prototype.mount = function mount (selector) {
+  var self = this
+  var newTree = this.start()
+  documentReady(function () {
+    var root = document.querySelector(selector)
+    assert.ok(root, 'choo.mount: could not query selector: ' + selector)
+    nanomount(root, newTree)
+    self._tree = root
+  })
+}
+
+Choo.prototype.toString = function (location, state) {
+  this.state = state || {}
+  var html = this.router(location)
+  return html.toString()
+}
+
+Choo.prototype._scrollIntoView = function () {
   var hash = window.location.hash
   if (hash) {
     try {
@@ -126,7 +125,7 @@ function scrollIntoView () {
   }
 }
 
-function createLocation () {
+Choo.prototype._createLocation = function () {
   var pathname = window.location.pathname.replace(/\/$/, '')
   var hash = window.location.hash.replace(/^#/, '/')
   return pathname + hash
