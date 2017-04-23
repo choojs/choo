@@ -31,6 +31,7 @@ function Choo (opts) {
     toString: toString,
     use: register,
     mount: mount,
+    router: router,
     route: route,
     start: start
   }
