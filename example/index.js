@@ -292,8 +292,9 @@ function Header (state, emit) {
 }
 
 function TodoItem (todo, emit) {
+  var clx = classList({ completed: todo.done, editing: todo.editing })
   return html`
-    <li class=${classList({ completed: todo.done, editing: todo.editing })}>
+    <li id=${todo.id} class=${clx}>
       <div class="view">
         <input
           type="checkbox"
