@@ -1,6 +1,7 @@
 var documentReady = require('document-ready')
 var nanohistory = require('nanohistory')
 var nanorouter = require('nanorouter')
+var nanotiming = require('nanotiming')
 var nanomount = require('nanomount')
 var nanomorph = require('nanomorph')
 var nanohref = require('nanohref')
@@ -19,9 +20,8 @@ function Choo (opts) {
   }
 
   var timingEnabled = opts.timing === undefined ? true : opts.timing
-  var hasWindow = typeof window !== 'undefined'
-  var hasPerformance = hasWindow && window.performance && window.performance.mark
   var router = nanorouter(routerOpts)
+  var timing = nanotiming('choo')
   var bus = nanobus()
   var rerender = null
   var tree = null
@@ -52,15 +52,10 @@ function Choo (opts) {
   function start () {
     tree = router(createLocation())
     rerender = nanoraf(function () {
-      if (hasPerformance && timingEnabled) {
-        window.performance.mark('choo:renderStart')
-      }
+      if (timingEnabled) timing.start('render')
       var newTree = router(createLocation())
       tree = nanomorph(tree, newTree)
-      if (hasPerformance && timingEnabled) {
-        window.performance.mark('choo:renderEnd')
-        window.performance.measure('choo:render', 'choo:renderStart', 'choo:renderEnd')
-      }
+      if (timingEnabled) timing.end('render')
     })
 
     bus.prependListener('render', rerender)
