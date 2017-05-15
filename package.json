@@ -43,7 +43,7 @@
     "standard": "^10.0.0",
     "tape": "^4.6.3",
     "uglifyify": "^3.0.4",
-    "uglifyjs": "^2.4.10",
+    "uglifyjs": "^2.4.11",
     "unassertify": "^2.0.4"
   }
 }
