@@ -262,6 +262,7 @@ Choo fires messages when certain events happen:
 The `render` event should be emitted (`emitter.emit('render')`) whenever you want the app to re-render the DOM - it won't happen on its own except when you navigate between routes.
 
 The `pushState` can be emitted to navigate between routes: `emitted.emit('pushState', '/some/route')`.
+You can emit `replaceState` which will overwrite the current entry in the browser history, but be very careful as this removes the option of navigating back!
 
 Note `render` will only have an effect once the `DOMContentLoaded` event has been fired.
 
