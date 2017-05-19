@@ -263,7 +263,7 @@ The `render` event should be emitted (`emitter.emit('render')`) whenever you wan
 
 The `pushState` can be emitted to navigate between routes: `emitted.emit('pushState', '/some/route')`.
 
-Both `render` and `pushState` will only have an effect once the `DOMContentLoaded` event has been fired.
+Note `render` will only have an effect once the `DOMContentLoaded` event has been fired.
 
 ### `app.route(routeName, handler)`
 Register a route on the router. Uses [nanorouter][nanorouter] under the hood.
