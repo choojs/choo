@@ -50,21 +50,6 @@ function Choo (opts) {
   }
 
   function start () {
-    rerender = nanoraf(function () {
-      if (hasPerformance && timingEnabled) {
-        window.performance.mark('choo:renderStart')
-      }
-      var newTree = router(createLocation())
-      tree = nanomorph(tree, newTree)
-      assert.notEqual(tree, newTree, 'choo.start: a different node type was returned as the root node on a rerender. Make sure that the root node is always the same type to prevent the application from being unmounted.')
-      if (hasPerformance && timingEnabled) {
-        window.performance.mark('choo:renderEnd')
-        window.performance.measure('choo:render', 'choo:renderStart', 'choo:renderEnd')
-      }
-    })
-
-    bus.prependListener('render', rerender)
-
     if (opts.history !== false) {
       nanohistory(function (href) {
         bus.emit('pushState')
@@ -88,11 +73,26 @@ function Choo (opts) {
       }
     }
 
-    tree = router(createLocation())
+    rerender = nanoraf(function () {
+      if (hasPerformance && timingEnabled) {
+        window.performance.mark('choo:renderStart')
+      }
+      var newTree = router(createLocation())
+      tree = nanomorph(tree, newTree)
+      assert.notEqual(tree, newTree, 'choo.start: a different node type was returned as the root node on a rerender. Make sure that the root node is always the same type to prevent the application from being unmounted.')
+      if (hasPerformance && timingEnabled) {
+        window.performance.mark('choo:renderEnd')
+        window.performance.measure('choo:render', 'choo:renderStart', 'choo:renderEnd')
+      }
+    })
+
+    bus.prependListener('render', rerender)
 
     documentReady(function () {
       bus.emit('DOMContentLoaded')
     })
+
+    tree = router(createLocation())
 
     return tree
   }
