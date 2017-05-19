@@ -50,7 +50,6 @@ function Choo (opts) {
   }
 
   function start () {
-    tree = router(createLocation())
     rerender = nanoraf(function () {
       if (hasPerformance && timingEnabled) {
         window.performance.mark('choo:renderStart')
@@ -88,6 +87,8 @@ function Choo (opts) {
         })
       }
     }
+
+    tree = router(createLocation())
 
     documentReady(function () {
       bus.emit('DOMContentLoaded')
