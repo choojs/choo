@@ -58,7 +58,7 @@ function Choo (opts) {
       bus.prependListener('pushState', updateHistory.bind(null, 'push'))
       bus.prependListener('replaceState', updateHistory.bind(null, 'replace'))
 
-      function updateHistory (mode) {
+      function updateHistory (mode, href) {
         if (href) window.history[mode + 'State']({}, null, href)
         bus.emit('render')
         setTimeout(function () {
