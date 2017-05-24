@@ -58,14 +58,6 @@ function Choo (opts) {
       bus.prependListener('pushState', updateHistory.bind(null, 'push'))
       bus.prependListener('replaceState', updateHistory.bind(null, 'replace'))
 
-      function updateHistory (mode, href) {
-        if (href) window.history[mode + 'State']({}, null, href)
-        bus.emit('render')
-        setTimeout(function () {
-          scrollIntoView()
-        }, 0)
-      }
-
       if (opts.href !== false) {
         nanohref(function (location) {
           var href = location.href
@@ -74,6 +66,14 @@ function Choo (opts) {
           bus.emit('pushState', href)
         })
       }
+    }
+
+    function updateHistory (mode, href) {
+      if (href) window.history[mode + 'State']({}, null, href)
+      bus.emit('render')
+      setTimeout(function () {
+        scrollIntoView()
+      }, 0)
     }
 
     rerender = nanoraf(function () {
