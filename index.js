@@ -38,7 +38,7 @@ function Choo (opts) {
 
   function route (route, handler) {
     if ('object' === typeof route){
-      Object.keys(route).forEach(k=>route(k, route[k])
+      Object.keys(route).forEach(k=>route(k, route[k]))
     }
     else {
       router.on(route, function (params) {
