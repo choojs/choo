@@ -24,7 +24,7 @@
   "dependencies": {
     "bel": "^4.5.1",
     "document-ready": "^2.0.1",
-    "nanobus": "^3.1.0",
+    "nanobus": "^3.3.0",
     "nanohistory": "^1.0.0",
     "nanohref": "^1.0.0",
     "nanomorph": "^4.0.0",
