@@ -281,7 +281,6 @@ anchor links on the page is generally not recommended.
 New routes can be triggered through `emitter.emit('pushState', <routename>)`.
 By default we also catch and match all `<a href="">` clicks against the router.
 This can be disabled by setting `opts.href` to `false` in the constructor.
-Routing via `pushState` will not work until the `DOMContentLoaded` event has been fired.
 
 If you need choo to ignore a particular route, you can add `data-no-routing`
 attribute with `<a href="" data-no-routing>`. This is especially useful for
