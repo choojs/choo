@@ -117,7 +117,6 @@ function Choo (opts) {
   function toString (location, _state) {
     state = _state || {}
     var html = router(location)
-    assert.equal()
     return html.toString()
   }
 }
