@@ -37,16 +37,23 @@ function Choo (opts) {
   }
 
   function route (route, handler) {
-    router.on(route, function (params) {
-      return function () {
-        state.params = params
-        return handler(state, emit)
-      }
-    })
+    if ('object' === typeof route){
+      Object.keys(route).forEach(k=>route(k, route[k]))
+    }
+    else {
+      router.on(route, function (params) {
+        return function () {
+          state.params = params
+          return handler(state, emit)
+        }
+      })
+    }
+    return this
   }
 
   function register (cb) {
     cb(state, bus)
+    return this
   }
 
   function start () {
@@ -112,6 +119,7 @@ function Choo (opts) {
       nanomount(root, newTree)
       tree = root
     })
+    return this
   }
 
   function toString (location, _state) {
