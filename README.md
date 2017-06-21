@@ -166,9 +166,6 @@ Choo is reasonably fast out of the box. But sometimes you might hit a scenario
 where a particular part of the UI slows down the application, and you want to
 speed it up. Here are some optimizations that are possible.
 
-### Reordering lists
-To be implemented. (See [yoshuawuyts/nanomorph#8](https://github.com/yoshuawuyts/nanomorph/issues/8))
-
 ### Caching DOM elements
 Sometimes we want to tell the algorithm to not evaluate certain nodes (and its
 children). This can be because we're sure they haven't changed, or perhaps
