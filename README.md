@@ -171,41 +171,60 @@ render logic.
 The purpose of the emitter is two-fold: it allows wiring up application code
 together, and splitting it off nicely - but it also allows communicating with
 the Choo framework itself. All events can be read as constants from
-`choo.events`. Choo ships with the following events built in:
+`state.events`. Choo ships with the following events built in:
 
-### `'DOMContentLoaded'`|`choo.events.DOMCONTENTLOADED`
+### `'DOMContentLoaded'`|`state.events.DOMCONTENTLOADED`
 Choo emits this when the DOM is ready. Similar to the DOM's
 `'DOMContentLoaded'` event, except it will be emitted even if the listener is
 added _after_ the DOM became ready. Uses
 [document-ready](https://github.com/bendrucker/document-ready) under the hood.
 
-### `'render'`|`choo.events.RENDER`
+### `'render'`|`state.events.RENDER`
 This event should be emitted to re-render the DOM. A common pattern is to
 update the `state` object, and then emit the `'render'` event straight after.
 Note that `'render'` will only have an effect once the `DOMContentLoaded` event
 has been fired.
 
-### `'navigate'`|`choo.events.NAVIGATE`
+### `'navigate'`|`state.events.NAVIGATE`
 Choo emits this event whenever routes change. This is triggered by either
 `'pushState'`, `'replaceState'` or `'popState'`.
 
-### `'pushState'`|`choo.events.PUSHSTATE`
+### `'pushState'`|`state.events.PUSHSTATE`
 This event should be emitted to navigate to a new route. The new route is added
 to the browser's history stack, and will emit `'navigate'` and `'render'`.
 Similar to
 [history.pushState](http://devdocs.io/dom/history_api).
 
-### `'replaceState'`|`choo.events.REPLACESTATE`
+### `'replaceState'`|`state.events.REPLACESTATE`
 This event should be emitted to navigate to a new route. The new route replaces
 the current entry in the browser's history stack, and will emit `'navigate'`
 and `'render'`. Similar to
 [history.replaceState](http://devdocs.io/dom/history#history-replacestate).
 
-### `'popState'`|`choo.events.POPSTATE`
+### `'popState'`|`state.events.POPSTATE`
 This event should be emitted to navigate to a previous route. The new route
 will be a previous entry in the browser's history stack, and will emit
 `'navigate'` and `'render'`. Similar to
 [history.popState](http://devdocs.io/dom_events/popstate).
+
+## State
+Choo comes with a shared state object. This object can be mutated freely, and
+is passed into the view functions whenever `'render'` is emitted. The state
+object comes with a few properties set.
+
+### `state.events`
+A mapping of Choo's built in events. It's recommended to extend this object
+with your application's events. By defining your event names once and setting
+them on `state.events`, it reduces the chance of typos, generally autocompletes
+better, makes refactoring easier and compresses better.
+
+### `state.params`
+The current params taken from the route. E.g. `/foo/:bar` becomes available as
+`state.params.bar` If a wildcard route is used (`/foo/*`) it's available as
+`state.params.wildcard`.
+
+### `state.route`
+The current name of the route used in the router (e.g. `/foo/:bar`).
 
 ## Server Rendering
 Choo was built with Node in mind. To render on the server call `.toString()` on

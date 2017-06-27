@@ -18,7 +18,7 @@ times, and more maintainable codebase - but you can also override methods if
 you ever need to.
 
 We've also tweaked the event system a little. All built-in event names are now
-available as constants under `choo.events`. And we've introduced three new
+available as constants under `app.state.events`. And we've introduced three new
 events: `'navigate'` will trigger whenever a route changes, `'replaceState'`
 can be called to redirect routes, and `popState` which is emitted when the back
 button in the browser is pressed.

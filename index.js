@@ -11,14 +11,6 @@ var assert = require('assert')
 module.exports = Choo
 
 var HISTORY_OBJECT = {}
-var events = Choo.events = {
-  DOMCONTENTLOADED: 'DOMContentLoaded',
-  NAVIGATE: 'navigate',
-  POPSTATE: 'popState',
-  PUSHSTATE: 'pushState',
-  RENDER: 'render',
-  REPLACESTATE: 'replaceState'
-}
 
 function Choo (opts) {
   if (!(this instanceof Choo)) return new Choo(opts)
@@ -31,6 +23,16 @@ function Choo (opts) {
     curry: true
   }
 
+  // define events used by choo
+  this._events = {
+    DOMCONTENTLOADED: 'DOMContentLoaded',
+    NAVIGATE: 'navigate',
+    POPSTATE: 'popState',
+    PUSHSTATE: 'pushState',
+    RENDER: 'render',
+    REPLACESTATE: 'replaceState'
+  }
+
   // properties for internal use only
   this._historyEnabled = opts.history === undefined ? true : opts.history
   this._hrefEnabled = opts.href === undefined ? true : opts.href
@@ -39,7 +41,7 @@ function Choo (opts) {
   // properties that are part of the API
   this.router = nanorouter(routerOpts)
   this.emitter = nanobus('choo.emit')
-  this.state = {}
+  this.state = { events: this._events }
 }
 
 Choo.prototype.route = function (route, handler) {
@@ -74,29 +76,29 @@ Choo.prototype.start = function () {
   var self = this
 
   if (this._historyEnabled) {
-    this.emitter.prependListener(events.NAVIGATE, function () {
-      self.emitter.emit(events.RENDER)
+    this.emitter.prependListener(this._events.NAVIGATE, function () {
+      self.emitter.emit(self._events.RENDER)
       setTimeout(scrollToAnchor.bind(null, window.location.hash), 0)
     })
 
-    this.emitter.prependListener(events.POPSTATE, function () {
-      self.emitter.emit(events.NAVIGATE)
+    this.emitter.prependListener(this._events.POPSTATE, function () {
+      self.emitter.emit(self._events.NAVIGATE)
     })
 
-    this.emitter.prependListener(events.PUSHSTATE, function (href) {
+    this.emitter.prependListener(this._events.PUSHSTATE, function (href) {
       assert.equal(typeof href, 'string', 'events.pushState: href should be type string')
       window.history.pushState(HISTORY_OBJECT, null, href)
-      self.emitter.emit(events.NAVIGATE)
+      self.emitter.emit(self._events.NAVIGATE)
     })
 
-    this.emitter.prependListener(events.REPLACESTATE, function (href) {
+    this.emitter.prependListener(this._events.REPLACESTATE, function (href) {
       assert.equal(typeof href, 'string', 'events.replaceState: href should be type string')
       window.history.replaceState(HISTORY_OBJECT, null, href)
-      self.emitter.emit(events.NAVIGATE)
+      self.emitter.emit(self._events.NAVIGATE)
     })
 
     window.onpopstate = function () {
-      self.emitter.emit(events.POPSTATE)
+      self.emitter.emit(self._events.POPSTATE)
     }
 
     if (self._hrefEnabled) {
@@ -104,7 +106,7 @@ Choo.prototype.start = function () {
         var href = location.href
         var currHref = window.location.href
         if (href === currHref) return
-        self.emitter.emit(events.PUSHSTATE, href)
+        self.emitter.emit(self._events.PUSHSTATE, href)
       })
     }
   }
@@ -113,7 +115,7 @@ Choo.prototype.start = function () {
   this._tree = this.router(location)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + location)
 
-  this.emitter.prependListener(events.RENDER, nanoraf(function () {
+  this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
     var renderTiming = nanotiming('choo.render')
 
     var newTree = self.router(self._createLocation())
@@ -131,7 +133,7 @@ Choo.prototype.start = function () {
   }))
 
   documentReady(function () {
-    self.emitter.emit(events.DOMCONTENTLOADED)
+    self.emitter.emit(self._events.DOMCONTENTLOADED)
   })
 
   return this._tree
