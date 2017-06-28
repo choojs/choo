@@ -85,6 +85,8 @@
 - [Features](#features)
 - [Example](#example)
 - [Philosophy](#philosophy)
+- [Events](#events)
+- [Server Rendering](#server-rendering)
 - [Optimizations](#optimizations)
 - [FAQ](#faq)
 - [API](#api)
@@ -103,10 +105,11 @@
 ## Example
 ```js
 var html = require('choo/html')
+var log = require('choo-log')
 var choo = require('choo')
 
 var app = choo()
-app.use(logger)
+app.use(log())
 app.use(countStore)
 app.route('/', mainView)
 app.mount('body')
@@ -122,12 +125,6 @@ function mainView (state, emit) {
   function onclick () {
     emit('increment', 1)
   }
-}
-
-function logger (state, emitter) {
-  emitter.on('*', function (messageName, data) {
-    console.log('event', messageName, data)
-  })
 }
 
 function countStore (state, emitter) {
@@ -161,13 +158,98 @@ out. And once an application is built, we want it to be small, performant and
 easy to reason about. All of which makes for easy to debug code, better results
 and super smiley faces.
 
+## Events
+At the core of Choo is an event emitter, which is used for both application
+logic but also to interface with the framework itself. The package we use for
+this is [nanobus](https://github.com/yoshuawuyts/nanobus).
+
+You can access the emitter through `app.use(state, emitter)`, `app.route(route,
+view(state, emit))` or `app.emitter`. Routes only have access to the
+`emitter.emit` method to encourage people to separate business logic from
+render logic.
+
+The purpose of the emitter is two-fold: it allows wiring up application code
+together, and splitting it off nicely - but it also allows communicating with
+the Choo framework itself. All events can be read as constants from
+`state.events`. Choo ships with the following events built in:
+
+### `'DOMContentLoaded'`|`state.events.DOMCONTENTLOADED`
+Choo emits this when the DOM is ready. Similar to the DOM's
+`'DOMContentLoaded'` event, except it will be emitted even if the listener is
+added _after_ the DOM became ready. Uses
+[document-ready](https://github.com/bendrucker/document-ready) under the hood.
+
+### `'render'`|`state.events.RENDER`
+This event should be emitted to re-render the DOM. A common pattern is to
+update the `state` object, and then emit the `'render'` event straight after.
+Note that `'render'` will only have an effect once the `DOMContentLoaded` event
+has been fired.
+
+### `'navigate'`|`state.events.NAVIGATE`
+Choo emits this event whenever routes change. This is triggered by either
+`'pushState'`, `'replaceState'` or `'popState'`.
+
+### `'pushState'`|`state.events.PUSHSTATE`
+This event should be emitted to navigate to a new route. The new route is added
+to the browser's history stack, and will emit `'navigate'` and `'render'`.
+Similar to
+[history.pushState](http://devdocs.io/dom/history_api).
+
+### `'replaceState'`|`state.events.REPLACESTATE`
+This event should be emitted to navigate to a new route. The new route replaces
+the current entry in the browser's history stack, and will emit `'navigate'`
+and `'render'`. Similar to
+[history.replaceState](http://devdocs.io/dom/history#history-replacestate).
+
+### `'popState'`|`state.events.POPSTATE`
+This event should be emitted to navigate to a previous route. The new route
+will be a previous entry in the browser's history stack, and will emit
+`'navigate'` and `'render'`. Similar to
+[history.popState](http://devdocs.io/dom_events/popstate).
+
+## State
+Choo comes with a shared state object. This object can be mutated freely, and
+is passed into the view functions whenever `'render'` is emitted. The state
+object comes with a few properties set.
+
+### `state.events`
+A mapping of Choo's built in events. It's recommended to extend this object
+with your application's events. By defining your event names once and setting
+them on `state.events`, it reduces the chance of typos, generally autocompletes
+better, makes refactoring easier and compresses better.
+
+### `state.params`
+The current params taken from the route. E.g. `/foo/:bar` becomes available as
+`state.params.bar` If a wildcard route is used (`/foo/*`) it's available as
+`state.params.wildcard`.
+
+### `state.route`
+The current name of the route used in the router (e.g. `/foo/:bar`).
+
+## Server Rendering
+Choo was built with Node in mind. To render on the server call `.toString()` on
+your application.
+
+```js
+var html = require('choo/html')
+var choo = require('choo')
+
+var app = choo()
+app.route('/', function (state, emit) {
+  return html`<div>Hello ${state.name}</div>`
+})
+
+var state = { name: 'Node' }
+var string = app.toString('/', state)
+
+console.log(string)
+// => '<div>Hello Node</div>'
+```
+
 ## Optimizations
 Choo is reasonably fast out of the box. But sometimes you might hit a scenario
 where a particular part of the UI slows down the application, and you want to
 speed it up. Here are some optimizations that are possible.
-
-### Reordering lists
-To be implemented. (See [yoshuawuyts/nanomorph#8](https://github.com/yoshuawuyts/nanomorph/issues/8))
 
 ### Caching DOM elements
 Sometimes we want to tell the algorithm to not evaluate certain nodes (and its
@@ -183,6 +265,22 @@ var el = html`<div>node</div>`
 el.isSameNode = function (target) {
   return (target && target.nodeName && target.nodeName === 'DIV')
 }
+```
+
+### Reordering lists
+It's common to work with lists of elements on the DOM. Adding, removing or
+reordering elements in a list can be rather expensive. To optimize this you can
+add an `id` attribute to a DOM node. When reordering nodes it will compare
+nodes with the same ID against each other, resulting in far fewer re-renders.
+This is especially potent when coupled with DOM node caching.
+
+```js
+var el = html`
+  <section>
+    <div id="first">hello</div>
+    <div id="second">world</div>
+  </section>
+`
 ```
 
 ### Pruning dependencies
@@ -243,28 +341,14 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
   history API.
 - __opts.href:__ default: `true`. Handle all relative `<a
   href="<location>"></a>` clicks and call `emit('render')`
-- __opts.timing:__ default: `true`. Enables calls to the
-  [window.performance][window-performance] timing API. Timing calls will not
-  run in browsers that don't support it out of the box. The timing marks are
-  `choo:renderStart`, `choo:renderEnd`. The resulting diff is stored as
-  `choo:render`.
 
 ### `app.use(callback(state, emitter))`
 Call a function and pass it a `state` and `emitter`. `emitter` is an instance
 of [nanobus](https://github.com/yoshuawuyts/nanobus/). You can listen to
-messages by calling `emitter.on()` and emit messages by calling `emitter.emit()`.
+messages by calling `emitter.on()` and emit messages by calling
+`emitter.emit()`.
 
-Choo fires messages when certain events happen:
-- __`.on('DOMContentLoaded')`__: when the DOM has succesfully finished loading
-- __`.on('render')`__: when the DOM re-renders
-- __`.on('pushState')`__: when the history API is triggered
-
-The `render` event should be emitted (`emitter.emit('render')`) whenever you want the app to re-render the DOM - it won't happen on its own except when you navigate between routes.
-
-The `pushState` can be emitted to navigate between routes: `emitter.emit('pushState', '/some/route')`.
-You can emit `replaceState` which will overwrite the current entry in the browser history, but be very careful as this removes the option of navigating back!
-
-Note `render` will only have an effect once the `DOMContentLoaded` event has been fired.
+See [#events](#events) for an overview of all events.
 
 ### `app.route(routeName, handler)`
 Register a route on the router. Uses [nanorouter][nanorouter] under the hood.
@@ -281,7 +365,8 @@ anchor links on the page is generally not recommended.
 New routes can be triggered through `emitter.emit('pushState', <routename>)`.
 By default we also catch and match all `<a href="">` clicks against the router.
 This can be disabled by setting `opts.href` to `false` in the constructor.
-Routing via `pushState` will not work until the `DOMContentLoaded` event has been fired.
+Routing via `pushState` will not work until the `DOMContentLoaded` event has
+been fired.
 
 If you need choo to ignore a particular route, you can add `data-no-routing`
 attribute with `<a href="" data-no-routing>`. This is especially useful for

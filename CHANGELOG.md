@@ -1,3 +1,35 @@
+## `6.0.0` Same as it ever was
+In the past few months we've been able to use `choo@5` a bunch, and people seem
+to like it a lot! In this patch all we're doing is taking choo's existing API,
+and polishing the internals. In theory this means breaking changes, but in
+practice it will mostly mean people need to update their dependencies, and
+things will work great.
+
+Choo v6 includes the upgrades to `bel@5` and `nanomorph@5`. This means up to
+20x faster server rendering, and up to 10x improved browser rendering speeds.
+We've also fixed DOM node caching, and introduced sibling node reordering.
+
+This release also includes an overhauled timing API. We're now capturing more
+events, and are leveraging this in tools like `choo-log` to provide consistent
+feedback on performance.
+
+Choo is now also completely prototype based. It not only means faster execution
+times, and more maintainable codebase - but you can also override methods if
+you ever need to.
+
+We've also tweaked the event system a little. All built-in event names are now
+available as constants under `app.state.events`. And we've introduced three new
+events: `'navigate'` will trigger whenever a route changes, `'replaceState'`
+can be called to redirect routes, and `popState` which is emitted when the back
+button in the browser is pressed.
+
+And that's about it - we've upgraded a whole slew of deps, and removed a few we
+didn't quite use. Overall we're quite proud of the new codebase, and filled
+with joy we didn't have to make any changes to the API - additions only.
+
+Thanks heaps for reading this far, we hope you enjoy this release as much as we
+did building it. Happy coding! -Team Choo :sparkles:
+
 ## `5.1.0` Timing API support
 In order to improve, we must measure first. Specifically when it comes to
 framerate there are very specific numbers we can rely on: `~16ms` for any given
