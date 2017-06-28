@@ -86,6 +86,7 @@
 - [Example](#example)
 - [Philosophy](#philosophy)
 - [Events](#events)
+- [State](#state)
 - [Server Rendering](#server-rendering)
 - [Optimizations](#optimizations)
 - [FAQ](#faq)
