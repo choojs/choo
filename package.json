@@ -1,6 +1,6 @@
 {
   "name": "choo",
-  "version": "5.6.2",
+  "version": "6.0.0-0",
   "description": "A 4kb framework for creating sturdy frontend applications",
   "main": "index.js",
   "scripts": {
