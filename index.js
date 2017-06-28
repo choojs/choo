@@ -26,11 +26,11 @@ function Choo (opts) {
   // define events used by choo
   this._events = {
     DOMCONTENTLOADED: 'DOMContentLoaded',
+    REPLACESTATE: 'replaceState',
+    PUSHSTATE: 'pushState',
     NAVIGATE: 'navigate',
     POPSTATE: 'popState',
-    PUSHSTATE: 'pushState',
-    RENDER: 'render',
-    REPLACESTATE: 'replaceState'
+    RENDER: 'render'
   }
 
   // properties for internal use only

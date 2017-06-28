@@ -25,11 +25,11 @@
     "bel": "^5.0.1",
     "document-ready": "^2.0.1",
     "nanobus": "^4.2.0",
-    "nanohref": "^1.0.0",
-    "nanomorph": "^5.1.1",
+    "nanohref": "^2.0.0",
+    "nanomorph": "^5.1.2",
     "nanoraf": "^3.0.0",
     "nanorouter": "^2.0.0",
-    "nanotiming": "^5.0.0",
+    "nanotiming": "^6.0.0",
     "scroll-to-anchor": "^1.0.0"
   },
   "devDependencies": {
