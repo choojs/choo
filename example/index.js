@@ -16,10 +16,8 @@ if (module.parent) {
   var app = choo()
 
   if (process.env.NODE_ENV !== 'production') {
-    var persist = require('choo-persist')
-    var logger = require('choo-log')
-    app.use(persist())
-    app.use(logger())
+    app.use(require('choo-persist')())
+    app.use(require('choo-log')())
   }
   app.use(expose())
   app.use(todoStore)
@@ -27,6 +25,7 @@ if (module.parent) {
   app.route('/', mainView)
   app.route('#active', mainView)
   app.route('#completed', mainView)
+  app.route('*', mainView)
   app.mount('body')
 }
 

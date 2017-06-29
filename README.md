@@ -87,6 +87,7 @@
 - [Philosophy](#philosophy)
 - [Events](#events)
 - [State](#state)
+- [Routing](#routing)
 - [Server Rendering](#server-rendering)
 - [Optimizations](#optimizations)
 - [FAQ](#faq)
@@ -224,8 +225,49 @@ The current params taken from the route. E.g. `/foo/:bar` becomes available as
 `state.params.bar` If a wildcard route is used (`/foo/*`) it's available as
 `state.params.wildcard`.
 
+### `state.query`
+An object containing the current queryString. `/foo?bin=baz` becomes `{ bin:
+'baz' }`.
+
 ### `state.route`
 The current name of the route used in the router (e.g. `/foo/:bar`).
+
+## Routing
+Choo is an application level framework. This means that it takes care of
+everything related to routing and pathnames for you.
+
+### Params
+Params can be registered by prepending the routename with `:routename`, e.g.
+`/foo/:bar/:baz`. The value of the param will be saved on `state.params` (e.g.
+`state.params.bar`). Wildcard routes can be registered with `*`, e.g. `/foo/*`.
+The value of the wildcard will be saved under `state.params.wildcard`.
+
+### Default routes
+Sometimes a route doesn't match, and you want to display a page to handle it.
+You can do this by declaring `app.route('*', handler)` to handle all routes
+that didn't match anything else.
+
+### Querystrings
+Querystrings (e.g. `?foo=bar`) are ignored when matching routes. An object
+containing the key-value mappings exists as `state.query`.
+
+### Hash routing
+Using hashes to delimit routes is supported out of the box (e.g. `/foo#bar`).
+When a hash is found we also check if there's an available anchor on the same
+page, and will scroll the screen to the position. Using both hashes in URLs and
+anchor links on the page is generally not recommended.
+
+### Following links
+By default all clicks on `<a>` tags are handled by the router. If the `href=""`
+attrbibute points to the same `origin` (e.g. the same page), and it doesn't
+have a `rel="nooper"` attribute or similar, we handle the route. This can be
+disabled application-wide by passing `{ href: false }` to the application
+constructor. Uses [nanohref](https://github.com/yoshuawuyts/nanohref) under the
+hood.
+
+### Navigating programmatically
+To can navigate routes you can emit `'pushState'`, `'popState'` or
+`'replaceState'`. See [#events](#events) for more details about these events.
 
 ## Server Rendering
 Choo was built with Node in mind. To render on the server call `.toString()` on
@@ -351,31 +393,12 @@ messages by calling `emitter.on()` and emit messages by calling
 
 See [#events](#events) for an overview of all events.
 
-### `app.route(routeName, handler)`
-Register a route on the router. Uses [nanorouter][nanorouter] under the hood.
-Params can be registered by prepending the routename with `:routename`, e.g.
-`/foo/:bar/:baz`. The value of the param will be saved on `state.params` (e.g.
-`state.params.bar`). Wildcard routes can be registered with `*`, e.g. `/foo/*`.
-The value of the wildcard will be saved under `state.params.wildcard`.
+### `app.route(routeName, handler(state, emit))`
+Register a route on the router. The handler function is passed `app.state`
+and `app.emitter.emit` as arguments. Uses [nanorouter][nanorouter] under the
+hood.
 
-Using hashes to delimit routes is supported out of the box (e.g. `/foo#bar`).
-When a hash is found we also check if there's an available anchor on the same
-page, and will scroll the screen to the position. Using both hashes in URLs and
-anchor links on the page is generally not recommended.
-
-New routes can be triggered through `emitter.emit('pushState', <routename>)`.
-By default we also catch and match all `<a href="">` clicks against the router.
-This can be disabled by setting `opts.href` to `false` in the constructor.
-Routing via `pushState` will not work until the `DOMContentLoaded` event has
-been fired.
-
-If you need choo to ignore a particular route, you can add `data-no-routing`
-attribute with `<a href="" data-no-routing>`. This is especially useful for
-directing outside the choo app.
-
-Querystrings (`?foo=bar`) are ignored when matching routes. They should be
-extracted from the `window.location` object on render events, from either a
-custom event listener or the matched views.
+See [#routing](#routing) for an overview of how to use routing efficiently.
 
 ### `app.mount(selector)`
 Start the application and mount it on the given `querySelector`. Uses

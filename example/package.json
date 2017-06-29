@@ -11,7 +11,7 @@
   "dependencies": {
     "bel": "^4.5.1",
     "choo-expose": "^1.0.0",
-    "choo-log": "^6.0.0",
+    "choo-log": "^7.0.0-0",
     "choo-persist": "^3.0.0",
     "microbounce": "^1.0.0",
     "microframe": "^1.0.0",
