@@ -3,6 +3,7 @@ var documentReady = require('document-ready')
 var nanotiming = require('nanotiming')
 var nanorouter = require('nanorouter')
 var nanomorph = require('nanomorph')
+var nanoquery = require('nanoquery')
 var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
@@ -17,11 +18,6 @@ function Choo (opts) {
   opts = opts || {}
 
   assert.equal(typeof opts, 'object', 'choo: opts should be type object')
-
-  var routerOpts = {
-    default: opts.defaultRoute || '/404',
-    curry: true
-  }
 
   // define events used by choo
   this._events = {
@@ -39,7 +35,7 @@ function Choo (opts) {
   this._tree = null
 
   // properties that are part of the API
-  this.router = nanorouter(routerOpts)
+  this.router = nanorouter({ curry: true })
   this.emitter = nanobus('choo.emit')
   this.state = { events: this._events }
 }
@@ -78,6 +74,7 @@ Choo.prototype.start = function () {
   if (this._historyEnabled) {
     this.emitter.prependListener(this._events.NAVIGATE, function () {
       self.emitter.emit(self._events.RENDER)
+      self.state.query = nanoquery(window.location.search)
       setTimeout(scrollToAnchor.bind(null, window.location.hash), 0)
     })
 
@@ -113,6 +110,7 @@ Choo.prototype.start = function () {
 
   var location = this._createLocation()
   this._tree = this.router(location)
+  this.state.query = nanoquery(window.location.search)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + location)
 
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
@@ -169,6 +167,7 @@ Choo.prototype.toString = function (location, state) {
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
 
+  this.state.query = nanoquery(location)
   var html = this.router(location)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
   return html.toString()

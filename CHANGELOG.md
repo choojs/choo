@@ -23,6 +23,11 @@ events: `'navigate'` will trigger whenever a route changes, `'replaceState'`
 can be called to redirect routes, and `popState` which is emitted when the back
 button in the browser is pressed.
 
+To top things off, we've reintroduced querystring parsing. An object containing
+the current represenation of the search query (e.g. `?foo=bar`) can be found
+under `state.query`. We used to do something similar in choo v4 and below, and
+we're happy to reintroduce it in this release!
+
 And that's about it - we've upgraded a whole slew of deps, and removed a few we
 didn't quite use. Overall we're quite proud of the new codebase, and filled
 with joy we didn't have to make any changes to the API - additions only.
