@@ -1,5 +1,6 @@
 var scrollToAnchor = require('scroll-to-anchor')
 var documentReady = require('document-ready')
+var nanolocation = require('nanolocation')
 var nanotiming = require('nanotiming')
 var nanorouter = require('nanorouter')
 var nanomorph = require('nanomorph')
@@ -32,6 +33,7 @@ function Choo (opts) {
   // properties for internal use only
   this._historyEnabled = opts.history === undefined ? true : opts.history
   this._hrefEnabled = opts.href === undefined ? true : opts.href
+  this._createLocation = nanolocation
   this._tree = null
 
   // properties that are part of the API
@@ -171,10 +173,4 @@ Choo.prototype.toString = function (location, state) {
   var html = this.router(location)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
   return html.toString()
-}
-
-Choo.prototype._createLocation = function () {
-  var pathname = window.location.pathname.replace(/\/$/, '')
-  var hash = window.location.hash.replace(/^#/, '/')
-  return pathname + hash
 }
