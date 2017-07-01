@@ -258,12 +258,20 @@ page, and will scroll the screen to the position. Using both hashes in URLs and
 anchor links on the page is generally not recommended.
 
 ### Following links
-By default all clicks on `<a>` tags are handled by the router. If the `href=""`
-attrbibute points to the same `origin` (e.g. the same page), and it doesn't
-have a `rel="nooper"` attribute or similar, we handle the route. This can be
+By default all clicks on `<a>` tags are handled by the router through the
+[nanohref](https://github.com/yoshuawuyts/nanohref) module. This can be
 disabled application-wide by passing `{ href: false }` to the application
-constructor. Uses [nanohref](https://github.com/yoshuawuyts/nanohref) under the
-hood.
+constructor. The event is not handled under the following conditions:
+- the click event had `.preventDefault()` called on it
+- the link has a `target="_blank"` attribute with `rel="noopener noreferrer"`
+- a modifier key is enabled (e.g. `ctrl`, `alt`, `shift` or `meta`)
+- the link's href starts with protocol handler such as `mailto:` or `dat:`
+- the link points to a different host
+- the link has a `download` attribute
+
+:warn: Note that we only handle `target=_blank` if they also have
+`rel="noopener noreferrer"` on them. This is needed to [properly sandbox web
+pages](https://mathiasbynens.github.io/rel-noopener/).
 
 ### Navigating programmatically
 To can navigate routes you can emit `'pushState'`, `'popState'` or
