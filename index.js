@@ -20,9 +20,12 @@ function Choo (opts) {
 
   assert.equal(typeof opts, 'object', 'choo: opts should be type object')
 
+  var self = this
+
   // define events used by choo
   this._events = {
     DOMCONTENTLOADED: 'DOMContentLoaded',
+    DOMTITLECHANGE: 'DOMTitleChange',
     REPLACESTATE: 'replaceState',
     PUSHSTATE: 'pushState',
     NAVIGATE: 'navigate',
@@ -33,6 +36,7 @@ function Choo (opts) {
   // properties for internal use only
   this._historyEnabled = opts.history === undefined ? true : opts.history
   this._hrefEnabled = opts.href === undefined ? true : opts.href
+  this._hasWindow = typeof window !== 'undefined'
   this._createLocation = nanolocation
   this._tree = null
 
@@ -40,6 +44,13 @@ function Choo (opts) {
   this.router = nanorouter({ curry: true })
   this.emitter = nanobus('choo.emit')
   this.state = { events: this._events }
+
+  // listen for title changes; available even when calling .toString()
+  this.emitter.prependListener(this._events.DOMTITLECHANGE, function (title) {
+    assert.equal(typeof title, 'string', 'events.DOMTitleChange: title should be type string')
+    self.state.title = title
+    if (self._hasWindow) document.title = title
+  })
 }
 
 Choo.prototype.route = function (route, handler) {
@@ -72,7 +83,6 @@ Choo.prototype.start = function () {
   assert.equal(typeof window, 'object', 'choo.start: window was not found. .start() must be called in a browser, use .toString() if running in Node')
 
   var self = this
-
   if (this._historyEnabled) {
     this.emitter.prependListener(this._events.NAVIGATE, function () {
       self.emitter.emit(self._events.RENDER)
@@ -133,6 +143,7 @@ Choo.prototype.start = function () {
   }))
 
   documentReady(function () {
+    self.state.title = document.title
     self.emitter.emit(self._events.DOMCONTENTLOADED)
   })
 

@@ -209,6 +209,13 @@ will be a previous entry in the browser's history stack, and will emit
 `'navigate'` and `'render'`. Similar to
 [history.popState](http://devdocs.io/dom_events/popstate).
 
+### `'DOMTitleChange'`|`state.events.DOMTITLECHANGE`
+This event should be emitted whenever the `document.title` needs to be updated.
+It will set both `document.title` and `state.title`.  This value can be used
+when server rendering to accurately include a `<title>` tag in the header.
+This is derived from the
+[DOMTitleChanged event](https://developer.mozilla.org/en-US/docs/Web/Events/DOMTitleChanged).
+
 ## State
 Choo comes with a shared state object. This object can be mutated freely, and
 is passed into the view functions whenever `'render'` is emitted. The state
@@ -231,6 +238,9 @@ An object containing the current queryString. `/foo?bin=baz` becomes `{ bin:
 
 ### `state.route`
 The current name of the route used in the router (e.g. `/foo/:bar`).
+
+### `state.title`
+The current page title. Can be set using the `DOMTitleChange` event.
 
 ## Routing
 Choo is an application level framework. This means that it takes care of
