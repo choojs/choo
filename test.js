@@ -61,7 +61,7 @@ tape('route handler is passed state and emit', function (t) {
 })
 
 // TODO: Need to pause between emits to give handlers a chance to assert
-tape.skip('state includes current route', function (t) {
+tape('state includes current route', function (t) {
   t.plan(3)
   var app = choo()
 
@@ -80,10 +80,23 @@ tape.skip('state includes current route', function (t) {
   app.start()
 
   var PUSHSTATE = app.state.events.PUSHSTATE
-  app.emitter.emit(PUSHSTATE, '/elsewhere')
-  app.emitter.emit(PUSHSTATE, '/with/test')
-  t.end()
+  tickSeries([
+    function () { app.emitter.emit(PUSHSTATE, '/elsewhere') },
+    function () { app.emitter.emit(PUSHSTATE, '/with/test') },
+    function () { t.end() }
+  ])
 })
+
+// Execute an array of functions in sequential ticks
+function tickSeries (fns) {
+  const fn = fns.shift()
+  process.nextTick(function () {
+    fn()
+    if (fns.length) {
+      tickSeries(fns)
+    }
+  })
+}
 
 tape('use is passed state and emitter', function (t) {
   t.plan(2)
