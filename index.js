@@ -9,6 +9,7 @@ var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
 var assert = require('assert')
+var xtend = require('xtend')
 
 module.exports = Choo
 
@@ -175,7 +176,7 @@ Choo.prototype.mount = function mount (selector) {
 }
 
 Choo.prototype.toString = function (location, state) {
-  this.state = state || {}
+  this.state = xtend({ events: xtend(this._events) }, this.state || {})
 
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
