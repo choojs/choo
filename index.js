@@ -47,6 +47,7 @@ function Choo (opts) {
   this.state = { events: this._events }
 
   // listen for title changes; available even when calling .toString()
+  if (this._hasWindow) this.state.title = document.title
   this.emitter.prependListener(this._events.DOMTITLECHANGE, function (title) {
     assert.equal(typeof title, 'string', 'events.DOMTitleChange: title should be type string')
     self.state.title = title
@@ -144,7 +145,6 @@ Choo.prototype.start = function () {
   }))
 
   documentReady(function () {
-    self.state.title = document.title
     self.emitter.emit(self._events.DOMCONTENTLOADED)
   })
 
