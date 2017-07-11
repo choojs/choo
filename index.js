@@ -9,6 +9,7 @@ var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
 var assert = require('assert')
+var xtend = require('xtend')
 
 module.exports = Choo
 
@@ -46,6 +47,7 @@ function Choo (opts) {
   this.state = { events: this._events }
 
   // listen for title changes; available even when calling .toString()
+  if (this._hasWindow) this.state.title = document.title
   this.emitter.prependListener(this._events.DOMTITLECHANGE, function (title) {
     assert.equal(typeof title, 'string', 'events.DOMTitleChange: title should be type string')
     self.state.title = title
@@ -143,7 +145,6 @@ Choo.prototype.start = function () {
   }))
 
   documentReady(function () {
-    self.state.title = document.title
     self.emitter.emit(self._events.DOMCONTENTLOADED)
   })
 
@@ -175,8 +176,9 @@ Choo.prototype.mount = function mount (selector) {
 }
 
 Choo.prototype.toString = function (location, state) {
-  this.state = state || {}
+  this.state = xtend({ events: xtend(this._events) }, this.state || {})
 
+  assert.notEqual(typeof window, 'object', 'choo.mount: window was found. .toString() must be called in Node, use .start() or .mount() if running in the browser')
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
 
