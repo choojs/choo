@@ -12,6 +12,6 @@ tape('should render on the server', function (t) {
   })
   var res = app.toString('/')
   var exp = '<p>Hello filthy planet</p>'
-  t.equal(res.toString(), exp, 'result was OK')
+  t.equal(res.toString().trim(), exp, 'result was OK')
   t.end()
 })
