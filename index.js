@@ -122,16 +122,17 @@ Choo.prototype.start = function () {
     }
   }
 
-  var location = this._createLocation()
-  this._tree = this.router(location)
+  this.state.location = this._createLocation()
+  this._tree = this.router(this.state.location)
   this.state.query = nanoquery(window.location.search)
-  assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + location)
+  assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.location)
 
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
     var renderTiming = nanotiming('choo.render')
 
-    var newTree = self.router(self._createLocation())
-    assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + location)
+    self.state.location = self._createLocation()
+    var newTree = self.router(self.state.location)
+    assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.location)
 
     assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
       self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
@@ -182,6 +183,7 @@ Choo.prototype.toString = function (location, state) {
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
 
+  this.state.location = location.replace(/\?*.$/, '')
   this.state.query = nanoquery(location)
   var html = this.router(location)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
