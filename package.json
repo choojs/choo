@@ -10,7 +10,7 @@
     "example"
   ],
   "scripts": {
-    "build": "mkdir -p dist/ && browserify index -p bundle-collapser/plugin > dist/bundle.js && browserify index -g unassertify -g uglifyify -p bundle-collapser/plugin | uglifyjs --mangle-props -c unsafe,properties,dead_code,comparisons,evaluate,hoist_funs,if_return,join_vars,pure_getters,reduce_vars,collapse_vars --toplevel > dist/bundle.min.js && zopfli -i 100 dist/bundle.min.js && wc -c < dist/bundle.min.js.gz | pretty-bytes",
+    "build": "mkdir -p dist/ && browserify index -p bundle-collapser/plugin > dist/bundle.js && browserify index -g unassertify -g uglifyify -p bundle-collapser/plugin | uglifyjs --mangle-props -c unsafe,properties,dead_code,comparisons,evaluate,hoist_funs,if_return,join_vars,pure_getters,reduce_vars,collapse_vars --toplevel > dist/bundle.min.js && cat dist/bundle.min.js | gzip --best --stdout | wc -c | pretty-bytes",
     "deps": "dependency-check --entry ./html.js . && dependency-check . --extra --no-dev --entry ./html.js",
     "inspect": "browserify --full-paths index -g unassertify -g uglifyify | discify --open",
     "prepublish": "npm run build",
@@ -46,7 +46,6 @@
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.8.0",
     "discify": "^1.6.0",
-    "node-zopfli": "^2.0.2",
     "pretty-bytes-cli": "^2.0.0",
     "spok": "^0.8.1",
     "standard": "^10.0.0",
