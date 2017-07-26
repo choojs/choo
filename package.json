@@ -3,6 +3,12 @@
   "version": "6.0.0-3",
   "description": "A 4kb framework for creating sturdy frontend applications",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "html.js",
+    "dist",
+    "example"
+  ],
   "scripts": {
     "build": "mkdir -p dist/ && browserify index -p bundle-collapser/plugin > dist/bundle.js && browserify index -g unassertify -g uglifyify -p bundle-collapser/plugin | uglifyjs --mangle-props -c unsafe,properties,dead_code,comparisons,evaluate,hoist_funs,if_return,join_vars,pure_getters,reduce_vars,collapse_vars --toplevel > dist/bundle.min.js && zopfli -i 100 dist/bundle.min.js && wc -c < dist/bundle.min.js.gz | pretty-bytes",
     "deps": "dependency-check --entry ./html.js . && dependency-check . --extra --no-dev --entry ./html.js",
