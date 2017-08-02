@@ -24,13 +24,13 @@
       alt="NPM version" />
   </a>
   <!-- Build Status -->
-  <a href="https://travis-ci.org/yoshuawuyts/choo">
-    <img src="https://img.shields.io/travis/yoshuawuyts/choo/master.svg?style=flat-square"
+  <a href="https://travis-ci.org/choojs/choo">
+    <img src="https://img.shields.io/travis/choojs/choo/master.svg?style=flat-square"
       alt="Build Status" />
   </a>
   <!-- Test Coverage -->
-  <a href="https://codecov.io/github/yoshuawuyts/choo">
-    <img src="https://img.shields.io/codecov/c/github/yoshuawuyts/choo/master.svg?style=flat-square"
+  <a href="https://codecov.io/github/choojs/choo">
+    <img src="https://img.shields.io/codecov/c/github/choojs/choo/master.svg?style=flat-square"
       alt="Test Coverage" />
   </a>
   <!-- Downloads -->
@@ -51,7 +51,7 @@
       Website
     </a>
     <span> | </span>
-    <a href="https://github.com/yoshuawuyts/choo-handbook">
+    <a href="https://github.com/choojs/choo-handbook">
       Handbook
     </a>
     <span> | </span>
@@ -63,7 +63,7 @@
     <!--   CLI -->
     <!-- </a> -->
     <!-- <span> | </span> -->
-    <a href="https://github.com/yoshuawuyts/choo/blob/master/.github/CONTRIBUTING.md">
+    <a href="https://github.com/choojs/choo/blob/master/.github/CONTRIBUTING.md">
       Contributing
     </a>
     <span> | </span>
@@ -76,7 +76,7 @@
 <div align="center">
   <sub>The little framework that could. Built with ❤︎ by
   <a href="https://twitter.com/yoshuawuyts">Yoshua Wuyts</a> and
-  <a href="https://github.com/yoshuawuyts/choo/graphs/contributors">
+  <a href="https://github.com/choojs/choo/graphs/contributors">
     contributors
   </a>
 </div>
@@ -163,7 +163,7 @@ and super smiley faces.
 ## Events
 At the core of Choo is an event emitter, which is used for both application
 logic but also to interface with the framework itself. The package we use for
-this is [nanobus](https://github.com/yoshuawuyts/nanobus).
+this is [nanobus](https://github.com/choojs/nanobus).
 
 You can access the emitter through `app.use(state, emitter)`, `app.route(route,
 view(state, emit))` or `app.emitter`. Routes only have access to the
@@ -272,7 +272,7 @@ anchor links on the page is generally not recommended.
 
 ### Following links
 By default all clicks on `<a>` tags are handled by the router through the
-[nanohref](https://github.com/yoshuawuyts/nanohref) module. This can be
+[nanohref](https://github.com/choojs/nanohref) module. This can be
 disabled application-wide by passing `{ href: false }` to the application
 constructor. The event is not handled under the following conditions:
 - the click event had `.preventDefault()` called on it
@@ -408,7 +408,7 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
 
 ### `app.use(callback(state, emitter))`
 Call a function and pass it a `state` and `emitter`. `emitter` is an instance
-of [nanobus](https://github.com/yoshuawuyts/nanobus/). You can listen to
+of [nanobus](https://github.com/choojs/nanobus/). You can listen to
 messages by calling `emitter.on()` and emit messages by calling
 `emitter.emit()`.
 
@@ -445,7 +445,7 @@ $ npm install choo
 ```
 
 ## See Also
-- [bankai](https://github.com/yoshuawuyts/bankai) - streaming asset compiler
+- [bankai](https://github.com/choojs/bankai) - streaming asset compiler
 - [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
 - [yo-yo](https://github.com/maxogden/yo-yo) - tiny library for modular UI
 - [bel](https://github.com/shama/bel) - composable DOM elements using template
@@ -537,7 +537,7 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
-[bankai]: https://github.com/yoshuawuyts/bankai
+[bankai]: https://github.com/choojs/bankai
 [bel]: https://github.com/shama/bel
 [browserify]: https://github.com/substack/node-browserify
 [budo]: https://github.com/mattdesl/budo
@@ -545,8 +545,8 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [handbook]: https://github.com/yoshuawuyts/choo-handbook
 [hyperx]: https://github.com/substack/hyperx
 [morphdom-bench]: https://github.com/patrick-steele-idem/morphdom#benchmarks
-[nanomorph]: https://github.com/yoshuawuyts/nanomorph
-[nanorouter]: https://github.com/yoshuawuyts/nanorouter
+[nanomorph]: https://github.com/choojs/nanomorph
+[nanorouter]: https://github.com/choojs/nanorouter
 [nanomount]: https://github.com/yoshuawuyts/nanomount
 [yo-yo]: https://github.com/maxogden/yo-yo
 [yo-yoify]: https://github.com/shama/yo-yoify
