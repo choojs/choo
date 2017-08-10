@@ -42,6 +42,7 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
+    "@types/node": "^8.0.20",
     "browserify": "^14.3.0",
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.8.0",
