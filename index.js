@@ -31,7 +31,8 @@ function Choo (opts) {
     PUSHSTATE: 'pushState',
     NAVIGATE: 'navigate',
     POPSTATE: 'popState',
-    RENDER: 'render'
+    RENDER: 'render',
+    ROUTE: 'route'
   }
 
   // properties for internal use only
@@ -132,11 +133,19 @@ Choo.prototype.start = function () {
 
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
     var renderTiming = nanotiming('choo.render')
+    var oldHref = self.state.href + ''
 
     self.state.href = self._createLocation()
-    var newTree = self.router(self.state.href)
-    assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
 
+    var newTree = self.router(self.state.href)
+
+    if (oldHref !== self.state.href) {
+      setTimeout(function () {
+        self.emitter.emit(self._events.ROUTE)
+      }, 1)
+    }
+
+    assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
     assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
       self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
       newTree.nodeName.toLowerCase() + '>.')
