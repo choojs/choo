@@ -187,7 +187,7 @@ Choo.prototype.toString = function (location, state) {
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
 
-  this.state.href = location.replace(/\?*.$/, '')
+  this.state.href = location.replace(/\?.+$/, '')
   this.state.query = nanoquery(location)
   var html = this.router(location)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
