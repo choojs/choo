@@ -225,6 +225,10 @@ Choo comes with a shared state object. This object can be mutated freely, and
 is passed into the view functions whenever `'render'` is emitted. The state
 object comes with a few properties set.
 
+When initializing the application, `window.initialState` is used to provision
+the initial state. This is especially useful when combined with server
+rendering. See [server rendering](#server-rendering) for more details.
+
 ### `state.events`
 A mapping of Choo's built in events. It's recommended to extend this object
 with your application's events. By defining your event names once and setting
@@ -295,8 +299,8 @@ To can navigate routes you can emit `'pushState'`, `'popState'` or
 `'replaceState'`. See [#events](#events) for more details about these events.
 
 ## Server Rendering
-Choo was built with Node in mind. To render on the server call `.toString()` on
-your application.
+Choo was built with Node in mind. To render on the server call
+`.toString(route, [state])` on your application.
 
 ```js
 var html = require('choo/html')
@@ -312,6 +316,22 @@ var string = app.toString('/', state)
 
 console.log(string)
 // => '<div>Hello Node</div>'
+```
+
+When starting an application in the browser, it's recommended to provide the
+same `state` object available as `window.initialState`. When the application is
+started, it'll be used to initialize the application state. The process of
+server rendering, and providing an initial state on the client to create the
+exact same document is also known as "rehydration".
+
+```html
+<html>
+  <head>
+    <script>window.initialState = { initial: 'state' }</script>
+  </head>
+  <body>
+  </body>
+</html>
 ```
 
 ## Optimizations
