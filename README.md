@@ -410,7 +410,11 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
 Call a function and pass it a `state` and `emitter`. `emitter` is an instance
 of [nanobus](https://github.com/choojs/nanobus/). You can listen to
 messages by calling `emitter.on()` and emit messages by calling
-`emitter.emit()`.
+`emitter.emit()`. Callbacks passed to `app.use()` are commonly referred to as
+`'stores'`.
+
+If the callback has a `.storeName` property on it, it will be used to identify
+the callback during tracing.
 
 See [#events](#events) for an overview of all events.
 
