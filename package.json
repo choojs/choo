@@ -5,13 +5,14 @@
   "main": "index.js",
   "files": [
     "index.js",
-    "html.js",
+    "html/index.js",
+    "html/raw.js",
     "dist",
     "example"
   ],
   "scripts": {
     "build": "mkdir -p dist/ && browserify index -p bundle-collapser/plugin > dist/bundle.js && browserify index -g unassertify -g uglifyify -p bundle-collapser/plugin | uglifyjs --mangle-props -c unsafe,properties,dead_code,comparisons,evaluate,hoist_funs,if_return,join_vars,pure_getters,reduce_vars,collapse_vars --toplevel > dist/bundle.min.js && cat dist/bundle.min.js | gzip --best --stdout | wc -c | pretty-bytes",
-    "deps": "dependency-check --entry ./html.js . && dependency-check . --extra --no-dev --entry ./html.js",
+    "deps": "dependency-check --entry ./html/index.js . && dependency-check . --extra --no-dev --entry ./html/index.js",
     "inspect": "browserify --full-paths index -g unassertify -g uglifyify | discify --open",
     "prepublish": "npm run build",
     "start": "bankai start example",
