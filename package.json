@@ -46,6 +46,8 @@
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^2.8.0",
     "discify": "^1.6.0",
+    "jsdom": "11.0.0",
+    "jsdom-global": "3.0.2",
     "pretty-bytes-cli": "^2.0.0",
     "spok": "^0.8.1",
     "standard": "^10.0.0",
