@@ -24,13 +24,13 @@
       alt="NPM version" />
   </a>
   <!-- Build Status -->
-  <a href="https://travis-ci.org/yoshuawuyts/choo">
-    <img src="https://img.shields.io/travis/yoshuawuyts/choo/master.svg?style=flat-square"
+  <a href="https://travis-ci.org/choojs/choo">
+    <img src="https://img.shields.io/travis/choojs/choo/master.svg?style=flat-square"
       alt="Build Status" />
   </a>
   <!-- Test Coverage -->
-  <a href="https://codecov.io/github/yoshuawuyts/choo">
-    <img src="https://img.shields.io/codecov/c/github/yoshuawuyts/choo/master.svg?style=flat-square"
+  <a href="https://codecov.io/github/choojs/choo">
+    <img src="https://img.shields.io/codecov/c/github/choojs/choo/master.svg?style=flat-square"
       alt="Test Coverage" />
   </a>
   <!-- Downloads -->
@@ -51,7 +51,7 @@
       Website
     </a>
     <span> | </span>
-    <a href="https://github.com/yoshuawuyts/choo-handbook">
+    <a href="https://github.com/choojs/choo-handbook">
       Handbook
     </a>
     <span> | </span>
@@ -63,7 +63,7 @@
     <!--   CLI -->
     <!-- </a> -->
     <!-- <span> | </span> -->
-    <a href="https://github.com/yoshuawuyts/choo/blob/master/.github/CONTRIBUTING.md">
+    <a href="https://github.com/choojs/choo/blob/master/.github/CONTRIBUTING.md">
       Contributing
     </a>
     <span> | </span>
@@ -76,7 +76,7 @@
 <div align="center">
   <sub>The little framework that could. Built with ❤︎ by
   <a href="https://twitter.com/yoshuawuyts">Yoshua Wuyts</a> and
-  <a href="https://github.com/yoshuawuyts/choo/graphs/contributors">
+  <a href="https://github.com/choojs/choo/graphs/contributors">
     contributors
   </a>
 </div>
@@ -163,7 +163,7 @@ and super smiley faces.
 ## Events
 At the core of Choo is an event emitter, which is used for both application
 logic but also to interface with the framework itself. The package we use for
-this is [nanobus](https://github.com/yoshuawuyts/nanobus).
+this is [nanobus](https://github.com/choojs/nanobus).
 
 You can access the emitter through `app.use(state, emitter)`, `app.route(route,
 view(state, emit))` or `app.emitter`. Routes only have access to the
@@ -209,6 +209,13 @@ will be a previous entry in the browser's history stack, and will emit
 `'navigate'` and `'render'`. Similar to
 [history.popState](http://devdocs.io/dom_events/popstate).
 
+### `'DOMTitleChange'`|`state.events.DOMTITLECHANGE`
+This event should be emitted whenever the `document.title` needs to be updated.
+It will set both `document.title` and `state.title`.  This value can be used
+when server rendering to accurately include a `<title>` tag in the header.
+This is derived from the
+[DOMTitleChanged event](https://developer.mozilla.org/en-US/docs/Web/Events/DOMTitleChanged).
+
 ## State
 Choo comes with a shared state object. This object can be mutated freely, and
 is passed into the view functions whenever `'render'` is emitted. The state
@@ -229,8 +236,14 @@ The current params taken from the route. E.g. `/foo/:bar` becomes available as
 An object containing the current queryString. `/foo?bin=baz` becomes `{ bin:
 'baz' }`.
 
+### `state.href`
+An object containing the current href. `/foo?bin=baz` becomes `foo`.
+
 ### `state.route`
 The current name of the route used in the router (e.g. `/foo/:bar`).
+
+### `state.title`
+The current page title. Can be set using the `DOMTitleChange` event.
 
 ## Routing
 Choo is an application level framework. This means that it takes care of
@@ -258,12 +271,20 @@ page, and will scroll the screen to the position. Using both hashes in URLs and
 anchor links on the page is generally not recommended.
 
 ### Following links
-By default all clicks on `<a>` tags are handled by the router. If the `href=""`
-attrbibute points to the same `origin` (e.g. the same page), and it doesn't
-have a `rel="nooper"` attribute or similar, we handle the route. This can be
+By default all clicks on `<a>` tags are handled by the router through the
+[nanohref](https://github.com/choojs/nanohref) module. This can be
 disabled application-wide by passing `{ href: false }` to the application
-constructor. Uses [nanohref](https://github.com/yoshuawuyts/nanohref) under the
-hood.
+constructor. The event is not handled under the following conditions:
+- the click event had `.preventDefault()` called on it
+- the link has a `target="_blank"` attribute with `rel="noopener noreferrer"`
+- a modifier key is enabled (e.g. `ctrl`, `alt`, `shift` or `meta`)
+- the link's href starts with protocol handler such as `mailto:` or `dat:`
+- the link points to a different host
+- the link has a `download` attribute
+
+:warn: Note that we only handle `target=_blank` if they also have
+`rel="noopener noreferrer"` on them. This is needed to [properly sandbox web
+pages](https://mathiasbynens.github.io/rel-noopener/).
 
 ### Navigating programmatically
 To can navigate routes you can emit `'pushState'`, `'popState'` or
@@ -387,7 +408,7 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
 
 ### `app.use(callback(state, emitter))`
 Call a function and pass it a `state` and `emitter`. `emitter` is an instance
-of [nanobus](https://github.com/yoshuawuyts/nanobus/). You can listen to
+of [nanobus](https://github.com/choojs/nanobus/). You can listen to
 messages by calling `emitter.on()` and emit messages by calling
 `emitter.emit()`.
 
@@ -424,7 +445,7 @@ $ npm install choo
 ```
 
 ## See Also
-- [bankai](https://github.com/yoshuawuyts/bankai) - streaming asset compiler
+- [bankai](https://github.com/choojs/bankai) - streaming asset compiler
 - [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
 - [yo-yo](https://github.com/maxogden/yo-yo) - tiny library for modular UI
 - [bel](https://github.com/shama/bel) - composable DOM elements using template
@@ -516,7 +537,7 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
-[bankai]: https://github.com/yoshuawuyts/bankai
+[bankai]: https://github.com/choojs/bankai
 [bel]: https://github.com/shama/bel
 [browserify]: https://github.com/substack/node-browserify
 [budo]: https://github.com/mattdesl/budo
@@ -524,8 +545,8 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [handbook]: https://github.com/yoshuawuyts/choo-handbook
 [hyperx]: https://github.com/substack/hyperx
 [morphdom-bench]: https://github.com/patrick-steele-idem/morphdom#benchmarks
-[nanomorph]: https://github.com/yoshuawuyts/nanomorph
-[nanorouter]: https://github.com/yoshuawuyts/nanorouter
+[nanomorph]: https://github.com/choojs/nanomorph
+[nanorouter]: https://github.com/choojs/nanorouter
 [nanomount]: https://github.com/yoshuawuyts/nanomount
 [yo-yo]: https://github.com/maxogden/yo-yo
 [yo-yoify]: https://github.com/shama/yo-yoify

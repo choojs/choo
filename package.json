@@ -1,10 +1,16 @@
 {
   "name": "choo",
-  "version": "6.0.0-1",
+  "version": "6.0.1",
   "description": "A 4kb framework for creating sturdy frontend applications",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "html.js",
+    "dist",
+    "example"
+  ],
   "scripts": {
-    "build": "mkdir -p dist/ && browserify index -p bundle-collapser/plugin > dist/bundle.js && browserify index -g unassertify -g uglifyify -p bundle-collapser/plugin | uglifyjs --mangle-props -c unsafe,properties,dead_code,comparisons,evaluate,hoist_funs,if_return,join_vars,pure_getters,reduce_vars,collapse_vars --toplevel > dist/bundle.min.js && zopfli -i 100 dist/bundle.min.js && wc -c < dist/bundle.min.js.gz | pretty-bytes",
+    "build": "mkdir -p dist/ && browserify index -p bundle-collapser/plugin > dist/bundle.js && browserify index -g unassertify -g uglifyify -p bundle-collapser/plugin | uglifyjs --mangle-props -c unsafe,properties,dead_code,comparisons,evaluate,hoist_funs,if_return,join_vars,pure_getters,reduce_vars,collapse_vars --toplevel > dist/bundle.min.js && cat dist/bundle.min.js | gzip --best --stdout | wc -c | pretty-bytes",
     "deps": "dependency-check --entry ./html.js . && dependency-check . --extra --no-dev --entry ./html.js",
     "inspect": "browserify --full-paths index -g unassertify -g uglifyify | discify --open",
     "prepublish": "npm run build",
@@ -25,14 +31,15 @@
     "bel": "^5.0.1",
     "document-ready": "^2.0.1",
     "nanobus": "^4.2.0",
-    "nanohref": "^2.0.0",
+    "nanohref": "^3.0.0",
     "nanolocation": "^1.0.0",
     "nanomorph": "^5.1.2",
     "nanoquery": "^1.1.0",
     "nanoraf": "^3.0.0",
     "nanorouter": "^2.0.0",
     "nanotiming": "^6.0.0",
-    "scroll-to-anchor": "^1.0.0"
+    "scroll-to-anchor": "^1.0.0",
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "browserify": "^14.3.0",
@@ -41,7 +48,6 @@
     "discify": "^1.6.0",
     "jsdom": "11.0.0",
     "jsdom-global": "3.0.2",
-    "node-zopfli": "^2.0.2",
     "pretty-bytes-cli": "^2.0.0",
     "spok": "^0.8.1",
     "standard": "^10.0.0",
