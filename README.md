@@ -67,6 +67,10 @@
       Contributing
     </a>
     <span> | </span>
+    <a href="https://www.reddit.com/r/choojs/">
+      Reddit
+    </a>
+    <span> | </span>
     <a href="https://webchat.freenode.net/?channels=choo">
       Chat
     </a>
