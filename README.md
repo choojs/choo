@@ -444,7 +444,7 @@ Create DOM nodes from template string literals. Exposes
 [yo-yoify][yo-yoify].
 
 ### `choo/html/raw`
-Exposes `bel/raw` helper for rendering raw HTML content.
+Exposes [bel/raw](https://github.com/shama/bel#unescaping) helper for rendering raw HTML content.
 
 ## Installation
 ```sh
