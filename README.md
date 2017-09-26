@@ -443,6 +443,9 @@ Create DOM nodes from template string literals. Exposes
 [bel](https://github.com/shama/bel). Can be optimized using
 [yo-yoify][yo-yoify].
 
+### `choo/html/raw`
+Exposes `bel/raw` helper for rendering raw HTML content.
+
 ## Installation
 ```sh
 $ npm install choo
