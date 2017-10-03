@@ -77,7 +77,9 @@ Choo.prototype.route = function (route, handler) {
 
 Choo.prototype.use = function (cb) {
   assert.equal(typeof cb, 'function', 'choo.use: cb should be type function')
-  var endTiming = nanotiming('choo.use')
+  var msg = 'choo.use'
+  msg = cb.storeName ? msg + '(' + cb.storeName + ')' : msg
+  var endTiming = nanotiming(msg)
   cb(this.state, this.emitter, this)
   endTiming()
 }
