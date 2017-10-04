@@ -126,8 +126,8 @@ Choo.prototype.start = function () {
   }
 
   this.state.href = this._createLocation()
-  this._tree = this.router(this.state.href)
   this.state.query = nanoquery(window.location.search)
+  this._tree = this.router(this.state.href)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
 
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
