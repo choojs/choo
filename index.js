@@ -47,9 +47,12 @@ function Choo (opts) {
   this.emitter = nanobus('choo.emit')
 
   var events = { events: this._events }
-  this.state = this.hasWindow && window.initialState
-    ? xtend(window.initialState, events)
-    : events
+  if (this.hasWindow) {
+    this.state = window.initialState
+      ? xtend(window.initialState, events)
+      : events
+    delete window.initialState
+  }
 
   // listen for title changes; available even when calling .toString()
   if (this._hasWindow) this.state.title = document.title

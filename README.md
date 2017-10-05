@@ -324,6 +324,9 @@ started, it'll be used to initialize the application state. The process of
 server rendering, and providing an initial state on the client to create the
 exact same document is also known as "rehydration".
 
+For security purposes, after `window.initialState` is used it is deleted from
+the `window` object.
+
 ```html
 <html>
   <head>
