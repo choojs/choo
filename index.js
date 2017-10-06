@@ -52,6 +52,8 @@ function Choo (opts) {
       ? xtend(window.initialState, events)
       : events
     delete window.initialState
+  } else {
+    this.state = events
   }
 
   // listen for title changes; available even when calling .toString()
