@@ -16,6 +16,7 @@ module.exports = Choo
 var HISTORY_OBJECT = {}
 
 function Choo (opts) {
+  var timing = nanotiming('choo.constructor')
   if (!(this instanceof Choo)) return new Choo(opts)
   opts = opts || {}
 
@@ -54,9 +55,11 @@ function Choo (opts) {
     self.state.title = title
     if (self._hasWindow) document.title = title
   })
+  timing()
 }
 
 Choo.prototype.route = function (route, handler) {
+  var timing = nanotiming("choo.route('" + route + "')")
   assert.equal(typeof route, 'string', 'choo.route: route should be type string')
   assert.equal(typeof handler, 'function', 'choo.handler: route should be type function')
 
@@ -65,7 +68,7 @@ Choo.prototype.route = function (route, handler) {
     return function () {
       self.state.params = params
       self.state.route = route
-      var routeTiming = nanotiming("choo.route('" + route + "')")
+      var routeTiming = nanotiming("choo.router('" + route + "')")
       var res = handler(self.state, function (eventName, data) {
         self.emitter.emit(eventName, data)
       })
@@ -73,19 +76,21 @@ Choo.prototype.route = function (route, handler) {
       return res
     }
   })
+  timing()
 }
 
 Choo.prototype.use = function (cb) {
   assert.equal(typeof cb, 'function', 'choo.use: cb should be type function')
   var msg = 'choo.use'
   msg = cb.storeName ? msg + '(' + cb.storeName + ')' : msg
-  var endTiming = nanotiming(msg)
+  var timing = nanotiming(msg)
   cb(this.state, this.emitter, this)
-  endTiming()
+  timing()
 }
 
 Choo.prototype.start = function () {
   assert.equal(typeof window, 'object', 'choo.start: window was not found. .start() must be called in a browser, use .toString() if running in Node')
+  var timing = nanotiming('choo.start')
 
   var self = this
   if (this._historyEnabled) {
@@ -155,10 +160,12 @@ Choo.prototype.start = function () {
     self._loaded = true
   })
 
+  timing()
   return this._tree
 }
 
 Choo.prototype.mount = function mount (selector) {
+  var timing = nanotiming("choo.mount('" + selector + "')")
   assert.equal(typeof window, 'object', 'choo.mount: window was not found. .mount() must be called in a browser, use .toString() if running in Node')
   assert.equal(typeof selector, 'string', 'choo.mount: selector should be type string')
 
@@ -180,6 +187,7 @@ Choo.prototype.mount = function mount (selector) {
 
     renderTiming()
   })
+  timing()
 }
 
 Choo.prototype.toString = function (location, state) {
