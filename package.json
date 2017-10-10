@@ -5,6 +5,7 @@
   "main": "index.js",
   "files": [
     "index.js",
+    "index.d.ts",
     "html/index.js",
     "html/raw.js",
     "dist",
