@@ -117,7 +117,7 @@ var choo = require('choo')
 var app = choo()
 app.use(log())
 app.use(countStore)
-app.route('/', mainView)
+app.route('*', mainView)
 app.mount('body')
 
 function mainView (state, emit) {
