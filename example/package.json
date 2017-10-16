@@ -3,26 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "start": "bankai start --open",
-    "build": "bankai build --optimize",
-    "test": "standard && npm run deps && node test.js"
+    "start": "bankai start",
+    "build": "bankai build",
+    "inspect": "bankai inspect",
+    "test": "standard && node test.js"
   },
   "dependencies": {
-    "bel": "^4.5.1",
-    "choo-expose": "^1.0.0",
-    "choo-log": "^7.0.0-0",
-    "choo-persist": "^3.0.0",
-    "microbounce": "^1.0.0",
-    "microframe": "^1.0.0",
+    "choo-devtools": "1.7.0",
     "sheetify": "^6.0.1",
     "todomvc-app-css": "^2.0.6",
-    "todomvc-common": "^1.0.3",
-    "xtend": "^4.0.1"
+    "todomvc-common": "^1.0.3"
   },
   "devDependencies": {
-    "bankai": "^5.4.0",
-    "dependency-check": "^2.8.0",
+    "bankai": "^9.0.0-rc6",
     "standard": "^9.0.1"
   }
 }
