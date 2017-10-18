@@ -2,7 +2,7 @@
 
 import * as EventEmitter from 'events'
 
-export = Choo
+export default Choo
 
 declare class Choo {
   constructor (opts?: Choo.IChoo)
