@@ -12,6 +12,7 @@ var assert = require('assert')
 var xtend = require('xtend')
 
 module.exports = Choo
+module.exports["default"] = Choo
 
 var HISTORY_OBJECT = {}
 
