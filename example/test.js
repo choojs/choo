@@ -2,8 +2,7 @@ var EventEmitter = require('events').EventEmitter
 var spok = require('spok')
 var tape = require('tape')
 
-var example = require('./')
-var todoStore = example.todoStore
+var todoStore = require('./store')
 
 tape('should initialize empty state', function (t) {
   var emitter = new EventEmitter()
