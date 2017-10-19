@@ -8,6 +8,7 @@
     "index.d.ts",
     "html/index.js",
     "html/raw.js",
+    "html/index.d.ts",
     "dist",
     "example"
   ],
