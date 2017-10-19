@@ -1,3 +1,2 @@
-declare function html(strings: TemplateStringsArray, ...keys: any[]): HTMLElement;
-
+import * as bel from "bel"
 export = html
