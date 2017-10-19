@@ -1,2 +1,2 @@
 import * as bel from "bel"
-export = html
+export = bel
