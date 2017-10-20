@@ -9,7 +9,7 @@
     "test": "standard && node test.js"
   },
   "dependencies": {
-    "choo-devtools": "1.7.0",
+    "choo-devtools": "2.0.0",
     "sheetify": "^6.0.1",
     "todomvc-app-css": "^2.0.6",
     "todomvc-common": "^1.0.3"
