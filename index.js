@@ -45,7 +45,16 @@ function Choo (opts) {
   // properties that are part of the API
   this.router = nanorouter({ curry: true })
   this.emitter = nanobus('choo.emit')
-  this.state = { events: this._events }
+
+  var events = { events: this._events }
+  if (this.hasWindow) {
+    this.state = window.initialState
+      ? xtend(window.initialState, events)
+      : events
+    delete window.initialState
+  } else {
+    this.state = events
+  }
 
   // listen for title changes; available even when calling .toString()
   if (this._hasWindow) this.state.title = document.title
