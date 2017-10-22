@@ -47,7 +47,7 @@ function Choo (opts) {
   this.emitter = nanobus('choo.emit')
 
   var events = { events: this._events }
-  if (this.hasWindow) {
+  if (this._hasWindow) {
     this.state = window.initialState
       ? xtend(window.initialState, events)
       : events
