@@ -111,11 +111,11 @@
 ## Example
 ```js
 var html = require('choo/html')
-var log = require('choo-log')
+var devtools = require('choo-devtools')
 var choo = require('choo')
 
 var app = choo()
-app.use(log())
+app.use(devtools())
 app.use(countStore)
 app.route('/', mainView)
 app.mount('body')
@@ -169,7 +169,7 @@ At the core of Choo is an event emitter, which is used for both application
 logic but also to interface with the framework itself. The package we use for
 this is [nanobus](https://github.com/choojs/nanobus).
 
-You can access the emitter through `app.use(state, emitter)`, `app.route(route,
+You can access the emitter through `app.use(state, emitter, app)`, `app.route(route,
 view(state, emit))` or `app.emitter`. Routes only have access to the
 `emitter.emit` method to encourage people to separate business logic from
 render logic.
@@ -433,11 +433,11 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
 - __opts.href:__ default: `true`. Handle all relative `<a
   href="<location>"></a>` clicks and call `emit('render')`
 
-### `app.use(callback(state, emitter))`
-Call a function and pass it a `state` and `emitter`. `emitter` is an instance
+### `app.use(callback(state, emitter, app))`
+Call a function and pass it a `state`, `emitter` and `app`. `emitter` is an instance
 of [nanobus](https://github.com/choojs/nanobus/). You can listen to
 messages by calling `emitter.on()` and emit messages by calling
-`emitter.emit()`. Callbacks passed to `app.use()` are commonly referred to as
+`emitter.emit()`. `app` is the same Choo instance. Callbacks passed to `app.use()` are commonly referred to as
 `'stores'`.
 
 If the callback has a `.storeName` property on it, it will be used to identify
