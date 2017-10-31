@@ -20,7 +20,7 @@
     "start": "bankai start example",
     "test": "standard && npm run deps && node test.js"
   },
-  "repository": "yoshuawuyts/choo",
+  "repository": "choojs/choo",
   "keywords": [
     "client",
     "frontend",
