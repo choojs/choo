@@ -179,7 +179,7 @@ Choo.prototype.mount = function mount (selector) {
     if (typeof selector === 'string') {
       self._tree = document.querySelector(selector)
     } else if (self._hasWindow) {
-      if (selector instanceof HTMLElement) {
+      if (selector instanceof window.HTMLElement) {
         self._tree = selector
       }
     }
