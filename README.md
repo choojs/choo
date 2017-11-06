@@ -1,4 +1,4 @@
-<h1 align="center">choo</h1>
+<h1 align="center">Choo</h1>
 
 <div align="center">
   :steam_locomotive::train::train::train::train::train:
@@ -85,7 +85,7 @@
   </a>
 </div>
 
-## Table of Content
+## Table of Contents
 - [Features](#features)
 - [Example](#example)
 - [Philosophy](#philosophy)
@@ -101,7 +101,7 @@
 - [Support](#support)
 
 ## Features
-- __minimal size:__ weighing `4kb`, `choo` is a tiny little framework
+- __minimal size:__ weighing `4kb`, Choo is a tiny little framework
 - __event based:__ our performant event system makes writing apps easy
 - __small api:__ with only 6 methods there's not much to learn
 - __minimal tooling:__ built for the cutting edge `browserify` compiler
@@ -153,7 +153,7 @@ _Real casually._
 We believe frameworks should be disposable, and components recyclable. We don't
 want a web where walled gardens jealously compete with one another. By making
 the DOM the lowest common denominator, switching from one framework to another
-becomes frictionless. `choo` is modest in its design; we don't believe it will
+becomes frictionless. Choo is modest in its design; we don't believe it will
 be top of the class forever, so we've made it as easy to toss out as it is to
 pick up.
 
@@ -388,22 +388,22 @@ more convenient we recommend using [bankai][bankai] with `--optimize` to
 compile your assets for production.
 
 ## FAQ
-### Why is it called choo?
+### Why is it called Choo?
 Because I thought it sounded cute. All these programs talk about being
 _"performant"_, _"rigid"_, _"robust"_ - I like programming to be light, fun and
-non-scary. `choo` embraces that.
+non-scary. Choo embraces that.
 
 Also imagine telling some business people you chose to rewrite something
 critical for serious bizcorp using a train themed framework.
 :steam_locomotive::train::train::train:
 
-### Is it called choo, choo.js or...?
-It's called "choo", though we're fine if you call it "choo-choo" or
-"chugga-chugga-choo-choo" too. The only time "choo.js" is tolerated is if /
+### Is it called Choo, Choo.js or...?
+It's called "Choo", though we're fine if you call it "Choo-choo" or
+"Chugga-chugga-choo-choo" too. The only time "choo.js" is tolerated is if /
 when you shimmy like you're a locomotive.
 
-### Does choo use a virtual-dom?
-`choo` uses [nanomorph][nanomorph], which diffs real DOM nodes instead of
+### Does Choo use a virtual-dom?
+Choo uses [nanomorph][nanomorph], which diffs real DOM nodes instead of
 virtual nodes. It turns out that [browsers are actually ridiculously good at
 dealing with DOM nodes][morphdom-bench], and it has the added benefit of
 working with _any_ library that produces valid DOM nodes. So to put a long
@@ -421,7 +421,7 @@ $ browserify -g yo-yoify
 Sure.
 
 ## API
-This section provides documentation on how each function in `choo` works. It's
+This section provides documentation on how each function in Choo works. It's
 intended to be a technical reference. If you're interested in learning choo for
 the first time, consider reading through the [handbook][handbook] first
 :sparkles:
