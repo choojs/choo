@@ -176,11 +176,12 @@ Choo.prototype.mount = function mount (selector) {
   documentReady(function () {
     var renderTiming = nanotiming('choo.render')
     var newTree = self.start()
-
     if (typeof selector === 'string') {
       self._tree = document.querySelector(selector)
-    } else if (selector instanceof HTMLElement) {
-      self._tree = selector
+    } else if (self._hasWindow) {
+      if (selector instanceof HTMLElement) {
+        self._tree = selector
+      }
     }
 
     assert.ok(self._tree, 'choo.mount: could not query selector: ' + selector)
