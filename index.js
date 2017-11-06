@@ -169,7 +169,7 @@ Choo.prototype.start = function () {
 
 Choo.prototype.mount = function mount (selector) {
   assert.equal(typeof window, 'object', 'choo.mount: window was not found. .mount() must be called in a browser, use .toString() if running in Node')
-  assert.equal(typeof selector, 'string', 'choo.mount: selector should be type string')
+  assert.ok(selector, 'choo.mount: selector should be type string or HTMLElement');
 
   var self = this
 
@@ -177,7 +177,12 @@ Choo.prototype.mount = function mount (selector) {
     var renderTiming = nanotiming('choo.render')
     var newTree = self.start()
 
-    self._tree = document.querySelector(selector)
+    if (typeof selector === 'string') {
+        self._tree = document.querySelector(selector)
+    } else if (selector instanceof HTMLElement) {
+        self._tree = selector;
+    }
+
     assert.ok(self._tree, 'choo.mount: could not query selector: ' + selector)
     assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.mount: The target node <' +
       self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
