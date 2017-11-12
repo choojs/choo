@@ -169,7 +169,7 @@ Choo.prototype.start = function () {
 
 Choo.prototype.mount = function mount (selector) {
   assert.equal(typeof window, 'object', 'choo.mount: window was not found. .mount() must be called in a browser, use .toString() if running in Node')
-  assert.ok(selector, 'choo.mount: selector should be type string or HTMLElement')
+  assert.ok(typeof selector === 'string' || typeof selector === 'object', 'choo.mount: selector should be type String or HTMLElement')
 
   var self = this
 
@@ -178,7 +178,7 @@ Choo.prototype.mount = function mount (selector) {
     var newTree = self.start()
     if (typeof selector === 'string') {
       self._tree = document.querySelector(selector)
-    } else if (self._hasWindow) {
+    } else {
       if (selector instanceof window.HTMLElement) {
         self._tree = selector
       }
