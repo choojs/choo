@@ -179,9 +179,7 @@ Choo.prototype.mount = function mount (selector) {
     if (typeof selector === 'string') {
       self._tree = document.querySelector(selector)
     } else {
-      if (selector instanceof window.HTMLElement) {
-        self._tree = selector
-      }
+      self._tree = selector
     }
 
     assert.ok(self._tree, 'choo.mount: could not query selector: ' + selector)
