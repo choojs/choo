@@ -454,6 +454,7 @@ See [#routing](#routing) for an overview of how to use routing efficiently.
 
 ### `app.mount(selector)`
 Start the application and mount it on the given `querySelector`,
+the given selector can be a String or a DOM element.
 
 This will _replace_ the selector provided with the tree returned from `app.start()`.
 If you want to add the app as a child to an element, use `app.start()` to obtain the tree and manually append it.
