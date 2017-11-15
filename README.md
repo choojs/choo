@@ -453,10 +453,11 @@ hood.
 See [#routing](#routing) for an overview of how to use routing efficiently.
 
 ### `app.mount(selector)`
-Start the application and mount it on the given `querySelector`. Uses
-[nanomount][nanomount] under the hood. This will _replace_ the selector provided
-with the tree returned from `app.start()`. If you want to add the app as a child
-to an element, use `app.start()` to obtain the tree and manually append it.
+Start the application and mount it on the given `querySelector`,
+the given selector can be a String or a DOM element.
+
+This will _replace_ the selector provided with the tree returned from `app.start()`.
+If you want to add the app as a child to an element, use `app.start()` to obtain the tree and manually append it.
 
 ### `tree = app.start()`
 Start the application. Returns a tree of DOM nodes that can be mounted using
@@ -581,7 +582,6 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [morphdom-bench]: https://github.com/patrick-steele-idem/morphdom#benchmarks
 [nanomorph]: https://github.com/choojs/nanomorph
 [nanorouter]: https://github.com/choojs/nanorouter
-[nanomount]: https://github.com/yoshuawuyts/nanomount
 [yo-yo]: https://github.com/maxogden/yo-yo
 [yo-yoify]: https://github.com/shama/yo-yoify
 [unassertify]: https://github.com/unassert-js/unassertify
