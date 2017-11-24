@@ -11,3 +11,4 @@ coverage.json
 .zuulrc
 package-lock.json
 yarn.lock
+.idea
