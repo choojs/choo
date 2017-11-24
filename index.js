@@ -143,20 +143,19 @@ Choo.prototype.start = function () {
 
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
     var renderTiming = nanotiming('choo.render')
-
     self.state.href = self._createLocation()
-    var newTree = self.router(self.state.href)
-    assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
 
-    assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
-      self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
-      newTree.nodeName.toLowerCase() + '>.')
-
-    var morphTiming = nanotiming('choo.morph')
-    nanomorph(self._tree, newTree)
-    morphTiming()
-
-    renderTiming()
+    var res = self.router(self.state.href)
+    if (typeof res === 'string' || (self._hasWindow && res instanceof window.HTMLElement)) {
+      self.morph(res)
+      renderTiming()
+    } else if (res && typeof res.then === 'function') {
+      res.then(function (tree) {
+        assert.ok(typeof res === 'string' || (self._hasWindow && res instanceof window.HTMLElement))
+        self.morph(tree)
+        renderTiming()
+      })
+    }
   }))
 
   documentReady(function () {
@@ -165,6 +164,18 @@ Choo.prototype.start = function () {
   })
 
   return this._tree
+}
+
+Choo.prototype.morph = function (newTree) {
+  assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + this.state.href)
+
+  assert.equal(this._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
+    this._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
+    newTree.nodeName.toLowerCase() + '>.')
+
+  var morphTiming = nanotiming('choo.morph')
+  nanomorph(this._tree, newTree)
+  morphTiming()
 }
 
 Choo.prototype.mount = function mount (selector) {
