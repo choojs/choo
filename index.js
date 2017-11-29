@@ -143,20 +143,19 @@ Choo.prototype.start = function () {
 
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
     var renderTiming = nanotiming('choo.render')
-
     self.state.href = self._createLocation()
-    var newTree = self.router(self.state.href)
-    assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
 
-    assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
-      self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
-      newTree.nodeName.toLowerCase() + '>.')
-
-    var morphTiming = nanotiming('choo.morph')
-    nanomorph(self._tree, newTree)
-    morphTiming()
-
-    renderTiming()
+    var res = self.router(self.state.href)
+    if (self._hasWindow && res instanceof window.HTMLElement) {
+      self.morph(res)
+      renderTiming()
+    } else if (res && typeof res.then === 'function') {
+      res.then(function (tree) {
+        assert.ok(self._hasWindow && res instanceof window.HTMLElement)
+        self.morph(tree)
+        renderTiming()
+      })
+    }
   }))
 
   documentReady(function () {
@@ -165,6 +164,18 @@ Choo.prototype.start = function () {
   })
 
   return this._tree
+}
+
+Choo.prototype.morph = function (newTree) {
+  assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + this.state.href)
+
+  assert.equal(this._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
+    this._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
+    newTree.nodeName.toLowerCase() + '>.')
+
+  var morphTiming = nanotiming('choo.morph')
+  nanomorph(this._tree, newTree)
+  morphTiming()
 }
 
 Choo.prototype.mount = function mount (selector) {
@@ -204,7 +215,8 @@ Choo.prototype.toString = function (location, state) {
 
   this.state.href = location.replace(/\?.+$/, '')
   this.state.query = nanoquery(location)
-  var html = this.router(location)
-  assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
-  return html.toString()
+  var res = this.router(location)
+  assert.ok(res, 'choo.toString: no valid value returned for the route ' + location)
+  assert.ok(typeof res.then !== 'function', 'choo.toString: not possible to stringify async route' + location)
+  return res.toString()
 }
