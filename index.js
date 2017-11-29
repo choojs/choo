@@ -146,12 +146,12 @@ Choo.prototype.start = function () {
     self.state.href = self._createLocation()
 
     var res = self.router(self.state.href)
-    if (typeof res === 'string' || (self._hasWindow && res instanceof window.HTMLElement)) {
+    if (self._hasWindow && res instanceof window.HTMLElement) {
       self.morph(res)
       renderTiming()
     } else if (res && typeof res.then === 'function') {
       res.then(function (tree) {
-        assert.ok(typeof res === 'string' || (self._hasWindow && res instanceof window.HTMLElement))
+        assert.ok(self._hasWindow && res instanceof window.HTMLElement)
         self.morph(tree)
         renderTiming()
       })
@@ -215,7 +215,8 @@ Choo.prototype.toString = function (location, state) {
 
   this.state.href = location.replace(/\?.+$/, '')
   this.state.query = nanoquery(location)
-  var html = this.router(location)
-  assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
-  return html.toString()
+  var res = this.router(location)
+  assert.ok(res, 'choo.toString: no valid value returned for the route ' + location)
+  assert.ok(typeof res.then !== 'function', 'choo.toString: not possible to stringify async route' + location)
+  return res.toString()
 }

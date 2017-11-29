@@ -18,17 +18,19 @@ tape('should render on the server', function (t) {
   t.end()
 })
 
-tape('should render async route', function (t) {
+tape('async route should throw on server', function (t) {
   var app = choo()
-  app.route('/', function (state, emit) {
-    return new Promise(function (resolve) {
-      var strong = '<strong>Hello filthy planet</strong>'
-      resolve(html`<p>${raw(strong)}</p>`)
-    })
+  app.route('/', async function (state, emit) {
+    var strong = '<strong>Hello filthy planet</strong>'
+    return html`
+      <p>${raw(strong)}</p>
+    `
   })
-  app.toString('/').then(function (res) {
-    var exp = '<p><strong>Hello filthy planet</strong></p>'
-    t.equal(res.trim(), exp, 'result was OK')
-    t.end()
-  })
+  try {
+    var res = app.toString('/')
+    t.notOk(res, 'this should not be executed')
+  } catch (e) {
+    t.ok(e, 'throws expected error')
+  }
+  t.end()
 })
