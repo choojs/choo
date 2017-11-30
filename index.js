@@ -104,7 +104,7 @@ Choo.prototype.start = function () {
       self.state.query = nanoquery(window.location.search)
       if (self._loaded) {
         var resList = self.emitter._listeners[self._events.RESOLVE]
-        var resCount = resList ? resList.length : 0;
+        var resCount = resList ? resList.length : 0
         self.emitter.emit(resCount > 0 ? self._events.RESOLVE : self._events.RENDER)
       }
     })
