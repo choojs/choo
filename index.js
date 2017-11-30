@@ -31,6 +31,7 @@ function Choo (opts) {
     PUSHSTATE: 'pushState',
     NAVIGATE: 'navigate',
     POPSTATE: 'popState',
+    RESOLVE: 'resolve',
     RENDER: 'render'
   }
 
@@ -99,10 +100,12 @@ Choo.prototype.start = function () {
   var self = this
   if (this._historyEnabled) {
     this.emitter.prependListener(this._events.NAVIGATE, function () {
+      self.state.href = self._createLocation()
       self.state.query = nanoquery(window.location.search)
       if (self._loaded) {
-        self.emitter.emit(self._events.RENDER)
-        setTimeout(scrollToAnchor.bind(null, window.location.hash), 0)
+        var resList = self.emitter._listeners[self._events.RESOLVE]
+        var resCount = resList ? resList.length : 0;
+        self.emitter.emit(resCount > 0 ? self._events.RESOLVE : self._events.RENDER)
       }
     })
 
@@ -144,7 +147,6 @@ Choo.prototype.start = function () {
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
     var renderTiming = nanotiming('choo.render')
 
-    self.state.href = self._createLocation()
     var newTree = self.router(self.state.href)
     assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
 
@@ -157,6 +159,8 @@ Choo.prototype.start = function () {
     morphTiming()
 
     renderTiming()
+
+    setTimeout(scrollToAnchor.bind(null, window.location.hash), 0)
   }))
 
   documentReady(function () {
