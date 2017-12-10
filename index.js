@@ -45,19 +45,18 @@ function Choo (opts) {
   this._stores = []
   this._tree = null
 
-  // properties that are part of the API
-  this.router = nanorouter()
-  this.emitter = nanobus('choo.emit')
-  this.emit = this.emitter.emit.bind(this.emitter)
-
-  var events = { events: this._events }
+  // state
+  var _state = {
+    events: this._events,
+    components: {}
+  }
   if (this._hasWindow) {
     this.state = window.initialState
-      ? xtend(window.initialState, events)
-      : events
+      ? xtend(window.initialState, _state)
+      : _state
     delete window.initialState
   } else {
-    this.state = events
+    this.state = _state
   }
 
   // properties that are part of the API
