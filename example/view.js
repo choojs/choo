@@ -1,6 +1,7 @@
 var html = require('bel') // cannot require choo/html because it's a nested repo
 
 var Header = require('./components/header')
+var Footer = require('./components/footer')
 
 module.exports = mainView
 
@@ -10,7 +11,7 @@ function mainView (state, emit, render) {
       <section class="todoapp">
         ${render(Header)}
         ${TodoList(state, emit)}
-        ${Footer(state, emit)}
+        ${render(Footer)}
       </section>
       <footer class="info">
         <p>Double-click to edit a todo</p>
@@ -19,55 +20,6 @@ function mainView (state, emit, render) {
       </footer>
     </body>
   `
-}
-
-function Footer (state, emit) {
-  var filter = state.href.replace(/^\//, '') || ''
-  var activeCount = state.todos.active.length
-  var hasDone = state.todos.done.length
-
-  return html`
-    <footer class="footer">
-      <span class="todo-count">
-        <strong>${activeCount}</strong>
-        item${state.todos.all === 1 ? '' : 's'} left
-      </span>
-      <ul class="filters">
-        ${filterButton('All', '', filter, emit)}
-        ${filterButton('Active', 'active', filter, emit)}
-        ${filterButton('Completed', 'completed', filter, emit)}
-      </ul>
-      ${hasDone ? deleteCompleted(emit) : ''}
-    </footer>
-  `
-
-  function filterButton (name, filter, currentFilter, emit) {
-    var filterClass = filter === currentFilter
-      ? 'selected'
-      : ''
-
-    var uri = '#' + name.toLowerCase()
-    if (uri === '#all') uri = '/'
-    return html`
-      <li>
-        <a href=${uri} class=${filterClass}>
-          ${name}
-        </a>
-      </li>
-    `
-  }
-
-  function deleteCompleted (emit) {
-    return html`
-      <button class="clear-completed" onclick=${deleteAllCompleted}>
-        Clear completed
-      </button>
-    `
-
-    function deleteAllCompleted () {
-      emit('todos:deleteCompleted')
-    }
-  }
 }
 
 function TodoItem (todo, emit) {
