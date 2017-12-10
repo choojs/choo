@@ -1,13 +1,14 @@
 var html = require('bel') // cannot require choo/html because it's a nested repo
 
+var Header = require('./components/header')
+
 module.exports = mainView
 
-function mainView (state, emit) {
-  emit('log:debug', 'Rendering main view')
+function mainView (state, emit, render) {
   return html`
     <body>
       <section class="todoapp">
-        ${Header(state, emit)}
+        ${render(Header)}
         ${TodoList(state, emit)}
         ${Footer(state, emit)}
       </section>
@@ -18,30 +19,6 @@ function mainView (state, emit) {
       </footer>
     </body>
   `
-}
-
-function Header (state, emit) {
-  return html`
-    <header class="header">
-      <h1>todos</h1>
-      <input class="new-todo"
-        value=${state.todos.input}
-        autofocus
-        placeholder="What needs to be done?"
-        onkeydown=${createTodo} />
-    </header>
-  `
-
-  function createTodo (e) {
-    var value = e.target.value
-    if (!value) return
-    if (e.keyCode === 13) {
-      emit('todos:input', '')
-      emit('todos:create', value)
-    } else {
-      emit('todos:input', value)
-    }
-  }
 }
 
 function Footer (state, emit) {
