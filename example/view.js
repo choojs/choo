@@ -2,6 +2,7 @@ var html = require('bel') // cannot require choo/html because it's a nested repo
 
 var Header = require('./components/header')
 var Footer = require('./components/footer')
+var Info = require('./components/info')
 
 module.exports = mainView
 
@@ -13,11 +14,7 @@ function mainView (state, emit, render) {
         ${TodoList(state, emit)}
         ${render(Footer)}
       </section>
-      <footer class="info">
-        <p>Double-click to edit a todo</p>
-        <p>choo by <a href="https://yoshuawuyts.com/">Yoshua Wuyts</a></p>
-        <p>Created by <a href="http://shuheikagawa.com">Shuhei Kagawa</a></p>
-      </footer>
+      ${render(Info)}
     </body>
   `
 }

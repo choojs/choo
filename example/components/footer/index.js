@@ -1,7 +1,7 @@
 var Component = require('../../../component')
 var html = require('bel')
 
-var deleteCompleted = require('./delete-completed')
+var clearButton = require('./delete-completed')
 var filterButton = require('./filter-button')
 
 module.exports = class Footer extends Component {
@@ -13,28 +13,42 @@ module.exports = class Footer extends Component {
     super(name)
     this.state = state
     this.emit = emit
+
+    this.local = this.state.components.footer = {}
+    this.setState()
+  }
+
+  setState () {
+    this.local.rawTodos = this.state.todos.clock
+    this.local.rawHref = this.state.href
+
+    this.local.filter = this.state.href.replace(/^\//, '') || ''
+    this.local.activeCount = this.state.todos.active.length
+    this.local.hasDone = this.state.todos.done.length || null
   }
 
   update () {
-    return false
+    if (this.local.rawTodos !== this.state.todos.clock ||
+      this.local.rawHref !== this.state.href) {
+      this.setState()
+      return true
+    } else {
+      return false
+    }
   }
 
   createElement () {
-    var filter = this.state.href.replace(/^\//, '') || ''
-    var activeCount = this.state.todos.active.length
-    var hasDone = this.state.todos.done.length
-
     return html`<footer class="footer">
       <span class="todo-count">
-        <strong>${activeCount}</strong>
+        <strong>${this.local.activeCount}</strong>
         item${this.state.todos.all === 1 ? '' : 's'} left
       </span>
       <ul class="filters">
-        ${filterButton('All', '', filter, this.emit)}
-        ${filterButton('Active', 'active', filter, this.emit)}
-        ${filterButton('Completed', 'completed', filter, this.emit)}
+        ${filterButton('All', '', this.local.filter, this.emit)}
+        ${filterButton('Active', 'active', this.local.filter, this.emit)}
+        ${filterButton('Completed', 'completed', this.local.filter, this.emit)}
       </ul>
-      ${hasDone ? deleteCompleted(this.emit) : null}
+      ${this.local.hasDone && clearButton(this.emit)}
     </footer>`
   }
 }
