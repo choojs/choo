@@ -11,6 +11,8 @@ var nanobus = require('nanobus')
 var assert = require('assert')
 var xtend = require('xtend')
 
+var Cache = require('./component/cache')
+
 module.exports = Choo
 
 var HISTORY_OBJECT = {}
@@ -57,6 +59,11 @@ function Choo (opts) {
   } else {
     this.state = events
   }
+
+  // properties that are part of the API
+  this.router = nanorouter({ curry: true })
+  this.emitter = nanobus('choo.emit')
+  this.cache = new Cache(this.state, this.emitter.emit.bind(this.emitter))
 
   // listen for title changes; available even when calling .toString()
   if (this._hasWindow) this.state.title = document.title
