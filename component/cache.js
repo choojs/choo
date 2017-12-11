@@ -11,6 +11,14 @@ function ChooComponentCache (state, emit) {
   this.cache = {}
 }
 
+ChooComponentCache.prototype.prune = function () {
+  var keys = Object.keys(this.cache)
+  for (var id, i = 0, len = keys.length; i < len; i++) {
+    id = keys[i]
+    if (!this.cache[id].element) delete this.cache[id]
+  }
+}
+
 ChooComponentCache.prototype.render = function (Component) {
   assert.equal(typeof Component, 'function', 'ChooComponentCache.render: Component should be type function')
   var args = []

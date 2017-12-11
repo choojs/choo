@@ -8,6 +8,7 @@ var nanoquery = require('nanoquery')
 var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
+var onIdle = require('on-idle')
 var assert = require('assert')
 var xtend = require('xtend')
 
@@ -154,6 +155,8 @@ Choo.prototype.start = function () {
     var morphTiming = nanotiming('choo.morph')
     nanomorph(self._tree, newTree)
     morphTiming()
+
+    onIdle(self.cache.prune.bind(self.cache))
 
     renderTiming()
   }))
