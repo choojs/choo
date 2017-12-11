@@ -1,26 +1,26 @@
 var assert = require('assert')
 
-module.exports = CreateCache
+module.exports = ChooComponentCache
 
-function CreateCache (state, emit) {
-  assert.equal(typeof state, 'object', 'choo/component/cache: state should be type object')
-  assert.equal(typeof emit, 'function', 'choo/component/cache: state should be type function')
+function ChooComponentCache (state, emit) {
+  assert.equal(typeof state, 'object', 'ChooComponentCache: state should be type object')
+  assert.equal(typeof emit, 'function', 'ChooComponentCache: state should be type function')
 
   this.state = state
   this.emit = emit
   this.cache = {}
 }
 
-CreateCache.prototype.render = function (Component) {
-  assert.equal(typeof Component, 'function', 'CreateCache.render: Component should be type function')
+ChooComponentCache.prototype.render = function (Component) {
+  assert.equal(typeof Component, 'function', 'ChooComponentCache.render: Component should be type function')
   var args = []
   for (var i = 1, len = arguments.length; i < len; i++) {
     args.push(arguments[i])
   }
 
-  assert.equal(typeof Component.identity, 'function', 'Choo/component/cache.render: Component.identity should be type function')
+  assert.equal(typeof Component.identity, 'function', 'ChooComponentCache.render: Component.identity should be type function')
   var id = Component.identity(args)
-  assert.equal(typeof id, 'string', 'choo/component/cache.render: Component.identity should return type string')
+  assert.equal(typeof id, 'string', 'ChooComponentCache.render: Component.identity should return type string')
 
   var el = this.cache[id]
   if (!el) {
