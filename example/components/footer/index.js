@@ -1,7 +1,7 @@
 var Component = require('../../../component')
 var html = require('bel')
 
-var clearButton = require('./delete-completed')
+var clearButton = require('./clear-button')
 var filterButton = require('./filter-button')
 
 module.exports = class Footer extends Component {
