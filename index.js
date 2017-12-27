@@ -43,8 +43,9 @@ function Choo (opts) {
   this._tree = null
 
   // properties that are part of the API
-  this.router = nanorouter({ curry: true })
+  this.router = nanorouter()
   this.emitter = nanobus('choo.emit')
+  this.emit = this.emitter.emit.bind(this.emitter)
 
   var events = { events: this._events }
   if (this._hasWindow) {
@@ -68,20 +69,7 @@ function Choo (opts) {
 Choo.prototype.route = function (route, handler) {
   assert.equal(typeof route, 'string', 'choo.route: route should be type string')
   assert.equal(typeof handler, 'function', 'choo.handler: route should be type function')
-
-  var self = this
-  this.router.on(route, function (params) {
-    return function () {
-      self.state.params = params
-      self.state.route = route
-      var routeTiming = nanotiming("choo.route('" + route + "')")
-      var res = handler(self.state, function (eventName, data) {
-        self.emitter.emit.apply(self.emitter, arguments)
-      })
-      routeTiming()
-      return res
-    }
-  })
+  this.router.on(route, handler)
 }
 
 Choo.prototype.use = function (cb) {
@@ -99,7 +87,7 @@ Choo.prototype.start = function () {
   var self = this
   if (this._historyEnabled) {
     this.emitter.prependListener(this._events.NAVIGATE, function () {
-      self.state.query = nanoquery(window.location.search)
+      self._matchRoute()
       if (self._loaded) {
         self.emitter.emit(self._events.RENDER)
         setTimeout(scrollToAnchor.bind(null, window.location.hash), 0)
@@ -136,16 +124,13 @@ Choo.prototype.start = function () {
     }
   }
 
-  this.state.href = this._createLocation()
-  this.state.query = nanoquery(window.location.search)
-  this._tree = this.router(this.state.href)
+  this._matchRoute()
+  this._tree = this._prerender(this.state)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
 
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
     var renderTiming = nanotiming('choo.render')
-
-    self.state.href = self._createLocation()
-    var newTree = self.router(self.state.href)
+    var newTree = self._prerender(self.state)
     assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
 
     assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
@@ -202,9 +187,33 @@ Choo.prototype.toString = function (location, state) {
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
 
-  this.state.href = location.replace(/\?.+$/, '')
-  this.state.query = nanoquery(location)
-  var html = this.router(location)
+  this._matchRoute(location)
+  var html = this._prerender(this.state)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
   return html.toString()
+}
+
+Choo.prototype._matchRoute = function (locationOverride) {
+  var location, queryString
+  if (locationOverride) {
+    location = locationOverride.replace(/\?.+$/, '')
+    queryString = locationOverride
+  } else {
+    location = this._createLocation()
+    queryString = window.location.search
+  }
+  var matched = this.router.match(location)
+  this.state.href = location
+  this.state.query = nanoquery(queryString)
+  this.state.route = matched.route
+  this.state.params = matched.params
+  this.state._handler = matched.cb
+  return this.state
+}
+
+Choo.prototype._prerender = function (state) {
+  var routeTiming = nanotiming("choo.prerender('" + state.route + "')")
+  var res = state._handler(state, this.emit)
+  routeTiming()
+  return res
 }
