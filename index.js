@@ -9,7 +9,6 @@ var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
 var assert = require('assert')
-var xtend = require('xtend')
 
 module.exports = Choo
 
@@ -49,7 +48,7 @@ function Choo (opts) {
   var events = { events: this._events }
   if (this._hasWindow) {
     this.state = window.initialState
-      ? xtend(window.initialState, events)
+      ? Object.assign({}, window.initialState, events)
       : events
     delete window.initialState
   } else {
@@ -196,7 +195,7 @@ Choo.prototype.mount = function mount (selector) {
 }
 
 Choo.prototype.toString = function (location, state) {
-  this.state = xtend(this.state, state || {})
+  Object.assign(this.state, state || {})
 
   assert.notEqual(typeof window, 'object', 'choo.mount: window was found. .toString() must be called in Node, use .start() or .mount() if running in the browser')
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')

@@ -41,8 +41,7 @@
     "nanoraf": "^3.0.0",
     "nanorouter": "^2.0.0",
     "nanotiming": "^6.0.0",
-    "scroll-to-anchor": "^1.0.0",
-    "xtend": "^4.0.1"
+    "scroll-to-anchor": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^8.0.20",
