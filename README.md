@@ -208,10 +208,13 @@ and `'render'`. Similar to
 [history.replaceState](http://devdocs.io/dom/history#history-replacestate).
 
 ### `'popState'`|`state.events.POPSTATE`
-This event should be emitted to navigate to a previous route. The new route
-will be a previous entry in the browser's history stack, and will emit
-`'navigate'` and `'render'`. Similar to
-[history.popState](http://devdocs.io/dom_events/popstate).
+This event is emitted when the user hits the 'back' button in their browser.
+The new route will be a previous entry in the browser's history stack, and
+immediately afterward the`'navigate'` and `'render'`events will be emitted.
+Similar to [history.popState](http://devdocs.io/dom_events/popstate). (Note
+that `emit('popState')` will _not_ cause a popState action - use
+`history.go(-1)` for that - this is different to the behaviour of `pushState`
+and `replaceState`!)
 
 ### `'DOMTitleChange'`|`state.events.DOMTITLECHANGE`
 This event should be emitted whenever the `document.title` needs to be updated.
