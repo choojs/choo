@@ -40,7 +40,7 @@
     "nanoquery": "^1.1.0",
     "nanoraf": "^3.0.0",
     "nanorouter": "^3.0.1",
-    "nanotiming": "^6.0.0",
+    "nanotiming": "^7.0.0",
     "scroll-to-anchor": "^1.0.0",
     "xtend": "^4.0.1"
   },
