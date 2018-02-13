@@ -153,7 +153,12 @@ Choo.prototype.start = function () {
 }
 
 Choo.prototype.mount = function mount (selector) {
-  assert.equal(typeof window, 'object', 'choo.mount: window was not found. .mount() must be called in a browser, use .toString() if running in Node')
+  if (typeof window !== 'object') {
+    assert.ok(typeof selector === 'string', 'choo.mount: selector should be type String')
+    this.selector = selector
+    return this
+  }
+
   assert.ok(typeof selector === 'string' || typeof selector === 'object', 'choo.mount: selector should be type String or HTMLElement')
 
   var self = this
