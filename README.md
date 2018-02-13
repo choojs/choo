@@ -456,8 +456,17 @@ See [#routing](#routing) for an overview of how to use routing efficiently.
 Start the application and mount it on the given `querySelector`,
 the given selector can be a String or a DOM element.
 
-This will _replace_ the selector provided with the tree returned from `app.start()`.
+In the browser, this will _replace_ the selector provided with the tree returned from `app.start()`.
 If you want to add the app as a child to an element, use `app.start()` to obtain the tree and manually append it.
+
+On the server, this will save the `selector` on the app instance.
+When doing server side rendering, you can then check the `app.selector` property to see where the render result should be inserted.
+
+`app.mount()` returns the `app` instance, so you can do:
+
+```js
+module.exports = app.mount('body')
+```
 
 ### `tree = app.start()`
 Start the application. Returns a tree of DOM nodes that can be mounted using
