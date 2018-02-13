@@ -462,7 +462,7 @@ If you want to add the app as a child to an element, use `app.start()` to obtain
 On the server, this will save the `selector` on the app instance.
 When doing server side rendering, you can then check the `app.selector` property to see where the render result should be inserted.
 
-`app.mount()` returns the `app` instance, so you can do:
+Returns `this`, so you can easily export the application for server side rendering:
 
 ```js
 module.exports = app.mount('body')
