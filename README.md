@@ -298,12 +298,12 @@ constructor. The event is not handled under the following conditions:
 pages](https://mathiasbynens.github.io/rel-noopener/).
 
 ### Navigating programmatically
-To can navigate routes you can emit `'pushState'`, `'popState'` or
+To navigate routes you can emit `'pushState'`, `'popState'` or
 `'replaceState'`. See [#events](#events) for more details about these events.
 
 ## Server Rendering
 Choo was built with Node in mind. To render on the server call
-`.toString(route, [state])` on your application.
+`.toString(route, [state])` on your `choo` instance.
 
 ```js
 var html = require('choo/html')
@@ -387,8 +387,7 @@ overhead during runtime, so for production environments we should unwrap this
 using [yo-yoify][yo-yoify].
 
 Setting up browserify transforms can sometimes be a bit of hassle; to make this
-more convenient we recommend using [bankai][bankai] with `--optimize` to
-compile your assets for production.
+more convenient we recommend using [bankai build][bankai] to build your assets for production.
 
 ## FAQ
 ### Why is it called Choo?
