@@ -48,13 +48,13 @@ function Choo (opts) {
   this.emit = this.emitter.emit.bind(this.emitter)
 
   var events = { events: this._events }
-  if (this._hasWindow) {
-    this.state = window.initialState
-      ? xtend(window.initialState, events)
-      : events
+  var initialState = xtend(opts.initialState, events)
+
+  if (this._hasWindow && window.initialState) {
+    this.state = xtend(window.initialState, initialState)
     delete window.initialState
   } else {
-    this.state = events
+    this.state = initialState
   }
 
   // listen for title changes; available even when calling .toString()
