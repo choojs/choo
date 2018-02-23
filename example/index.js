@@ -15,5 +15,4 @@ app.route('#active', require('./view'))
 app.route('#completed', require('./view'))
 app.route('*', require('./view'))
 
-if (module.parent) module.exports = app
-else app.mount('body')
+module.exports = app.mount('body')
