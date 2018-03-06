@@ -40,6 +40,7 @@ function Choo (opts) {
   this._hasWindow = typeof window !== 'undefined'
   this._createLocation = nanolocation
   this._loaded = false
+  this._stores = []
   this._tree = null
 
   // properties that are part of the API
@@ -74,11 +75,14 @@ Choo.prototype.route = function (route, handler) {
 
 Choo.prototype.use = function (cb) {
   assert.equal(typeof cb, 'function', 'choo.use: cb should be type function')
-  var msg = 'choo.use'
-  msg = cb.storeName ? msg + '(' + cb.storeName + ')' : msg
-  var endTiming = nanotiming(msg)
-  cb(this.state, this.emitter, this)
-  endTiming()
+  var self = this
+  this._stores.push(function () {
+    var msg = 'choo.use'
+    msg = cb.storeName ? msg + '(' + cb.storeName + ')' : msg
+    var endTiming = nanotiming(msg)
+    cb(self.state, self.emitter, self)
+    endTiming()
+  })
 }
 
 Choo.prototype.start = function () {
@@ -123,6 +127,10 @@ Choo.prototype.start = function () {
       })
     }
   }
+
+  this._stores.forEach(function (initStore) {
+    initStore()
+  })
 
   this._matchRoute()
   this._tree = this._prerender(this.state)
@@ -191,6 +199,11 @@ Choo.prototype.toString = function (location, state) {
   assert.notEqual(typeof window, 'object', 'choo.mount: window was found. .toString() must be called in Node, use .start() or .mount() if running in the browser')
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
+
+  // TODO: pass custom state down to each store.
+  this._stores.forEach(function (initStore) {
+    initStore()
+  })
 
   this._matchRoute(location)
   var html = this._prerender(this.state)
