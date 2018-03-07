@@ -8,8 +8,11 @@ var nanoquery = require('nanoquery')
 var nanohref = require('nanohref')
 var nanoraf = require('nanoraf')
 var nanobus = require('nanobus')
+var onIdle = require('on-idle')
 var assert = require('assert')
 var xtend = require('xtend')
+
+var Cache = require('./component/cache')
 
 module.exports = Choo
 
@@ -43,20 +46,24 @@ function Choo (opts) {
   this._stores = []
   this._tree = null
 
-  // properties that are part of the API
-  this.router = nanorouter()
-  this.emitter = nanobus('choo.emit')
-  this.emit = this.emitter.emit.bind(this.emitter)
-
-  var events = { events: this._events }
+  // state
+  var _state = {
+    events: this._events,
+    components: {}
+  }
   if (this._hasWindow) {
     this.state = window.initialState
-      ? xtend(window.initialState, events)
-      : events
+      ? xtend(window.initialState, _state)
+      : _state
     delete window.initialState
   } else {
-    this.state = events
+    this.state = _state
   }
+
+  // properties that are part of the API
+  this.router = nanorouter({ curry: true })
+  this.emitter = nanobus('choo.emit')
+  this.cache = new Cache(this.state, this.emitter.emit.bind(this.emitter))
 
   // listen for title changes; available even when calling .toString()
   if (this._hasWindow) this.state.title = document.title
@@ -148,6 +155,8 @@ Choo.prototype.start = function () {
     var morphTiming = nanotiming('choo.morph')
     nanomorph(self._tree, newTree)
     morphTiming()
+
+    onIdle(self.cache.prune.bind(self.cache))
 
     renderTiming()
   }))

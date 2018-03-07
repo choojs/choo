@@ -1,40 +1,24 @@
 module.exports = todoStore
 
 function todoStore (state, emitter) {
-  if (!state.todos) {
-    state.todos = {}
-
-    state.todos.active = []
-    state.todos.done = []
-    state.todos.all = []
-
-    state.todos.idCounter = 0
+  state.todos = {
+    clock: 0,
+    idCounter: 0,
+    active: [],
+    done: [],
+    all: []
   }
 
-  // Always reset when application boots
-  state.todos.input = ''
-
-  // Register emitters after DOM is loaded to speed up DOM loading
   emitter.on('DOMContentLoaded', function () {
-    // CRUD
     emitter.on('todos:create', create)
     emitter.on('todos:update', update)
     emitter.on('todos:delete', del)
-
-    // Special
-    emitter.on('todos:input', oninput)
-
-    // Shorthand
     emitter.on('todos:edit', edit)
     emitter.on('todos:unedit', unedit)
     emitter.on('todos:toggle', toggle)
     emitter.on('todos:toggleAll', toggleAll)
     emitter.on('todos:deleteCompleted', deleteCompleted)
   })
-
-  function oninput (text) {
-    state.todos.input = text
-  }
 
   function create (name) {
     var item = {
@@ -47,21 +31,21 @@ function todoStore (state, emitter) {
     state.todos.idCounter += 1
     state.todos.active.push(item)
     state.todos.all.push(item)
-    emitter.emit('render')
+    render()
   }
 
   function edit (id) {
     state.todos.all.forEach(function (todo) {
       if (todo.id === id) todo.editing = true
     })
-    emitter.emit('render')
+    render()
   }
 
   function unedit (id) {
     state.todos.all.forEach(function (todo) {
       if (todo.id === id) todo.editing = false
     })
-    emitter.emit('render')
+    render()
   }
 
   function update (newTodo) {
@@ -78,7 +62,7 @@ function todoStore (state, emitter) {
     }
 
     Object.assign(todo, newTodo)
-    emitter.emit('render')
+    render()
   }
 
   function del (id) {
@@ -111,7 +95,7 @@ function todoStore (state, emitter) {
       })
       active.splice(activeIndex, 1)
     }
-    emitter.emit('render')
+    render()
   }
 
   function deleteCompleted (data) {
@@ -121,7 +105,7 @@ function todoStore (state, emitter) {
       state.todos.all.splice(index, 1)
     })
     state.todos.done = []
-    emitter.emit('render')
+    render()
   }
 
   function toggle (id) {
@@ -135,7 +119,7 @@ function todoStore (state, emitter) {
     var index = arr.indexOf(todo)
     arr.splice(index, 1)
     target.push(todo)
-    emitter.emit('render')
+    render()
   }
 
   function toggleAll (data) {
@@ -155,6 +139,11 @@ function todoStore (state, emitter) {
       state.todos.active = []
     }
 
+    render()
+  }
+
+  function render () {
+    state.todos.clock += 1
     emitter.emit('render')
   }
 }
