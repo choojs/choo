@@ -7,15 +7,15 @@ var Info = require('../components/info')
 
 module.exports = mainView
 
-function mainView (state, emit, render) {
+function mainView (state, emit) {
   return html`
     <body>
       <section class="todoapp">
-        ${render(Header)}
-        ${render(Todos)}
-        ${render(Footer)}
+        ${state.cache(Header, 'header').render()}
+        ${state.cache(Todos, 'todos').render()}
+        ${state.cache(Footer, 'footer').render()}
       </section>
-      ${render(Info)}
+      ${state.cache(Info, 'info').render()}
     </body>
   `
 }

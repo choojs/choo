@@ -1,43 +1,36 @@
 var assert = require('assert')
+var LRU = require('nanolru')
 
 module.exports = ChooComponentCache
 
-function ChooComponentCache (state, emit) {
+function ChooComponentCache (state, emit, lru) {
+  assert.ok(this instanceof ChooComponentCache, 'ChooComponentCache should be created with `new`')
+
   assert.equal(typeof state, 'object', 'ChooComponentCache: state should be type object')
   assert.equal(typeof emit, 'function', 'ChooComponentCache: state should be type function')
 
+  this.cache = lru || new LRU(100)
   this.state = state
   this.emit = emit
-  this.cache = {}
 }
 
-ChooComponentCache.prototype.prune = function () {
-  var keys = Object.keys(this.cache)
-  for (var id, i = 0, len = keys.length; i < len; i++) {
-    id = keys[i]
-    if (!this.cache[id].element) delete this.cache[id]
-  }
-}
-
-ChooComponentCache.prototype.render = function (Component) {
+// Get & create component instances.
+ChooComponentCache.prototype.render = function (Component, id) {
   assert.equal(typeof Component, 'function', 'ChooComponentCache.render: Component should be type function')
-  var args = []
-  for (var i = 1, len = arguments.length; i < len; i++) {
-    args.push(arguments[i])
-  }
+  assert.ok(typeof id === 'string' || typeof id === 'number', 'ChooComponentCache.render: id should be type string or type number')
 
-  assert.equal(typeof Component.identity, 'function', 'ChooComponentCache.render: Component.identity should be type function')
-  var id = Component.identity.apply(Component, args)
-  assert.equal(typeof id, 'string', 'ChooComponentCache.render: Component.identity should return type string')
-
-  var el = this.cache[id]
+  var el = this.cache.get(id)
   if (!el) {
-    var ext = args.slice(0)
-    ext.unshift(Component, id, this.state, this.emit)
-    el = newCall.apply(newCall, ext)
-    this.cache[id] = el
+    var args = []
+    for (var i = 0, len = arguments.length; i < len; i++) {
+      args.push(arguments[i])
+    }
+    args.unshift(Component, id, this.state, this.emit)
+    el = newCall.apply(newCall, args)
+    this.cache.set(id, el)
   }
-  return el.render.apply(el, args)
+
+  return el
 }
 
 // Because you can't call `new` and `.apply()` at the same time. This is a mad

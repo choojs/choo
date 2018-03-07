@@ -37,6 +37,7 @@
     "nanocomponent": "^6.4.2",
     "nanohref": "^3.0.0",
     "nanolocation": "^1.0.0",
+    "nanolru": "^1.0.0",
     "nanomorph": "^5.1.2",
     "nanoquery": "^1.1.0",
     "nanoraf": "^3.0.0",

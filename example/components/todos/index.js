@@ -4,15 +4,11 @@ var html = require('bel')
 var Todo = require('./todo')
 
 module.exports = class Header extends Component {
-  static identity () {
-    return 'todos'
-  }
-
   constructor (name, state, emit) {
     super(name)
     this.state = state
     this.emit = emit
-    this.local = this.state.components.todos = {}
+    this.local = this.state.components[name] = {}
     this.setState()
   }
 
