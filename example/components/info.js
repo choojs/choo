@@ -2,10 +2,6 @@ var Component = require('../../component')
 var html = require('bel')
 
 module.exports = class Info extends Component {
-  static identity () {
-    return 'Info'
-  }
-
   update () {
     return false
   }

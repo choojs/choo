@@ -2,10 +2,6 @@ var Component = require('../../component')
 var html = require('bel')
 
 module.exports = class Header extends Component {
-  static identity () {
-    return 'header'
-  }
-
   constructor (name, state, emit) {
     super(name)
     this.state = state

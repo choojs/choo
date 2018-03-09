@@ -5,10 +5,6 @@ var clearButton = require('./clear-button')
 var filterButton = require('./filter-button')
 
 module.exports = class Footer extends Component {
-  static identity () {
-    return 'footer'
-  }
-
   constructor (name, state, emit) {
     super(name)
     this.state = state
