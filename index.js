@@ -249,7 +249,7 @@ Choo.prototype._setCache = function (state) {
   state.cache = renderComponent
 
   function renderComponent (Component, id) {
-    assert.equal(typeof Component, 'function', 'choo-component-preview: Component should be type function')
+    assert.equal(typeof Component, 'function', 'choo.state.cache: Component should be type function')
     var args = []
     for (var i = 0, len = arguments.length; i < len; i++) {
       args.push(arguments[i])
