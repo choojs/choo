@@ -9,6 +9,8 @@
     "html/index.js",
     "html/raw.js",
     "html/index.d.ts",
+    "component/cache.js",
+    "component/index.js",
     "dist",
     "example"
   ],
