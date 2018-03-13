@@ -63,6 +63,7 @@ function Choo (opts) {
   // properties that are part of the API
   this.router = nanorouter({ curry: true })
   this.emitter = nanobus('choo.emit')
+  this.emit = this.emitter.emit.bind(this.emitter)
 
   // listen for title changes; available even when calling .toString()
   if (this._hasWindow) this.state.title = document.title
