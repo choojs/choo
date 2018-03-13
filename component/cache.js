@@ -22,7 +22,7 @@ ChooComponentCache.prototype.render = function (Component, id) {
   var el = this.cache.get(id)
   if (!el) {
     var args = []
-    for (var i = 0, len = arguments.length; i < len; i++) {
+    for (var i = 2, len = arguments.length; i < len; i++) {
       args.push(arguments[i])
     }
     args.unshift(Component, id, this.state, this.emit)
