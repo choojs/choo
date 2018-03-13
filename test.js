@@ -29,3 +29,19 @@ tape('should render on the server with hyperscript', function (t) {
   t.equal(res.toString().trim(), exp, 'result was OK')
   t.end()
 })
+
+tape('should expose a public API', function (t) {
+  var app = choo()
+
+  t.equal(typeof app.route, 'function', 'app.route prototype method exists')
+  t.equal(typeof app.toString, 'function', 'app.toString prototype method exists')
+  t.equal(typeof app.start, 'function', 'app.start prototype method exists')
+  t.equal(typeof app.mount, 'function', 'app.mount prototype method exists')
+  t.equal(typeof app.emitter, 'object', 'app.emitter prototype method exists')
+
+  t.equal(typeof app.emit, 'function', 'app.emit instance method exists')
+  t.equal(typeof app.router, 'object', 'app.router instance object exists')
+  t.equal(typeof app.state, 'object', 'app.state instance object exists')
+
+  t.end()
+})
