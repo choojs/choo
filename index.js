@@ -208,6 +208,7 @@ Choo.prototype.toString = function (location, state) {
   this._matchRoute(location)
   var html = this._prerender(this.state)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
+  assert(!Array.isArray(html), 'choo.toString: return value was an array for the route ' + location)
   return typeof html.outerHTML === 'string' ? html.outerHTML : html.toString()
 }
 
