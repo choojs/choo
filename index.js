@@ -222,17 +222,17 @@ Choo.prototype._matchRoute = function (locationOverride) {
     queryString = window.location.search
   }
   var matched = this.router.match(location)
+  this._handler = matched.cb
   this.state.href = location
   this.state.query = nanoquery(queryString)
   this.state.route = matched.route
   this.state.params = matched.params
-  this.state._handler = matched.cb
   return this.state
 }
 
 Choo.prototype._prerender = function (state) {
   var routeTiming = nanotiming("choo.prerender('" + state.route + "')")
-  var res = state._handler(state, this.emit)
+  var res = this._handler(state, this.emit)
   routeTiming()
   return res
 }
