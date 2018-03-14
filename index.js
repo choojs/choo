@@ -85,7 +85,7 @@ Choo.prototype.use = function (cb) {
   })
 }
 
-Choo.prototype.start = function () {
+Choo.prototype.start = async function () {
   assert.equal(typeof window, 'object', 'choo.start: window was not found. .start() must be called in a browser, use .toString() if running in Node')
 
   var self = this
@@ -132,13 +132,9 @@ Choo.prototype.start = function () {
     initStore()
   })
 
-  this._matchRoute()
-  this._tree = this._prerender(this.state)
-  assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
-
-  this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
+  this.emitter.prependListener(self._events.RENDER, nanoraf(async function () {
     var renderTiming = nanotiming('choo.render')
-    var newTree = self._prerender(self.state)
+    var newTree = await self._prerender(self.state)
     assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
 
     assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
@@ -151,6 +147,10 @@ Choo.prototype.start = function () {
 
     renderTiming()
   }))
+
+  this._matchRoute()
+  this._tree = await this._prerender(this.state)
+  assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
 
   documentReady(function () {
     self.emitter.emit(self._events.DOMCONTENTLOADED)
@@ -171,9 +171,9 @@ Choo.prototype.mount = function mount (selector) {
 
   var self = this
 
-  documentReady(function () {
+  documentReady(async function () {
     var renderTiming = nanotiming('choo.render')
-    var newTree = self.start()
+    var newTree = await self.start()
     if (typeof selector === 'string') {
       self._tree = document.querySelector(selector)
     } else {
@@ -193,7 +193,7 @@ Choo.prototype.mount = function mount (selector) {
   })
 }
 
-Choo.prototype.toString = function (location, state) {
+Choo.prototype.toString = async function (location, state) {
   this.state = xtend(this.state, state || {})
 
   assert.notEqual(typeof window, 'object', 'choo.mount: window was found. .toString() must be called in Node, use .start() or .mount() if running in the browser')
@@ -206,7 +206,7 @@ Choo.prototype.toString = function (location, state) {
   })
 
   this._matchRoute(location)
-  var html = this._prerender(this.state)
+  var html = await this._prerender(this.state)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
   assert(!Array.isArray(html), 'choo.toString: return value was an array for the route ' + location)
   return typeof html.outerHTML === 'string' ? html.outerHTML : html.toString()
@@ -230,9 +230,9 @@ Choo.prototype._matchRoute = function (locationOverride) {
   return this.state
 }
 
-Choo.prototype._prerender = function (state) {
+Choo.prototype._prerender = async function (state) {
   var routeTiming = nanotiming("choo.prerender('" + state.route + "')")
-  var res = this._handler(state, this.emit)
+  var res = await this._handler(state, this.emit)
   routeTiming()
   return res
 }
