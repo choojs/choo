@@ -149,8 +149,6 @@ Choo.prototype.start = function () {
     })
   }))
 
-  var self = this
-
   this._matchRoute()
   return this._prerender(this.state).then(function (tree) {
     self._tree = tree
@@ -239,7 +237,7 @@ Choo.prototype._matchRoute = function (locationOverride) {
 
 Choo.prototype._prerender = function (state) {
   var routeTiming = nanotiming("choo.prerender('" + state.route + "')")
-  return this._handler(state, this.emit).then(function (res) {
+  return Promise.resolve(this._handler(state, this.emit)).then(function (res) {
     routeTiming()
     return res
   })

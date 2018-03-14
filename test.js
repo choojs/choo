@@ -13,10 +13,11 @@ tape('should render on the server with bel', function (t) {
       <p>${raw(strong)}</p>
     `
   })
-  var res = app.toString('/')
-  var exp = '<p><strong>Hello filthy planet</strong></p>'
-  t.equal(res.toString().trim(), exp, 'result was OK')
-  t.end()
+  app.toString('/').then(function (res) {
+    var exp = '<p><strong>Hello filthy planet</strong></p>'
+    t.equal(res.toString().trim(), exp, 'result was OK')
+    t.end()
+  })
 })
 
 tape('should render on the server with hyperscript', function (t) {
@@ -24,8 +25,9 @@ tape('should render on the server with hyperscript', function (t) {
   app.route('/', function (state, emit) {
     return h('p', h('strong', 'Hello filthy planet'))
   })
-  var res = app.toString('/')
-  var exp = '<p><strong>Hello filthy planet</strong></p>'
-  t.equal(res.toString().trim(), exp, 'result was OK')
-  t.end()
+  app.toString('/').then(function (res) {
+    var exp = '<p><strong>Hello filthy planet</strong></p>'
+    t.equal(res.toString().trim(), exp, 'result was OK')
+    t.end()
+  })
 })
