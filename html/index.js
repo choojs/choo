@@ -1,4 +1,4 @@
-const bel = require('bel')
+var bel = require('bel')
 
 function isPromise (elem) {
   return elem && typeof elem.then === 'function'
