@@ -42,7 +42,7 @@ function Choo (opts) {
   this._hasWindow = typeof window !== 'undefined'
   this._cache = opts.cache
   this._loaded = false
-  this._stores = []
+  this._stores = [ondomtitlechange]
   this._tree = null
 
   // state
@@ -66,11 +66,13 @@ function Choo (opts) {
 
   // listen for title changes; available even when calling .toString()
   if (this._hasWindow) this.state.title = document.title
-  this.emitter.prependListener(this._events.DOMTITLECHANGE, function (title) {
-    assert.equal(typeof title, 'string', 'events.DOMTitleChange: title should be type string')
-    self.state.title = title
-    if (self._hasWindow) document.title = title
-  })
+  function ondomtitlechange (state) {
+    self.emitter.prependListener(self._events.DOMTITLECHANGE, function (title) {
+      assert.equal(typeof title, 'string', 'events.DOMTitleChange: title should be type string')
+      state.title = title
+      if (self._hasWindow) document.title = title
+    })
+  }
 }
 
 Choo.prototype.route = function (route, handler) {
@@ -97,7 +99,7 @@ Choo.prototype.start = function () {
   var self = this
   if (this._historyEnabled) {
     this.emitter.prependListener(this._events.NAVIGATE, function () {
-      self._matchRoute()
+      self._matchRoute(self.state)
       if (self._loaded) {
         self.emitter.emit(self._events.RENDER)
         setTimeout(scrollToAnchor.bind(null, window.location.hash), 0)
@@ -142,7 +144,7 @@ Choo.prototype.start = function () {
     initStore(self.state)
   })
 
-  this._matchRoute()
+  this._matchRoute(this.state)
   this._tree = this._prerender(this.state)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
 
@@ -204,26 +206,27 @@ Choo.prototype.mount = function mount (selector) {
 }
 
 Choo.prototype.toString = function (location, state) {
-  this.state = xtend(this.state, state || {})
+  state = state || {}
+  state.events = xtend(this._events)
 
   assert.notEqual(typeof window, 'object', 'choo.mount: window was found. .toString() must be called in Node, use .start() or .mount() if running in the browser')
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
-  assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
+  assert.equal(typeof state, 'object', 'choo.toString: state should be type object')
 
-  var self = this
-  this._setCache(this.state)
+  this._setCache(state)
+  this.emitter.removeAllListeners()
   this._stores.forEach(function (initStore) {
-    initStore(self.state)
+    initStore(state)
   })
 
-  this._matchRoute(location)
-  var html = this._prerender(this.state)
+  this._matchRoute(state, location)
+  var html = this._prerender(state)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
   assert(!Array.isArray(html), 'choo.toString: return value was an array for the route ' + location)
   return typeof html.outerHTML === 'string' ? html.outerHTML : html.toString()
 }
 
-Choo.prototype._matchRoute = function (locationOverride) {
+Choo.prototype._matchRoute = function (state, locationOverride) {
   var location, queryString
   if (locationOverride) {
     location = locationOverride.replace(/\?.+$/, '').replace(/\/$/, '')
@@ -236,11 +239,10 @@ Choo.prototype._matchRoute = function (locationOverride) {
   }
   var matched = this.router.match(location)
   this._handler = matched.cb
-  this.state.href = location
-  this.state.query = nanoquery(queryString)
-  this.state.route = matched.route
-  this.state.params = matched.params
-  return this.state
+  state.href = location
+  state.query = nanoquery(queryString)
+  state.route = matched.route
+  state.params = matched.params
 }
 
 Choo.prototype._prerender = function (state) {
