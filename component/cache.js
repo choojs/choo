@@ -7,7 +7,7 @@ function ChooComponentCache (state, emit, lru) {
   assert.ok(this instanceof ChooComponentCache, 'ChooComponentCache should be created with `new`')
 
   assert.equal(typeof state, 'object', 'ChooComponentCache: state should be type object')
-  assert.equal(typeof emit, 'function', 'ChooComponentCache: state should be type function')
+  assert.equal(typeof emit, 'function', 'ChooComponentCache: emit should be type function')
 
   if (typeof lru === 'number') this.cache = new LRU(lru)
   else this.cache = lru || new LRU(100)
