@@ -11,6 +11,8 @@ var nanobus = require('nanobus')
 var assert = require('assert')
 var xtend = require('xtend')
 
+var Cache = require('./component/cache')
+
 module.exports = Choo
 
 var HISTORY_OBJECT = {}
@@ -39,24 +41,29 @@ function Choo (opts) {
   this._hrefEnabled = opts.href === undefined ? true : opts.href
   this._hasWindow = typeof window !== 'undefined'
   this._createLocation = nanolocation
+  this._cache = opts.cache
   this._loaded = false
   this._stores = []
   this._tree = null
 
-  // properties that are part of the API
-  this.router = nanorouter()
-  this.emitter = nanobus('choo.emit')
-  this.emit = this.emitter.emit.bind(this.emitter)
-
-  var events = { events: this._events }
+  // state
+  var _state = {
+    events: this._events,
+    components: {}
+  }
   if (this._hasWindow) {
     this.state = window.initialState
-      ? xtend(window.initialState, events)
-      : events
+      ? xtend(window.initialState, _state)
+      : _state
     delete window.initialState
   } else {
-    this.state = events
+    this.state = _state
   }
+
+  // properties that are part of the API
+  this.router = nanorouter({ curry: true })
+  this.emitter = nanobus('choo.emit')
+  this.emit = this.emitter.emit.bind(this.emitter)
 
   // listen for title changes; available even when calling .toString()
   if (this._hasWindow) this.state.title = document.title
@@ -76,11 +83,11 @@ Choo.prototype.route = function (route, handler) {
 Choo.prototype.use = function (cb) {
   assert.equal(typeof cb, 'function', 'choo.use: cb should be type function')
   var self = this
-  this._stores.push(function () {
+  this._stores.push(function (state) {
     var msg = 'choo.use'
     msg = cb.storeName ? msg + '(' + cb.storeName + ')' : msg
     var endTiming = nanotiming(msg)
-    cb(self.state, self.emitter, self)
+    cb(state, self.emitter, self)
     endTiming()
   })
 }
@@ -128,8 +135,9 @@ Choo.prototype.start = function () {
     }
   }
 
+  this._setCache(this.state)
   this._stores.forEach(function (initStore) {
-    initStore()
+    initStore(self.state)
   })
 
   this._matchRoute()
@@ -200,9 +208,10 @@ Choo.prototype.toString = function (location, state) {
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
 
-  // TODO: pass custom state down to each store.
+  var self = this
+  this._setCache(this.state)
   this._stores.forEach(function (initStore) {
-    initStore()
+    initStore(self.state)
   })
 
   this._matchRoute(location)
@@ -235,4 +244,24 @@ Choo.prototype._prerender = function (state) {
   var res = this._handler(state, this.emit)
   routeTiming()
   return res
+}
+
+Choo.prototype._setCache = function (state) {
+  var cache = new Cache(state, this.emitter.emit.bind(this.emitter), this._cache)
+  state.cache = renderComponent
+
+  function renderComponent (Component, id) {
+    assert.equal(typeof Component, 'function', 'choo.state.cache: Component should be type function')
+    var args = []
+    for (var i = 0, len = arguments.length; i < len; i++) {
+      args.push(arguments[i])
+    }
+    return cache.render.apply(cache, args)
+  }
+
+  // When the state gets stringified, make sure `state.cache` isn't
+  // stringified too.
+  renderComponent.toJSON = function () {
+    return null
+  }
 }

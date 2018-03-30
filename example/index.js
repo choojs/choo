@@ -8,11 +8,11 @@ var app = choo()
 if (process.env.NODE_ENV !== 'production') {
   app.use(require('choo-devtools')())
 }
-app.use(require('./store'))
+app.use(require('./stores/todos'))
 
-app.route('/', require('./view'))
-app.route('#active', require('./view'))
-app.route('#completed', require('./view'))
-app.route('*', require('./view'))
+app.route('/', require('./views/main'))
+app.route('#active', require('./views/main'))
+app.route('#completed', require('./views/main'))
+app.route('*', require('./views/main'))
 
 module.exports = app.mount('body')
