@@ -17,6 +17,13 @@ module.exports = Choo
 
 var HISTORY_OBJECT = {}
 
+function resolve (p, cb) {
+  if (p && typeof p.then === 'function') {
+    return p.then(cb)
+  }
+  return cb(p)
+}
+
 function Choo (opts) {
   if (!(this instanceof Choo)) return new Choo(opts)
   opts = opts || {}
@@ -140,32 +147,37 @@ Choo.prototype.start = function () {
     initStore(self.state)
   })
 
-  this._matchRoute()
-  this._tree = this._prerender(this.state)
-  assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
-
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
     var renderTiming = nanotiming('choo.render')
-    var newTree = self._prerender(self.state)
-    assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
+    var pNewTree = self._prerender(self.state)
+    resolve(pNewTree, function (newTree) {
+      assert.ok(newTree, 'choo.render: no valid DOM node returned for location ' + self.state.href)
 
-    assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
-      self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
-      newTree.nodeName.toLowerCase() + '>.')
+      assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.render: The target node <' +
+        self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
+        newTree.nodeName.toLowerCase() + '>.')
 
-    var morphTiming = nanotiming('choo.morph')
-    nanomorph(self._tree, newTree)
-    morphTiming()
+      var morphTiming = nanotiming('choo.morph')
+      nanomorph(self._tree, newTree)
+      morphTiming()
 
-    renderTiming()
+      renderTiming()
+    })
   }))
 
-  documentReady(function () {
-    self.emitter.emit(self._events.DOMCONTENTLOADED)
-    self._loaded = true
-  })
+  this._matchRoute()
+  var pTree = this._prerender(this.state)
+  return resolve(pTree, function (tree) {
+    self._tree = tree
+    assert.ok(self._tree, 'choo.start: no valid DOM node returned for location ' + self.state.href)
 
-  return this._tree
+    documentReady(function () {
+      self.emitter.emit(self._events.DOMCONTENTLOADED)
+      self._loaded = true
+    })
+
+    return self._tree
+  })
 }
 
 Choo.prototype.mount = function mount (selector) {
@@ -181,23 +193,25 @@ Choo.prototype.mount = function mount (selector) {
 
   documentReady(function () {
     var renderTiming = nanotiming('choo.render')
-    var newTree = self.start()
-    if (typeof selector === 'string') {
-      self._tree = document.querySelector(selector)
-    } else {
-      self._tree = selector
-    }
+    var pNewTree = self.start()
+    resolve(pNewTree, function (newTree) {
+      if (typeof selector === 'string') {
+        self._tree = document.querySelector(selector)
+      } else {
+        self._tree = selector
+      }
 
-    assert.ok(self._tree, 'choo.mount: could not query selector: ' + selector)
-    assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.mount: The target node <' +
-      self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
-      newTree.nodeName.toLowerCase() + '>.')
+      assert.ok(self._tree, 'choo.mount: could not query selector: ' + selector)
+      assert.equal(self._tree.nodeName, newTree.nodeName, 'choo.mount: The target node <' +
+        self._tree.nodeName.toLowerCase() + '> is not the same type as the new node <' +
+        newTree.nodeName.toLowerCase() + '>.')
 
-    var morphTiming = nanotiming('choo.morph')
-    nanomorph(self._tree, newTree)
-    morphTiming()
+      var morphTiming = nanotiming('choo.morph')
+      nanomorph(self._tree, newTree)
+      morphTiming()
 
-    renderTiming()
+      renderTiming()
+    })
   })
 }
 
@@ -215,10 +229,12 @@ Choo.prototype.toString = function (location, state) {
   })
 
   this._matchRoute(location)
-  var html = this._prerender(this.state)
-  assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
-  assert(!Array.isArray(html), 'choo.toString: return value was an array for the route ' + location)
-  return typeof html.outerHTML === 'string' ? html.outerHTML : html.toString()
+  var pHtml = this._prerender(this.state)
+  return resolve(pHtml, function (html) {
+    assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
+    assert(!Array.isArray(html), 'choo.toString: return value was an array for the route ' + location)
+    return typeof html.outerHTML === 'string' ? html.outerHTML : html.toString()
+  })
 }
 
 Choo.prototype._matchRoute = function (locationOverride) {
@@ -241,9 +257,11 @@ Choo.prototype._matchRoute = function (locationOverride) {
 
 Choo.prototype._prerender = function (state) {
   var routeTiming = nanotiming("choo.prerender('" + state.route + "')")
-  var res = this._handler(state, this.emit)
-  routeTiming()
-  return res
+  var pRes = this._handler(state, this.emit)
+  return resolve(pRes, function (res) {
+    routeTiming()
+    return res
+  })
 }
 
 Choo.prototype._setCache = function (state) {
