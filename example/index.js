@@ -1,6 +1,7 @@
-var split = require('split-require')
+// var split = require('split-require')
 var css = require('sheetify')
 var choo = require('../')
+var html = require('choo/html')
 
 css('todomvc-common/base.css')
 css('todomvc-app-css/index.css')
@@ -16,6 +17,12 @@ app.route('#active', require('./views/main'))
 app.route('#completed', require('./views/main'))
 app.route('*', require('./views/main'))
 
-app.experimentalAsyncRoute('/async', () => split('./views/main.js'))
+app.experimentalAsyncRoute('/async', () => Promise.resolve(function (state, emit) {
+  return html`
+    <body>
+      Async rendering.
+    </body>
+  `
+}))
 
 module.exports = app.mount('body')
