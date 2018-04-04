@@ -83,7 +83,7 @@ Choo.prototype.route = function (route, handler) {
 }
 
 // Register a route to be loaded asynchronously.
-Choo.prototype.asyncRoute = function (route, load) {
+Choo.prototype.experimentalAsyncRoute = function (route, load) {
   assert.equal(typeof route, 'string', 'choo.asyncRoute: asyncRoute should be type string')
   assert.equal(typeof handler, 'function', 'choo.asyncRoute: route should be type function')
 
