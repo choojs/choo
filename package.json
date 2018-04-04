@@ -14,9 +14,12 @@
     "dist",
     "example"
   ],
+  "browser": {
+    "assert": "nanoassert"
+  },
   "scripts": {
     "build": "mkdir -p dist/ && browserify index -p bundle-collapser/plugin > dist/bundle.js && browserify index -p tinyify > dist/bundle.min.js && cat dist/bundle.min.js | gzip --best --stdout | wc -c | pretty-bytes",
-    "deps": "dependency-check --entry ./html/index.js . && dependency-check . --extra --no-dev --entry ./html/index.js --entry ./component/index.js",
+    "deps": "dependency-check --entry ./html/index.js . && dependency-check . --extra --no-dev --entry ./html/index.js --entry ./component/index.js -i nanoassert",
     "inspect": "browserify --full-paths index -g unassertify -g uglifyify | discify --open",
     "prepublishOnly": "npm run build",
     "start": "bankai start example",
@@ -34,6 +37,7 @@
   "license": "MIT",
   "dependencies": {
     "document-ready": "^2.0.1",
+    "nanoassert": "^1.1.0",
     "nanobus": "^4.2.0",
     "nanocomponent": "^6.5.0",
     "nanohref": "^3.0.0",
