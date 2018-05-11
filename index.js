@@ -13,6 +13,9 @@ var xtend = require('xtend')
 
 module.exports = Choo
 
+Choo.html = require('./html')
+Choo.raw = require('./html/raw')
+
 var HISTORY_OBJECT = {}
 
 function Choo (opts) {

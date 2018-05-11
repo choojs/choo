@@ -13,7 +13,7 @@
     "example"
   ],
   "scripts": {
-    "build": "mkdir -p dist/ && browserify index -s choo -p bundle-collapser/plugin > dist/bundle.js && browserify index -p tinyify > dist/bundle.min.js && cat dist/bundle.min.js | gzip --best --stdout | wc -c | pretty-bytes",
+    "build": "mkdir -p dist/ && browserify index -s Choo -p bundle-collapser/plugin > dist/bundle.js && browserify index -p tinyify > dist/bundle.min.js && cat dist/bundle.min.js | gzip --best --stdout | wc -c | pretty-bytes",
     "deps": "dependency-check --entry ./html/index.js . && dependency-check . --extra --no-dev --entry ./html/index.js",
     "inspect": "browserify --full-paths index -g unassertify -g uglifyify | discify --open",
     "prepublishOnly": "npm run build",
