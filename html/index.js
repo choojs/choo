@@ -1,1 +1,1 @@
-module.exports = require('bel')
+module.exports = require('nanohtml')

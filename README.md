@@ -35,7 +35,7 @@
   </a>
   <!-- Downloads -->
   <a href="https://npmjs.org/package/choo">
-    <img src="https://img.shields.io/npm/dm/choo.svg?style=flat-square"
+    <img src="https://img.shields.io/npm/dt/choo.svg?style=flat-square"
       alt="Downloads" />
   </a>
   <!-- Standard -->
@@ -208,10 +208,13 @@ and `'render'`. Similar to
 [history.replaceState](http://devdocs.io/dom/history#history-replacestate).
 
 ### `'popState'`|`state.events.POPSTATE`
-This event should be emitted to navigate to a previous route. The new route
-will be a previous entry in the browser's history stack, and will emit
-`'navigate'` and `'render'`. Similar to
-[history.popState](http://devdocs.io/dom_events/popstate).
+This event is emitted when the user hits the 'back' button in their browser.
+The new route will be a previous entry in the browser's history stack, and
+immediately afterward the`'navigate'` and `'render'`events will be emitted.
+Similar to [history.popState](http://devdocs.io/dom_events/popstate). (Note
+that `emit('popState')` will _not_ cause a popState action - use
+`history.go(-1)` for that - this is different to the behaviour of `pushState`
+and `replaceState`!)
 
 ### `'DOMTitleChange'`|`state.events.DOMTITLECHANGE`
 This event should be emitted whenever the `document.title` needs to be updated.
@@ -295,12 +298,12 @@ constructor. The event is not handled under the following conditions:
 pages](https://mathiasbynens.github.io/rel-noopener/).
 
 ### Navigating programmatically
-To can navigate routes you can emit `'pushState'`, `'popState'` or
+To navigate routes you can emit `'pushState'`, `'popState'` or
 `'replaceState'`. See [#events](#events) for more details about these events.
 
 ## Server Rendering
 Choo was built with Node in mind. To render on the server call
-`.toString(route, [state])` on your application.
+`.toString(route, [state])` on your `choo` instance.
 
 ```js
 var html = require('choo/html')
@@ -384,8 +387,7 @@ overhead during runtime, so for production environments we should unwrap this
 using [yo-yoify][yo-yoify].
 
 Setting up browserify transforms can sometimes be a bit of hassle; to make this
-more convenient we recommend using [bankai][bankai] with `--optimize` to
-compile your assets for production.
+more convenient we recommend using [bankai build][bankai] to build your assets for production.
 
 ## FAQ
 ### Why is it called Choo?
@@ -456,8 +458,17 @@ See [#routing](#routing) for an overview of how to use routing efficiently.
 Start the application and mount it on the given `querySelector`,
 the given selector can be a String or a DOM element.
 
-This will _replace_ the selector provided with the tree returned from `app.start()`.
+In the browser, this will _replace_ the selector provided with the tree returned from `app.start()`.
 If you want to add the app as a child to an element, use `app.start()` to obtain the tree and manually append it.
+
+On the server, this will save the `selector` on the app instance.
+When doing server side rendering, you can then check the `app.selector` property to see where the render result should be inserted.
+
+Returns `this`, so you can easily export the application for server side rendering:
+
+```js
+module.exports = app.mount('body')
+```
 
 ### `tree = app.start()`
 Start the application. Returns a tree of DOM nodes that can be mounted using

@@ -1,2 +1,2 @@
-import * as bel from "bel"
-export = bel
+import * as nanohtml from "nanohtml"
+export = nanohtml
