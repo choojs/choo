@@ -382,9 +382,9 @@ We use the `require('assert')` module from Node core to provide helpful error
 messages in development. In production you probably want to strip this using
 [unassertify][unassertify].
 
-To convert inlined HTML to valid DOM nodes we use `require('bel')`. This has
+To convert inlined HTML to valid DOM nodes we use `require('nanohtml')`. This has
 overhead during runtime, so for production environments we should unwrap this
-using [yo-yoify][yo-yoify].
+using the [nanohtml transform][nanohtml].
 
 Setting up browserify transforms can sometimes be a bit of hassle; to make this
 more convenient we recommend using [bankai build][bankai] to build your assets for production.
@@ -414,9 +414,9 @@ answer short: we're using something even better.
 ### How can I support older browsers?
 Template strings aren't supported in all browsers, and parsing them creates
 significant overhead. To optimize we recommend running `browserify` with
-[yo-yoify][yo-yoify] as a global transform or using [bankai][bankai] directly.
+[nanohtml][nanohtml] as a global transform or using [bankai][bankai] directly.
 ```sh
-$ browserify -g yo-yoify
+$ browserify -g nanohtml
 ```
 
 ### Is choo production ready?
@@ -479,11 +479,11 @@ Render the application to a string. Useful for rendering on the server.
 
 ### `choo/html`
 Create DOM nodes from template string literals. Exposes
-[bel](https://github.com/shama/bel). Can be optimized using
-[yo-yoify][yo-yoify].
+[nanohtml](https://github.com/choojs/nanohtml). Can be optimized using
+[nanohtml][nanohtml].
 
 ### `choo/html/raw`
-Exposes [bel/raw](https://github.com/shama/bel#unescaping) helper for rendering raw HTML content.
+Exposes [nanohtml/raw](https://github.com/shama/nanohtml#unescaping) helper for rendering raw HTML content.
 
 ## Installation
 ```sh
@@ -585,6 +585,7 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 
 [bankai]: https://github.com/choojs/bankai
 [bel]: https://github.com/shama/bel
+[nanohtml]: https://github.com/choojs/nanohtml
 [browserify]: https://github.com/substack/node-browserify
 [budo]: https://github.com/mattdesl/budo
 [es2020]: https://github.com/yoshuawuyts/es2020
@@ -594,6 +595,5 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [nanomorph]: https://github.com/choojs/nanomorph
 [nanorouter]: https://github.com/choojs/nanorouter
 [yo-yo]: https://github.com/maxogden/yo-yo
-[yo-yoify]: https://github.com/shama/yo-yoify
 [unassertify]: https://github.com/unassert-js/unassertify
 [window-performance]: https://developer.mozilla.org/en-US/docs/Web/API/Performance
