@@ -286,7 +286,7 @@ containing the key-value mappings exists as `state.query`.
 ### Hash routing
 By default hashes are not taken into account when routing. Using hashes to
 delimit routes (e.g. `/foo#bar`) is supported if the `hash` options set to
-`true`. Regardles, when a hash is found we also check if there's an
+`true`. Regardless, when a hash is found we also check if there's an
 available anchor on the same page, and will scroll the screen to the position.
 Using both hashes in URLs and anchor links on the page is generally not
 recommended.
