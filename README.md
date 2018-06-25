@@ -36,7 +36,7 @@
   <!-- Downloads -->
   <a href="https://npmjs.org/package/choo">
     <img src="https://img.shields.io/npm/dt/choo.svg?style=flat-square"
-      alt="Downloads" />
+      alt="Download" />
   </a>
   <!-- Standard -->
   <a href="https://standardjs.com">
