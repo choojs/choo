@@ -17,6 +17,10 @@ function ChooComponentCache (state, emit, lru) {
 
 // Get & create component instances.
 ChooComponentCache.prototype.render = function (Component, id) {
+  if (!id) {
+    id = Component
+    Component = function () {}
+  }
   assert.equal(typeof Component, 'function', 'ChooComponentCache.render: Component should be type function')
   assert.ok(typeof id === 'string' || typeof id === 'number', 'ChooComponentCache.render: id should be type string or type number')
 
