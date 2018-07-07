@@ -93,6 +93,7 @@
 - [State](#state)
 - [Routing](#routing)
 - [Server Rendering](#server-rendering)
+- [Components](#components)
 - [Optimizations](#optimizations)
 - [FAQ](#faq)
 - [API](#api)
@@ -256,6 +257,13 @@ The current name of the route used in the router (e.g. `/foo/:bar`).
 ### `state.title`
 The current page title. Can be set using the `DOMTitleChange` event.
 
+### `state.components`
+An object _recommended_ to use for local component state.
+
+### `state.cache(Component, id, [...args])`
+Generic class cache. Will lookup Component instance by id and create one if not
+found. Usefull for working with statefull [components](#components).
+
 ## Routing
 Choo is an application level framework. This means that it takes care of
 everything related to routing and pathnames for you.
@@ -339,6 +347,93 @@ the `window` object.
   </body>
 </html>
 ```
+
+## Components
+From time to time there will arise a need to have an element in an application
+hold a self-contained state or to not rerender when the application does. This
+is common when using 3rd party libraries to e.g. display an interactive map or a
+graph and you rely on this 3rd party library to handle modifications to the DOM.
+Components come baked in to Choo for these kinds of situations. See
+[nanocomponent][nanocomponent] for documention on the component class.
+
+```javascript
+// map.js
+var html = require('choo/html')
+var mapboxgl = require('mapbox-gl')
+var Component = require('choo/component')
+
+module.exports = class Button extends Component {
+  constructor (id, state, emit) {
+    super(id)
+    this.local = state.components[id] = {}
+  }
+
+  load (element) {
+    this.map = new mapboxgl.Map({
+      container: element,
+      center: this.local.center
+    })
+  }
+
+  update (center) {
+    if (center.join() !== this.local.center.join()) {
+      this.map.setCenter(center)
+    }
+    return false
+  }
+
+  createElement (center) {
+    this.local.center = center
+    return html`<div></div>`
+  }
+}
+```
+
+```javascript
+// index.js
+var choo = require('choo')
+var html = require('choo/html')
+var Map = require('./map.js')
+
+var app = choo()
+app.route('/', mainView)
+app.mount('body')
+
+function mainView (state, emit) {
+  return html`
+    <body>
+      <button onclick=${onclick}>Where am i?</button>
+      ${state.cache(Map, 'my-map').render(state.center)}
+    </body>
+  `
+
+  function onclick () {
+    emit('locate')
+  }
+}
+
+app.use(function (state, emitter) {
+  state.center = [18.0704503, 59.3244897]
+  emitter.on('locate', function () {
+    window.navigator.geolocation.getCurrentPosition(function (position) {
+      state.center = [position.coords.longitude, position.coords.latitude]
+      emitter.emit('render')
+    })
+  })
+})
+```
+
+### Caching components
+When working with stateful components, one will need to keep track of component
+instances – `state.cache` does just that. The component cache is a function
+which takes a component class and a unique id (`string`) as it's first two
+arguments. Any following arguments will be forwarded to the component contructor
+together with `state` and `emit`.
+
+The default class cache is an LRU cache (using [nanolru][nanolru]), meaning it
+will only hold on to a fixed amount of class instances (`100` by default) before
+starting to evict the least-recently-used instances. This behavior can be
+overriden with [options](#app--chooopts).
 
 ## Optimizations
 Choo is reasonably fast out of the box. But sometimes you might hit a scenario
@@ -434,6 +529,9 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
   history API.
 - __opts.href:__ default: `true`. Handle all relative `<a
   href="<location>"></a>` clicks and call `emit('render')`
+- __opts.cache:__ default: `undefined`. Override default class cache used by
+  `state.cache`. Can be a a `number` (maximum number of instances in cache,
+  default `100`) or an `object` with a [nanolru][nanolru]-compatible API.
 
 ### `app.use(callback(state, emitter, app))`
 Call a function and pass it a `state`, `emitter` and `app`. `emitter` is an instance
@@ -583,6 +681,8 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
+[nanocomponent]: https://github.com/choojs/nanocomponent
+[nanolru]: https://github.com/s3ththompson/nanolru
 [bankai]: https://github.com/choojs/bankai
 [bel]: https://github.com/shama/bel
 [nanohtml]: https://github.com/choojs/nanohtml
