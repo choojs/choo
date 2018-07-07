@@ -354,7 +354,7 @@ hold a self-contained state or to not rerender when the application does. This
 is common when using 3rd party libraries to e.g. display an interactive map or a
 graph and you rely on this 3rd party library to handle modifications to the DOM.
 Components come baked in to Choo for these kinds of situations. See
-[nanocomponent][nanocomponent] for documention on the component class.
+[nanocomponent][nanocomponent] for documentation on the component class.
 
 ```javascript
 // map.js
