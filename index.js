@@ -38,7 +38,7 @@ function Choo (opts) {
   // properties for internal use only
   this._historyEnabled = opts.history === undefined ? true : opts.history
   this._hrefEnabled = opts.href === undefined ? true : opts.href
-  this._hashEnabled = opts.hash === undefined ? false : opts.hash
+  this._hashEnabled = opts.hash === undefined ? true : opts.hash
   this._hasWindow = typeof window !== 'undefined'
   this._cache = opts.cache
   this._loaded = false
