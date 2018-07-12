@@ -284,10 +284,12 @@ Querystrings (e.g. `?foo=bar`) are ignored when matching routes. An object
 containing the key-value mappings exists as `state.query`.
 
 ### Hash routing
-Using hashes to delimit routes is supported out of the box (e.g. `/foo#bar`).
-When a hash is found we also check if there's an available anchor on the same
-page, and will scroll the screen to the position. Using both hashes in URLs and
-anchor links on the page is generally not recommended.
+By default hashes are treated as part of the url when routing. Using hashes to
+delimit routes (e.g. `/foo#bar`) can be disabled by setting the `hash`
+[option](#app--chooopts) to `false`. Regardless, when a hash is found we also
+check if there's an available anchor on the same page, and will scroll the
+screen to the position. Using both hashes in URLs and anchor links on the page
+is generally not recommended.
 
 ### Following links
 By default all clicks on `<a>` tags are handled by the router through the
@@ -532,6 +534,9 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
 - __opts.cache:__ default: `undefined`. Override default class cache used by
   `state.cache`. Can be a a `number` (maximum number of instances in cache,
   default `100`) or an `object` with a [nanolru][nanolru]-compatible API.
+- __opts.hash:__ default: `true`. Treat hashes in URLs as part of the pathname,
+  transforming `/foo#bar` to `/foo/bar`. This is useful if the application is
+  not mounted at the website root.
 
 ### `app.use(callback(state, emitter, app))`
 Call a function and pass it a `state`, `emitter` and `app`. `emitter` is an instance
