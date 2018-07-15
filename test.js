@@ -53,3 +53,15 @@ tape('should enable history, href, and hash by defaut', function (t) {
   t.true(app._hashEnabled, 'hash enabled')
   t.end()
 })
+
+tape('should pass state and emit to route handler', function (t) {
+  t.plan(2)
+  var app = choo()
+  app.route('/', function (state, emit) {
+    t.equal(typeof state, 'object', 'state is an object')
+    t.equal(typeof emit, 'function', 'emit is a function')
+    return html`<div></div>`
+  })
+  app.toString('/')
+  t.end()
+})
