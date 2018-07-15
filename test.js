@@ -46,15 +46,14 @@ tape('should expose a public API', function (t) {
   t.end()
 })
 
-tape('should enable history, href, and hash by defaut', function (t) {
+tape('should enable history and hash by defaut', function (t) {
   var app = choo()
   t.true(app._historyEnabled, 'history enabled')
   t.true(app._hrefEnabled, 'href enabled')
-  t.true(app._hashEnabled, 'hash enabled')
   t.end()
 })
 
-tape('should pass state and emit to route handler', function (t) {
+tape('router should pass state and emit to view', function (t) {
   t.plan(2)
   var app = choo()
   app.route('/', function (state, emit) {
@@ -63,6 +62,39 @@ tape('should pass state and emit to route handler', function (t) {
     return html`<div></div>`
   })
   app.toString('/')
+  t.end()
+})
+
+tape('router should support a default route', function (t) {
+  t.plan(1)
+  var app = choo()
+  app.route('*', function (state, emit) {
+    t.pass()
+    return html`<div></div>`
+  })
+  app.toString('/random')
+  t.end()
+})
+
+tape('router should treat hashes as slashes by default', function (t) {
+  t.plan(1)
+  var app = choo()
+  app.route('/account/security', function (state, emit) {
+    t.pass()
+    return html`<div></div>`
+  })
+  app.toString('/account#security')
+  t.end()
+})
+
+tape('router should ignore hashes if hash is disabled', function (t) {
+  t.plan(1)
+  var app = choo({ hash: false })
+  app.route('/account', function (state, emit) {
+    t.pass()
+    return html`<div></div>`
+  })
+  app.toString('/account#security')
   t.end()
 })
 
