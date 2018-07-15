@@ -65,3 +65,58 @@ tape('should pass state and emit to route handler', function (t) {
   app.toString('/')
   t.end()
 })
+
+// built-in state
+
+tape('state should include events', function (t) {
+  t.plan(2)
+  var app = choo()
+  app.route('/', function (state, emit) {
+    t.ok(state.hasOwnProperty('events'), 'state has event property')
+    t.ok(Object.keys(state.events).length > 0, 'events object has keys')
+    return html`<div></div>`
+  })
+  app.toString('/')
+  t.end()
+})
+
+tape('state should include params', function (t) {
+  t.plan(4)
+  var app = choo()
+  app.route('/:resource/:id/*', function (state, emit) {
+    t.ok(state.hasOwnProperty('params'), 'state has params property')
+    t.equal(state.params.resource, 'users', 'resources param is users')
+    t.equal(state.params.id, '1', 'id param is 1')
+    t.equal(state.params.wildcard, 'docs/foo.txt', 'wildcard captures what remains')
+    return html`<div></div>`
+  })
+  app.toString('/users/1/docs/foo.txt')
+  t.end()
+})
+
+tape('state should include query', function (t) {
+  t.plan(2)
+  var app = choo()
+  app.route('/', function (state, emit) {
+    t.ok(state.hasOwnProperty('query'), 'state has query property')
+    t.equal(state.query.page, '2', 'page querystring is 2')
+    return html`<div></div>`
+  })
+  app.toString('/?page=2')
+  t.end()
+})
+
+tape('state should include href', function (t) {
+  t.plan(2)
+  var app = choo()
+  app.route('/:resource/:id', function (state, emit) {
+    t.ok(state.hasOwnProperty('href'), 'state has href property')
+    t.equal(state.href, '/users/1', 'href is users/1')
+    return html`<div></div>`
+  })
+  app.toString('/users/1?page=2') // should ignore query
+  t.end()
+})
+
+// TODO: Implement this using jsdom, as this only works when window is present
+tape.skip('state should include title', function (t) {})
