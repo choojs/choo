@@ -5,7 +5,7 @@ var html = require('./html')
 var raw = require('./html/raw')
 var choo = require('./')
 
-tape('should render on the server with bel', function (t) {
+tape('should render on the server with nanohtml', function (t) {
   var app = choo()
   app.route('/', function (state, emit) {
     var strong = '<strong>Hello filthy planet</strong>'
