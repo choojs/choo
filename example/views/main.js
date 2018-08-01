@@ -1,4 +1,4 @@
-var html = require('bel') // cannot require choo/html because it's a nested repo
+var html = require('nanohtml') // cannot require choo/html because it's a nested repo
 
 var Header = require('../components/header')
 var Footer = require('../components/footer')

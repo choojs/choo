@@ -1,5 +1,5 @@
 var Component = require('../../component')
-var html = require('bel')
+var html = require('nanohtml')
 
 module.exports = class Header extends Component {
   constructor (name, state, emit) {

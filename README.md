@@ -597,8 +597,6 @@ $ npm install choo
 - [bankai](https://github.com/choojs/bankai) - streaming asset compiler
 - [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
 - [yo-yo](https://github.com/maxogden/yo-yo) - tiny library for modular UI
-- [bel](https://github.com/shama/bel) - composable DOM elements using template
-  strings
 - [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
   humans
 - [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
@@ -689,7 +687,6 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [nanocomponent]: https://github.com/choojs/nanocomponent
 [nanolru]: https://github.com/s3ththompson/nanolru
 [bankai]: https://github.com/choojs/bankai
-[bel]: https://github.com/shama/bel
 [nanohtml]: https://github.com/choojs/nanohtml
 [browserify]: https://github.com/substack/node-browserify
 [budo]: https://github.com/mattdesl/budo

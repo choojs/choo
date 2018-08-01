@@ -1,5 +1,5 @@
 var Component = require('../../../component')
-var html = require('bel')
+var html = require('nanohtml')
 
 var Todo = require('./todo')
 
