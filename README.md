@@ -249,7 +249,7 @@ An object containing the current queryString. `/foo?bin=baz` becomes `{ bin:
 'baz' }`.
 
 ### `state.href`
-An object containing the current href. `/foo?bin=baz` becomes `foo`.
+An object containing the current href. `/foo?bin=baz` becomes `/foo`.
 
 ### `state.route`
 The current name of the route used in the router (e.g. `/foo/:bar`).
