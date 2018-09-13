@@ -208,6 +208,7 @@ Choo.prototype.mount = function mount (selector) {
 Choo.prototype.toString = function (location, state) {
   state = state || {}
   state.events = xtend(this._events)
+  state.components = state.components || {}
 
   assert.notEqual(typeof window, 'object', 'choo.mount: window was found. .toString() must be called in Node, use .start() or .mount() if running in the browser')
   assert.equal(typeof location, 'string', 'choo.toString: location should be type string')
