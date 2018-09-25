@@ -169,14 +169,20 @@ tape('state should include events', function (t) {
 })
 
 tape('state should include params', function (t) {
-  t.plan(4)
+  t.plan(8)
   var app = choo()
   app.route('/:resource/:id/*', function (state, emit) {
-    t.ok(state.hasOwnProperty('params'), 'state has params property')
-    t.equal(state.params.resource, 'users', 'resources param is users')
-    t.equal(state.params.id, '1', 'id param is 1')
-    t.equal(state.params.wildcard, 'docs/foo.txt', 'wildcard captures what remains')
+    t.ok(state.hasOwnProperty('params'), 'state has params property (view)')
+    t.equal(state.params.resource, 'users', 'resources param is users (view)')
+    t.equal(state.params.id, '1', 'id param is 1 (view)')
+    t.equal(state.params.wildcard, 'docs/foo.txt', 'wildcard captures what remains (view)')
     return html`<div></div>`
+  })
+  app.use(function (state, emitter) {
+    t.ok(state.hasOwnProperty('params'), 'state has params property (store)')
+    t.equal(state.params.resource, 'users', 'resources param is users (store)')
+    t.equal(state.params.id, '1', 'id param is 1 (store)')
+    t.equal(state.params.wildcard, 'docs/foo.txt', 'wildcard captures what remains (store)')
   })
   app.toString('/users/1/docs/foo.txt')
   t.end()
@@ -195,12 +201,16 @@ tape('state should include query', function (t) {
 })
 
 tape('state should include href', function (t) {
-  t.plan(2)
+  t.plan(4)
   var app = choo()
   app.route('/:resource/:id', function (state, emit) {
-    t.ok(state.hasOwnProperty('href'), 'state has href property')
-    t.equal(state.href, '/users/1', 'href is users/1')
+    t.ok(state.hasOwnProperty('href'), 'state has href property (view)')
+    t.equal(state.href, '/users/1', 'href is users/1 (view)')
     return html`<div></div>`
+  })
+  app.use(function (state, emitter) {
+    t.ok(state.hasOwnProperty('href'), 'state has href property (store)')
+    t.equal(state.href, '/users/1', 'href is users/1 (store)')
   })
   app.toString('/users/1?page=2') // should ignore query
   t.end()
