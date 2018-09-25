@@ -137,12 +137,13 @@ Choo.prototype.start = function () {
     }
   }
 
+  this._matchRoute()
+
   this._setCache(this.state)
   this._stores.forEach(function (initStore) {
     initStore(self.state)
   })
 
-  this._matchRoute()
   this._tree = this._prerender(this.state)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
 
@@ -211,12 +212,14 @@ Choo.prototype.toString = function (location, state) {
   assert.equal(typeof this.state, 'object', 'choo.toString: state should be type object')
 
   var self = this
+
+  this._matchRoute(location)
+
   this._setCache(this.state)
   this._stores.forEach(function (initStore) {
     initStore(self.state)
   })
 
-  this._matchRoute(location)
   var html = this._prerender(this.state)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
   assert(!Array.isArray(html), 'choo.toString: return value was an array for the route ' + location)
