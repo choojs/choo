@@ -214,7 +214,7 @@ The new route will be a previous entry in the browser's history stack, and
 immediately afterward the`'navigate'` and `'render'`events will be emitted.
 Similar to [history.popState](http://devdocs.io/dom_events/popstate). (Note
 that `emit('popState')` will _not_ cause a popState action - use
-`history.go(-1)` for that - this is different to the behaviour of `pushState`
+`history.go(-1)` for that - this is different from the behaviour of `pushState`
 and `replaceState`!)
 
 ### `'DOMTitleChange'`|`state.events.DOMTITLECHANGE`
