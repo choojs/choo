@@ -214,7 +214,7 @@ The new route will be a previous entry in the browser's history stack, and
 immediately afterward the`'navigate'` and `'render'`events will be emitted.
 Similar to [history.popState](http://devdocs.io/dom_events/popstate). (Note
 that `emit('popState')` will _not_ cause a popState action - use
-`history.go(-1)` for that - this is different to the behaviour of `pushState`
+`history.go(-1)` for that - this is different from the behaviour of `pushState`
 and `replaceState`!)
 
 ### `'DOMTitleChange'`|`state.events.DOMTITLECHANGE`
@@ -262,14 +262,14 @@ An object _recommended_ to use for local component state.
 
 ### `state.cache(Component, id, [...args])`
 Generic class cache. Will lookup Component instance by id and create one if not
-found. Usefull for working with statefull [components](#components).
+found. Useful for working with stateful [components](#components).
 
 ## Routing
 Choo is an application level framework. This means that it takes care of
 everything related to routing and pathnames for you.
 
 ### Params
-Params can be registered by prepending the routename with `:routename`, e.g.
+Params can be registered by prepending the route name with `:routename`, e.g.
 `/foo/:bar/:baz`. The value of the param will be saved on `state.params` (e.g.
 `state.params.bar`). Wildcard routes can be registered with `*`, e.g. `/foo/*`.
 The value of the wildcard will be saved under `state.params.wildcard`.
@@ -429,7 +429,7 @@ app.use(function (state, emitter) {
 When working with stateful components, one will need to keep track of component
 instances – `state.cache` does just that. The component cache is a function
 which takes a component class and a unique id (`string`) as it's first two
-arguments. Any following arguments will be forwarded to the component contructor
+arguments. Any following arguments will be forwarded to the component constructor
 together with `state` and `emit`.
 
 The default class cache is an LRU cache (using [nanolru][nanolru]), meaning it
