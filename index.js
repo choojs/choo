@@ -129,7 +129,7 @@ Choo.prototype.start = function () {
         var href = location.href
         var hash = location.hash
         if (href === window.location.href) {
-          if (!this._hashEnabled && hash) scrollToAnchor(hash)
+          if (!self._hashEnabled && hash) scrollToAnchor(hash)
           return
         }
         self.emitter.emit(self._events.PUSHSTATE, href)
