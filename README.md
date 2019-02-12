@@ -364,7 +364,7 @@ var html = require('choo/html')
 var mapboxgl = require('mapbox-gl')
 var Component = require('choo/component')
 
-module.exports = class Button extends Component {
+module.exports = class Map extends Component {
   constructor (id, state, emit) {
     super(id)
     this.local = state.components[id] = {}
