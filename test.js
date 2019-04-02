@@ -194,16 +194,39 @@ tape('state should include query', function (t) {
   t.end()
 })
 
-tape('state should include href', function (t) {
-  t.plan(2)
+tape('state should include location on render', function (t) {
+  t.plan(6)
   var app = choo()
-  app.route('/:resource/:id', function (state, emit) {
-    t.ok(state.hasOwnProperty('href'), 'state has href property')
-    t.equal(state.href, '/users/1', 'href is users/1')
+  app.route('/:foo', function (state, emit) {
+    t.equal(state.href, '/foo', 'state has href')
+    t.equal(state.route, ':foo', 'state has route')
+    t.ok(state.hasOwnProperty('params'), 'state has params')
+    t.deepEqual(state.params, { foo: 'foo' }, 'params match')
+    t.ok(state.hasOwnProperty('query'), 'state has query')
+    t.deepEqual(state.query, { bar: 'baz' }, 'query match')
     return html`<div></div>`
   })
-  app.toString('/users/1?page=2') // should ignore query
+  app.toString('/foo?bar=baz')
   t.end()
+})
+
+tape('state should include location on store init', function (t) {
+  t.plan(6)
+  var app = choo()
+  app.use(store)
+  app.route('/:foo', function (state, emit) {
+    return html`<div></div>`
+  })
+  app.toString('/foo?bar=baz')
+
+  function store (state, emit) {
+    t.equal(state.href, '/foo', 'state has href')
+    t.equal(state.route, ':foo', 'state has route')
+    t.ok(state.hasOwnProperty('params'), 'state has params')
+    t.deepEqual(state.params, { foo: 'foo' }, 'params match')
+    t.ok(state.hasOwnProperty('query'), 'state has query')
+    t.deepEqual(state.query, { bar: 'baz' }, 'query match')
+  }
 })
 
 // TODO: Implement this using jsdom, as this only works when window is present
