@@ -138,11 +138,11 @@ Choo.prototype.start = function () {
   }
 
   this._setCache(this.state)
+  this._matchRoute()
   this._stores.forEach(function (initStore) {
     initStore(self.state)
   })
 
-  this._matchRoute()
   this._tree = this._prerender(this.state)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
 

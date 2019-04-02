@@ -1,9 +1,9 @@
 var tape = require('tape')
 var h = require('hyperscript')
 
-var html = require('./html')
-var raw = require('./html/raw')
-var choo = require('./')
+var html = require('../html')
+var raw = require('../html/raw')
+var choo = require('..')
 
 tape('should render on the server with nanohtml', function (t) {
   var app = choo()
@@ -168,45 +168,20 @@ tape('state should include events', function (t) {
   t.end()
 })
 
-tape('state should include params', function (t) {
-  t.plan(4)
-  var app = choo()
-  app.route('/:resource/:id/*', function (state, emit) {
-    t.ok(state.hasOwnProperty('params'), 'state has params property')
-    t.equal(state.params.resource, 'users', 'resources param is users')
-    t.equal(state.params.id, '1', 'id param is 1')
-    t.equal(state.params.wildcard, 'docs/foo.txt', 'wildcard captures what remains')
-    return html`<div></div>`
-  })
-  app.toString('/users/1/docs/foo.txt')
-  t.end()
-})
-
-tape('state should include query', function (t) {
-  t.plan(2)
-  var app = choo()
-  app.route('/', function (state, emit) {
-    t.ok(state.hasOwnProperty('query'), 'state has query property')
-    t.equal(state.query.page, '2', 'page querystring is 2')
-    return html`<div></div>`
-  })
-  app.toString('/?page=2')
-  t.end()
-})
-
 tape('state should include location on render', function (t) {
   t.plan(6)
   var app = choo()
-  app.route('/:foo', function (state, emit) {
-    t.equal(state.href, '/foo', 'state has href')
-    t.equal(state.route, ':foo', 'state has route')
+  app.route('/:first/:second/*', function (state, emit) {
+    var params = { first: 'foo', second: 'bar', wildcard: 'file.txt' }
+    t.equal(state.href, '/foo/bar/file.txt', 'state has href')
+    t.equal(state.route, ':first/:second/*', 'state has route')
     t.ok(state.hasOwnProperty('params'), 'state has params')
-    t.deepEqual(state.params, { foo: 'foo' }, 'params match')
+    t.deepEqual(state.params, params, 'params match')
     t.ok(state.hasOwnProperty('query'), 'state has query')
-    t.deepEqual(state.query, { bar: 'baz' }, 'query match')
+    t.deepEqual(state.query, { bin: 'baz' }, 'query match')
     return html`<div></div>`
   })
-  app.toString('/foo?bar=baz')
+  app.toString('/foo/bar/file.txt?bin=baz')
   t.end()
 })
 
@@ -214,23 +189,21 @@ tape('state should include location on store init', function (t) {
   t.plan(6)
   var app = choo()
   app.use(store)
-  app.route('/:foo', function (state, emit) {
+  app.route('/:first/:second/*', function (state, emit) {
     return html`<div></div>`
   })
-  app.toString('/foo?bar=baz')
+  app.toString('/foo/bar/file.txt?bin=baz')
 
   function store (state, emit) {
-    t.equal(state.href, '/foo', 'state has href')
-    t.equal(state.route, ':foo', 'state has route')
+    var params = { first: 'foo', second: 'bar', wildcard: 'file.txt' }
+    t.equal(state.href, '/foo/bar/file.txt', 'state has href')
+    t.equal(state.route, ':first/:second/*', 'state has route')
     t.ok(state.hasOwnProperty('params'), 'state has params')
-    t.deepEqual(state.params, { foo: 'foo' }, 'params match')
+    t.deepEqual(state.params, params, 'params match')
     t.ok(state.hasOwnProperty('query'), 'state has query')
-    t.deepEqual(state.query, { bar: 'baz' }, 'query match')
+    t.deepEqual(state.query, { bin: 'baz' }, 'query match')
   }
 })
-
-// TODO: Implement this using jsdom, as this only works when window is present
-tape.skip('state should include title', function (t) {})
 
 tape('state should include cache', function (t) {
   t.plan(6)
