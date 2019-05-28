@@ -386,7 +386,7 @@ module.exports = class Map extends Component {
 
   createElement (center) {
     this.local.center = center
-    return html`<div></div>`
+    return html`<div id="my-map"></div>`
   }
 }
 ```
