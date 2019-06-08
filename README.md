@@ -35,8 +35,8 @@
   </a>
   <!-- Downloads -->
   <a href="https://npmjs.org/package/choo">
-    <img src="https://img.shields.io/npm/dm/choo.svg?style=flat-square"
-      alt="Downloads" />
+    <img src="https://img.shields.io/npm/dt/choo.svg?style=flat-square"
+      alt="Download" />
   </a>
   <!-- Standard -->
   <a href="https://standardjs.com">
@@ -93,6 +93,7 @@
 - [State](#state)
 - [Routing](#routing)
 - [Server Rendering](#server-rendering)
+- [Components](#components)
 - [Optimizations](#optimizations)
 - [FAQ](#faq)
 - [API](#api)
@@ -208,10 +209,13 @@ and `'render'`. Similar to
 [history.replaceState](http://devdocs.io/dom/history#history-replacestate).
 
 ### `'popState'`|`state.events.POPSTATE`
-This event should be emitted to navigate to a previous route. The new route
-will be a previous entry in the browser's history stack, and will emit
-`'navigate'` and `'render'`. Similar to
-[history.popState](http://devdocs.io/dom_events/popstate).
+This event is emitted when the user hits the 'back' button in their browser.
+The new route will be a previous entry in the browser's history stack, and
+immediately afterward the`'navigate'` and `'render'`events will be emitted.
+Similar to [history.popState](http://devdocs.io/dom_events/popstate). (Note
+that `emit('popState')` will _not_ cause a popState action - use
+`history.go(-1)` for that - this is different from the behaviour of `pushState`
+and `replaceState`!)
 
 ### `'DOMTitleChange'`|`state.events.DOMTITLECHANGE`
 This event should be emitted whenever the `document.title` needs to be updated.
@@ -245,7 +249,7 @@ An object containing the current queryString. `/foo?bin=baz` becomes `{ bin:
 'baz' }`.
 
 ### `state.href`
-An object containing the current href. `/foo?bin=baz` becomes `foo`.
+An object containing the current href. `/foo?bin=baz` becomes `/foo`.
 
 ### `state.route`
 The current name of the route used in the router (e.g. `/foo/:bar`).
@@ -253,12 +257,19 @@ The current name of the route used in the router (e.g. `/foo/:bar`).
 ### `state.title`
 The current page title. Can be set using the `DOMTitleChange` event.
 
+### `state.components`
+An object _recommended_ to use for local component state.
+
+### `state.cache(Component, id, [...args])`
+Generic class cache. Will lookup Component instance by id and create one if not
+found. Useful for working with stateful [components](#components).
+
 ## Routing
 Choo is an application level framework. This means that it takes care of
 everything related to routing and pathnames for you.
 
 ### Params
-Params can be registered by prepending the routename with `:routename`, e.g.
+Params can be registered by prepending the route name with `:routename`, e.g.
 `/foo/:bar/:baz`. The value of the param will be saved on `state.params` (e.g.
 `state.params.bar`). Wildcard routes can be registered with `*`, e.g. `/foo/*`.
 The value of the wildcard will be saved under `state.params.wildcard`.
@@ -273,10 +284,12 @@ Querystrings (e.g. `?foo=bar`) are ignored when matching routes. An object
 containing the key-value mappings exists as `state.query`.
 
 ### Hash routing
-Using hashes to delimit routes is supported out of the box (e.g. `/foo#bar`).
-When a hash is found we also check if there's an available anchor on the same
-page, and will scroll the screen to the position. Using both hashes in URLs and
-anchor links on the page is generally not recommended.
+By default hashes are treated as part of the url when routing. Using hashes to
+delimit routes (e.g. `/foo#bar`) can be disabled by setting the `hash`
+[option](#app--chooopts) to `false`. Regardless, when a hash is found we also
+check if there's an available anchor on the same page, and will scroll the
+screen to the position. Using both hashes in URLs and anchor links on the page
+is generally not recommended.
 
 ### Following links
 By default all clicks on `<a>` tags are handled by the router through the
@@ -295,12 +308,12 @@ constructor. The event is not handled under the following conditions:
 pages](https://mathiasbynens.github.io/rel-noopener/).
 
 ### Navigating programmatically
-To can navigate routes you can emit `'pushState'`, `'popState'` or
+To navigate routes you can emit `'pushState'`, `'popState'` or
 `'replaceState'`. See [#events](#events) for more details about these events.
 
 ## Server Rendering
 Choo was built with Node in mind. To render on the server call
-`.toString(route, [state])` on your application.
+`.toString(route, [state])` on your `choo` instance.
 
 ```js
 var html = require('choo/html')
@@ -336,6 +349,93 @@ the `window` object.
   </body>
 </html>
 ```
+
+## Components
+From time to time there will arise a need to have an element in an application
+hold a self-contained state or to not rerender when the application does. This
+is common when using 3rd party libraries to e.g. display an interactive map or a
+graph and you rely on this 3rd party library to handle modifications to the DOM.
+Components come baked in to Choo for these kinds of situations. See
+[nanocomponent][nanocomponent] for documentation on the component class.
+
+```javascript
+// map.js
+var html = require('choo/html')
+var mapboxgl = require('mapbox-gl')
+var Component = require('choo/component')
+
+module.exports = class Map extends Component {
+  constructor (id, state, emit) {
+    super(id)
+    this.local = state.components[id] = {}
+  }
+
+  load (element) {
+    this.map = new mapboxgl.Map({
+      container: element,
+      center: this.local.center
+    })
+  }
+
+  update (center) {
+    if (center.join() !== this.local.center.join()) {
+      this.map.setCenter(center)
+    }
+    return false
+  }
+
+  createElement (center) {
+    this.local.center = center
+    return html`<div></div>`
+  }
+}
+```
+
+```javascript
+// index.js
+var choo = require('choo')
+var html = require('choo/html')
+var Map = require('./map.js')
+
+var app = choo()
+app.route('/', mainView)
+app.mount('body')
+
+function mainView (state, emit) {
+  return html`
+    <body>
+      <button onclick=${onclick}>Where am i?</button>
+      ${state.cache(Map, 'my-map').render(state.center)}
+    </body>
+  `
+
+  function onclick () {
+    emit('locate')
+  }
+}
+
+app.use(function (state, emitter) {
+  state.center = [18.0704503, 59.3244897]
+  emitter.on('locate', function () {
+    window.navigator.geolocation.getCurrentPosition(function (position) {
+      state.center = [position.coords.longitude, position.coords.latitude]
+      emitter.emit('render')
+    })
+  })
+})
+```
+
+### Caching components
+When working with stateful components, one will need to keep track of component
+instances – `state.cache` does just that. The component cache is a function
+which takes a component class and a unique id (`string`) as it's first two
+arguments. Any following arguments will be forwarded to the component constructor
+together with `state` and `emit`.
+
+The default class cache is an LRU cache (using [nanolru][nanolru]), meaning it
+will only hold on to a fixed amount of class instances (`100` by default) before
+starting to evict the least-recently-used instances. This behavior can be
+overriden with [options](#app--chooopts).
 
 ## Optimizations
 Choo is reasonably fast out of the box. But sometimes you might hit a scenario
@@ -379,13 +479,12 @@ We use the `require('assert')` module from Node core to provide helpful error
 messages in development. In production you probably want to strip this using
 [unassertify][unassertify].
 
-To convert inlined HTML to valid DOM nodes we use `require('bel')`. This has
+To convert inlined HTML to valid DOM nodes we use `require('nanohtml')`. This has
 overhead during runtime, so for production environments we should unwrap this
-using [yo-yoify][yo-yoify].
+using the [nanohtml transform][nanohtml].
 
 Setting up browserify transforms can sometimes be a bit of hassle; to make this
-more convenient we recommend using [bankai][bankai] with `--optimize` to
-compile your assets for production.
+more convenient we recommend using [bankai build][bankai] to build your assets for production.
 
 ## FAQ
 ### Why is it called Choo?
@@ -412,9 +511,9 @@ answer short: we're using something even better.
 ### How can I support older browsers?
 Template strings aren't supported in all browsers, and parsing them creates
 significant overhead. To optimize we recommend running `browserify` with
-[yo-yoify][yo-yoify] as a global transform or using [bankai][bankai] directly.
+[nanohtml][nanohtml] as a global transform or using [bankai][bankai] directly.
 ```sh
-$ browserify -g yo-yoify
+$ browserify -g nanohtml
 ```
 
 ### Is choo production ready?
@@ -432,6 +531,12 @@ Initialize a new `choo` instance. `opts` can also contain the following values:
   history API.
 - __opts.href:__ default: `true`. Handle all relative `<a
   href="<location>"></a>` clicks and call `emit('render')`
+- __opts.cache:__ default: `undefined`. Override default class cache used by
+  `state.cache`. Can be a a `number` (maximum number of instances in cache,
+  default `100`) or an `object` with a [nanolru][nanolru]-compatible API.
+- __opts.hash:__ default: `true`. Treat hashes in URLs as part of the pathname,
+  transforming `/foo#bar` to `/foo/bar`. This is useful if the application is
+  not mounted at the website root.
 
 ### `app.use(callback(state, emitter, app))`
 Call a function and pass it a `state`, `emitter` and `app`. `emitter` is an instance
@@ -456,8 +561,17 @@ See [#routing](#routing) for an overview of how to use routing efficiently.
 Start the application and mount it on the given `querySelector`,
 the given selector can be a String or a DOM element.
 
-This will _replace_ the selector provided with the tree returned from `app.start()`.
+In the browser, this will _replace_ the selector provided with the tree returned from `app.start()`.
 If you want to add the app as a child to an element, use `app.start()` to obtain the tree and manually append it.
+
+On the server, this will save the `selector` on the app instance.
+When doing server side rendering, you can then check the `app.selector` property to see where the render result should be inserted.
+
+Returns `this`, so you can easily export the application for server side rendering:
+
+```js
+module.exports = app.mount('body')
+```
 
 ### `tree = app.start()`
 Start the application. Returns a tree of DOM nodes that can be mounted using
@@ -468,11 +582,11 @@ Render the application to a string. Useful for rendering on the server.
 
 ### `choo/html`
 Create DOM nodes from template string literals. Exposes
-[bel](https://github.com/shama/bel). Can be optimized using
-[yo-yoify][yo-yoify].
+[nanohtml](https://github.com/choojs/nanohtml). Can be optimized using
+[nanohtml][nanohtml].
 
 ### `choo/html/raw`
-Exposes [bel/raw](https://github.com/shama/bel#unescaping) helper for rendering raw HTML content.
+Exposes [nanohtml/raw](https://github.com/shama/nanohtml#unescaping) helper for rendering raw HTML content.
 
 ## Installation
 ```sh
@@ -483,8 +597,6 @@ $ npm install choo
 - [bankai](https://github.com/choojs/bankai) - streaming asset compiler
 - [stack.gl](http://stack.gl/) - open software ecosystem for WebGL
 - [yo-yo](https://github.com/maxogden/yo-yo) - tiny library for modular UI
-- [bel](https://github.com/shama/bel) - composable DOM elements using template
-  strings
 - [tachyons](https://github.com/tachyons-css/tachyons) - functional CSS for
   humans
 - [sheetify](https://github.com/stackcss/sheetify) - modular CSS bundler for
@@ -572,8 +684,10 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
+[nanocomponent]: https://github.com/choojs/nanocomponent
+[nanolru]: https://github.com/s3ththompson/nanolru
 [bankai]: https://github.com/choojs/bankai
-[bel]: https://github.com/shama/bel
+[nanohtml]: https://github.com/choojs/nanohtml
 [browserify]: https://github.com/substack/node-browserify
 [budo]: https://github.com/mattdesl/budo
 [es2020]: https://github.com/yoshuawuyts/es2020
@@ -583,6 +697,5 @@ Become a backer, and buy us a coffee (or perhaps lunch?) every month or so.
 [nanomorph]: https://github.com/choojs/nanomorph
 [nanorouter]: https://github.com/choojs/nanorouter
 [yo-yo]: https://github.com/maxogden/yo-yo
-[yo-yoify]: https://github.com/shama/yo-yoify
 [unassertify]: https://github.com/unassert-js/unassertify
 [window-performance]: https://developer.mozilla.org/en-US/docs/Web/API/Performance
