@@ -2,8 +2,7 @@ var EventEmitter = require('events').EventEmitter
 var spok = require('spok')
 var tape = require('tape')
 
-var example = require('./')
-var todoStore = example.todoStore
+var todoStore = require('./stores/todos')
 
 tape('should initialize empty state', function (t) {
   var emitter = new EventEmitter()
@@ -15,25 +14,6 @@ tape('should initialize empty state', function (t) {
       active: spok.arrayElements(0),
       done: spok.arrayElements(0),
       all: spok.arrayElements(0)
-    }
-  })
-  t.end()
-})
-
-tape('restore previous state', function (t) {
-  var emitter = new EventEmitter()
-  var state = {
-    todos: {
-      idCounter: 100,
-      active: [],
-      done: [],
-      all: []
-    }
-  }
-  todoStore(state, emitter)
-  spok(t, state, {
-    todos: {
-      idCounter: 100
     }
   })
   t.end()
