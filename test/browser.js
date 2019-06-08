@@ -52,7 +52,7 @@ tape('should expose a public API', function (t) {
   t.end()
 })
 
-tape('should enable history and hash by defaut', function (t) {
+tape('should enable history and href by defaut', function (t) {
   var app = choo()
   t.true(app._historyEnabled, 'history enabled')
   t.true(app._hrefEnabled, 'href enabled')
@@ -82,9 +82,9 @@ tape('router should support a default route', function (t) {
   app.mount(container)
 })
 
-tape('router should treat hashes as slashes by default', function (t) {
+tape('enabling hash routing should treat hashes as slashes', function (t) {
   t.plan(1)
-  var app = choo()
+  var app = choo({ hash: true })
   var container = init('/account#security')
   app.route('/account/security', function (state, emit) {
     t.pass()
@@ -93,9 +93,9 @@ tape('router should treat hashes as slashes by default', function (t) {
   app.mount(container)
 })
 
-tape('router should ignore hashes if hash is disabled', function (t) {
+tape('router should ignore hashes by default', function (t) {
   t.plan(1)
-  var app = choo({ hash: false })
+  var app = choo()
   var container = init('/account#security')
   app.route('/account', function (state, emit) {
     t.pass()

@@ -76,9 +76,9 @@ tape('router should support a default route', function (t) {
   t.end()
 })
 
-tape('router should treat hashes as slashes by default', function (t) {
+tape('enabling hash routing should treat hashes as slashes', function (t) {
   t.plan(1)
-  var app = choo()
+  var app = choo({ hash: true })
   app.route('/account/security', function (state, emit) {
     t.pass()
     return html`<div></div>`
@@ -87,9 +87,9 @@ tape('router should treat hashes as slashes by default', function (t) {
   t.end()
 })
 
-tape('router should ignore hashes if hash is disabled', function (t) {
+tape('router should ignore hashes by default', function (t) {
   t.plan(1)
-  var app = choo({ hash: false })
+  var app = choo()
   app.route('/account', function (state, emit) {
     t.pass()
     return html`<div></div>`
