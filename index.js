@@ -78,12 +78,7 @@ Choo.prototype.route = function (route, handler) {
   var routeTiming = nanotiming("choo.route('" + route + "')")
   assert.equal(typeof route, 'string', 'choo.route: route should be type string')
   assert.equal(typeof handler, 'function', 'choo.handler: route should be type function')
-  this.router.on(route, function (state, emit) {
-    var routerTiming = nanotiming("choo.router('" + route + "')")
-    var res = handler(state, emit)
-    routerTiming()
-    return res
-  })
+  this.router.on(route, handler)
   routeTiming()
 }
 
@@ -101,7 +96,7 @@ Choo.prototype.use = function (cb) {
 
 Choo.prototype.start = function () {
   assert.equal(typeof window, 'object', 'choo.start: window was not found. .start() must be called in a browser, use .toString() if running in Node')
-  var timing = nanotiming('choo.start')
+  var startTiming = nanotiming('choo.start')
 
   var self = this
   if (this._historyEnabled) {
@@ -176,7 +171,7 @@ Choo.prototype.start = function () {
     self._loaded = true
   })
 
-  timing()
+  startTiming()
   return this._tree
 }
 
