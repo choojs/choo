@@ -48,7 +48,7 @@
     "nanomorph": "^5.1.2",
     "nanoquery": "^1.1.0",
     "nanoraf": "^3.0.0",
-    "nanorouter": "^3.0.1",
+    "nanorouter": "^4.0.0",
     "nanotiming": "^7.0.0",
     "scroll-to-anchor": "^1.0.0"
   },
