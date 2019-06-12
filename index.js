@@ -16,6 +16,7 @@ module.exports = Choo
 var HISTORY_OBJECT = {}
 
 function Choo (opts) {
+  var timing = nanotiming('choo.constructor')
   if (!(this instanceof Choo)) return new Choo(opts)
   opts = opts || {}
 
@@ -37,7 +38,7 @@ function Choo (opts) {
   // properties for internal use only
   this._historyEnabled = opts.history === undefined ? true : opts.history
   this._hrefEnabled = opts.href === undefined ? true : opts.href
-  this._hashEnabled = opts.hash === undefined ? true : opts.hash
+  this._hashEnabled = opts.hash === undefined ? false : opts.hash
   this._hasWindow = typeof window !== 'undefined'
   this._cache = opts.cache
   this._loaded = false
@@ -72,12 +73,15 @@ function Choo (opts) {
       if (self._hasWindow) document.title = title
     })
   }
+  timing()
 }
 
 Choo.prototype.route = function (route, handler) {
+  var routeTiming = nanotiming("choo.route('" + route + "')")
   assert.equal(typeof route, 'string', 'choo.route: route should be type string')
   assert.equal(typeof handler, 'function', 'choo.handler: route should be type function')
   this.router.on(route, handler)
+  routeTiming()
 }
 
 Choo.prototype.use = function (cb) {
@@ -94,6 +98,7 @@ Choo.prototype.use = function (cb) {
 
 Choo.prototype.start = function () {
   assert.equal(typeof window, 'object', 'choo.start: window was not found. .start() must be called in a browser, use .toString() if running in Node')
+  var startTiming = nanotiming('choo.start')
 
   var self = this
   if (this._historyEnabled) {
@@ -139,11 +144,11 @@ Choo.prototype.start = function () {
   }
 
   this._setCache(this.state)
+  this._matchRoute(this.state)
   this._stores.forEach(function (initStore) {
     initStore(self.state)
   })
 
-  this._matchRoute(this.state)
   this._tree = this._prerender(this.state)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
 
@@ -168,13 +173,16 @@ Choo.prototype.start = function () {
     self._loaded = true
   })
 
+  startTiming()
   return this._tree
 }
 
 Choo.prototype.mount = function mount (selector) {
+  var mountTiming = nanotiming("choo.mount('" + selector + "')")
   if (typeof window !== 'object') {
     assert.ok(typeof selector === 'string', 'choo.mount: selector should be type String')
     this.selector = selector
+    mountTiming()
     return this
   }
 
@@ -202,6 +210,7 @@ Choo.prototype.mount = function mount (selector) {
 
     renderTiming()
   })
+  mountTiming()
 }
 
 Choo.prototype.toString = function (location, state) {
@@ -214,12 +223,12 @@ Choo.prototype.toString = function (location, state) {
   assert.equal(typeof state, 'object', 'choo.toString: state should be type object')
 
   this._setCache(state)
+  this._matchRoute(state, location)
   this.emitter.removeAllListeners()
   this._stores.forEach(function (initStore) {
     initStore(state)
   })
 
-  this._matchRoute(state, location)
   var html = this._prerender(state)
   assert.ok(html, 'choo.toString: no valid value returned for the route ' + location)
   assert(!Array.isArray(html), 'choo.toString: return value was an array for the route ' + location)

@@ -52,7 +52,7 @@ tape('should expose a public API', function (t) {
   t.end()
 })
 
-tape('should enable history and hash by defaut', function (t) {
+tape('should enable history and href by defaut', function (t) {
   var app = choo()
   t.true(app._historyEnabled, 'history enabled')
   t.true(app._hrefEnabled, 'href enabled')
@@ -82,9 +82,9 @@ tape('router should support a default route', function (t) {
   app.mount(container)
 })
 
-tape('router should treat hashes as slashes by default', function (t) {
+tape('enabling hash routing should treat hashes as slashes', function (t) {
   t.plan(1)
-  var app = choo()
+  var app = choo({ hash: true })
   var container = init('/account#security')
   app.route('/account/security', function (state, emit) {
     t.pass()
@@ -93,9 +93,9 @@ tape('router should treat hashes as slashes by default', function (t) {
   app.mount(container)
 })
 
-tape('router should ignore hashes if hash is disabled', function (t) {
+tape('router should ignore hashes by default', function (t) {
   t.plan(1)
-  var app = choo({ hash: false })
+  var app = choo()
   var container = init('/account#security')
   app.route('/account', function (state, emit) {
     t.pass()
@@ -189,6 +189,27 @@ tape('state should include location on render', function (t) {
     return html`<div></div>`
   })
   app.mount(container)
+})
+
+tape('state should include location on store init', function (t) {
+  t.plan(6)
+  var app = choo()
+  var container = init('/foo/bar/file.txt?bin=baz')
+  app.use(store)
+  app.route('/:first/:second/*', function (state, emit) {
+    return html`<div></div>`
+  })
+  app.mount(container)
+
+  function store (state, emit) {
+    var params = { first: 'foo', second: 'bar', wildcard: 'file.txt' }
+    t.equal(state.href, '/foo/bar/file.txt', 'state has href')
+    t.equal(state.route, ':first/:second/*', 'state has route')
+    t.ok(state.hasOwnProperty('params'), 'state has params')
+    t.deepEqual(state.params, params, 'params match')
+    t.ok(state.hasOwnProperty('query'), 'state has query')
+    t.deepEqual(state.query, { bin: 'baz' }, 'query match')
+  }
 })
 
 tape('state should include title', function (t) {
