@@ -185,6 +185,26 @@ tape('state should include location on render', function (t) {
   t.end()
 })
 
+tape('state should include location on store init', function (t) {
+  t.plan(6)
+  var app = choo()
+  app.use(store)
+  app.route('/:first/:second/*', function (state, emit) {
+    return html`<div></div>`
+  })
+  app.toString('/foo/bar/file.txt?bin=baz')
+
+  function store (state, emit) {
+    var params = { first: 'foo', second: 'bar', wildcard: 'file.txt' }
+    t.equal(state.href, '/foo/bar/file.txt', 'state has href')
+    t.equal(state.route, ':first/:second/*', 'state has route')
+    t.ok(state.hasOwnProperty('params'), 'state has params')
+    t.deepEqual(state.params, params, 'params match')
+    t.ok(state.hasOwnProperty('query'), 'state has query')
+    t.deepEqual(state.query, { bin: 'baz' }, 'query match')
+  }
+})
+
 tape('state should include cache', function (t) {
   t.plan(6)
   var app = choo()
