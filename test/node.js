@@ -224,3 +224,37 @@ tape('state should include cache', function (t) {
     t.equal(arg, 'arg', 'constructor args were forwarded')
   }
 })
+
+tape('state should not mutate on toString', function (t) {
+  t.plan(6)
+
+  var app = choo()
+  app.use(store)
+
+  var routes = ['foo', 'bar']
+  var states = routes.map(function (route) {
+    var state = {}
+    app.route(`/${route}`, view)
+    app.toString(`/${route}`, state)
+    return state
+  })
+
+  for (var i = 0, len = routes.length; i < len; i++) {
+    t.equal(states[i].test, routes[i], 'store was used')
+    t.equal(states[i].title, routes[i], 'title was added to state')
+  }
+
+  function store (state, emitter) {
+    state.test = null
+    emitter.on('test', function (str) {
+      t.equal(state.test, null, 'state has been reset')
+      state.test = str
+    })
+  }
+
+  function view (state, emit) {
+    emit('test', state.route)
+    emit(state.events.DOMTITLECHANGE, state.route)
+    return html`<body>Hello ${state.route}</body>`
+  }
+})
