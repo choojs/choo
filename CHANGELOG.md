@@ -1,4 +1,4 @@
-## `7.0.0`
+## `7.0.0` All the little things
 It has been quite a while since the last major version of Choo. Since it's
 release, `choo@6` has recieved a bunch of features and patches, but some changes
 has been put off because they'd have an affect on the API in a way that could be
