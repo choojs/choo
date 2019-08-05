@@ -1,3 +1,47 @@
+## `7.0.0`
+It has been quite a while since the last major version of Choo. Since it's
+release, `choo@6` has recieved a bunch of features and patches, but some changes
+has been put off because they'd have an affect on the API in a way that could be
+breaking for some users. With this release we've merged all these minor, but
+breaking changes all at once.
+
+The way in which Choo handles hashes in the URL has proved confusing for both
+newcomers and seasoned Choo users. In a prior patch the `hash` option was added
+which could be used to disable hash routing. With this release we're changing it
+to be *disabled by default*.
+
+Rendering pages server side is an excellent way to increase page performance and
+Choo supports it out of the box. Choo also allows for rehydrating the client
+with what state was used when rendering on the server side. To ensure that the
+application state is identicial regardless if hydrated or not, the internals for
+routing has been changes so that `href`, `query`, `param` and `route` are all
+available on application state at the time when stores are initialized.
+
+In prior versions, when rendering on the server, the state that was provided to
+`toString` would be merged onto the application state. Meaning consecutive calls
+to `toString` would accumulate on the application state and persist in-between
+render. With this change, application state is no longer mutated during server
+side render. This will affects those of you doing server side rendering and then
+plucking out properties from the application state. You can now be assured that
+only the state that is provided to `toString` is modified during rendering.
+
+```diff
+var html = app.toString('/', state)
+- var title = app.state.title
++ var title = state.title
+```
+
+And lastly, we've updated depndencies and even dropped a dependency which is
+no longer required by modern browsers. The dependency `xtend` was dropped in
+favour of
+[Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign). This change has also been propagated throughout
+the Choo universe i.e. choo-devtools and choo-service-worker etc. If you are
+supporting legacy browsers (IE11 and bellow), we recommend the polyfill service
+https://polyfill.io which will detect legacy browsers and load the appropiate
+polyfills.
+
+That's all for now, keep being awesome!
+
 ## `6.0.0` Same as it ever was
 In the past few months we've been able to use `choo@5` a bunch, and people seem
 to like it a lot! In this patch all we're doing is taking choo's existing API,
