@@ -1,11 +1,8 @@
 node_js:
-- '6'
-- '8'
-- '10'
-sudo: false
+  - 'node'
+  - 'lts/*'
+dist: xenial
 language: node_js
-env:
-  - CXX=g++-4.8
 notifications:
   irc:
     on_success: change
@@ -15,16 +12,10 @@ notifications:
       - "chat.freenode.net#choo"
     template:
       - "%{repository_slug} #%{build_number} %{result}: %{build_url}"
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-      - xvfb
+services:
+  - xvfb
 install:
-  - export DISPLAY=':99.0'
-  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - npm install
-script: npm run test
-# after_script: npm i -g codecov.io && cat ./coverage/lcov.info | codecov
+script:
+  - npm run test:node
+  - xvfb-run --auto-servernum npm run test:browser
