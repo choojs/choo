@@ -428,7 +428,7 @@ app.use(function (state, emitter) {
 ### Caching components
 When working with stateful components, one will need to keep track of component
 instances – `state.cache` does just that. The component cache is a function
-which takes a component class and a unique id (`string`) as it's first two
+which takes a component class and a unique id (`string`) as its first two
 arguments. Any following arguments will be forwarded to the component constructor
 together with `state` and `emit`.
 
