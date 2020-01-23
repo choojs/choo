@@ -4,6 +4,17 @@ import Choo = require('.')
 new Choo({})
 new Choo()
 
+new Choo({ cache: 100 })
+new Choo({
+  cache: new Map()
+})
+new Choo({
+  cache: {
+    get: (id) => null,
+    set: (id, value) => expectType<any>(value)
+  }
+})
+
 const app = new Choo({
   history: false,
   href: true,

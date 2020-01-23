@@ -16,6 +16,12 @@ declare namespace Choo {
     history?: boolean
     href?: boolean
     hash?: boolean
+    cache?: number | ICache
+  }
+
+  export interface ICache {
+    get(id: string | number): undefined | null | any
+    set(id: string | number, element: any): void
   }
 
   export interface IState {
