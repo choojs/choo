@@ -15,6 +15,7 @@ declare namespace Choo {
   export interface IChoo {
     history?: boolean
     href?: boolean
+    hash?: boolean
   }
 
   export interface IState {
