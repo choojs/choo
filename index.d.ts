@@ -1,13 +1,11 @@
-/// <reference types="node" />
-
-import * as EventEmitter from 'events'
+import Nanobus = require('nanobus')
 
 export = Choo
 
 declare class Choo {
   constructor (opts?: Choo.IChoo)
-  use (callback: (state: Choo.IState, emitter: EventEmitter, app: this) => void): void
-  route (routeName: string, handler: (state: Choo.IState, emit: (name: string, ...args: any[]) => void) => void): void
+  use (callback: (state: Choo.IState, emitter: Nanobus, app: this) => void): void
+  route (routeName: string, handler: (state: Choo.IState, emit: Nanobus['emit']) => void): void
   mount (selector: string): void
   start (): HTMLElement
   toString (location: string, state?: Choo.IState): string

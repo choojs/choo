@@ -23,7 +23,8 @@
     "inspect": "browserify --full-paths index -p tinyify | discify --open",
     "prepublishOnly": "npm run build",
     "start": "bankai start example",
-    "test": "standard && npm run deps && npm run test:node && npm run test:browser",
+    "test": "standard && npm run deps && npm run test:types && npm run test:node && npm run test:browser",
+    "test:types": "tsd",
     "test:node": "node test/node.js | tap-format-spec",
     "test:browser": "browserify test/browser.js | tape-run | tap-format-spec"
   },
@@ -40,7 +41,7 @@
   "dependencies": {
     "document-ready": "^2.0.1",
     "nanoassert": "^1.1.0",
-    "nanobus": "^4.2.0",
+    "nanobus": "^4.4.0",
     "nanocomponent": "^6.5.0",
     "nanohref": "^3.0.0",
     "nanohtml": "^1.1.0",
@@ -54,7 +55,6 @@
   },
   "devDependencies": {
     "@tap-format/spec": "^0.2.0",
-    "@types/node": "^10.3.1",
     "browserify": "^16.2.2",
     "bundle-collapser": "^1.2.1",
     "dependency-check": "^3.1.0",
@@ -65,6 +65,14 @@
     "standard": "^11.0.1",
     "tape": "^4.6.3",
     "tape-run": "^6.0.0",
-    "tinyify": "^2.2.0"
+    "tinyify": "^2.2.0",
+    "tsd": "^0.11.0"
+  },
+  "tsd": {
+    "compilerOptions": {
+      "lib": [
+        "DOM"
+      ]
+    }
   }
 }
