@@ -435,7 +435,7 @@ together with `state` and `emit`.
 The default class cache is an LRU cache (using [nanolru][nanolru]), meaning it
 will only hold on to a fixed amount of class instances (`100` by default) before
 starting to evict the least-recently-used instances. This behavior can be
-overriden with [options](#app--chooopts).
+overridden with [options](#app--chooopts).
 
 ## Optimizations
 Choo is reasonably fast out of the box. But sometimes you might hit a scenario
